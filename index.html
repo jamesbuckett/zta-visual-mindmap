@@ -84,11 +84,14 @@
       --shadow-lg: 0 12px 34px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.4);
     }
 
-    /* category colour map (the one place categories bind to --cat-*) */
-    .cat-protocol  { --node: var(--cat-5); }
-    .cat-network   { --node: var(--cat-4); }
-    .cat-security  { --node: var(--cat-7); }
-    .cat-framework { --node: var(--cat-2); }
+    /* family colour map (the one place families bind to --cat-* / ink) */
+    .fam-ztcore        { --node: var(--text); }
+    .fam-iam           { --node: var(--cat-1); }
+    .fam-securechannel { --node: var(--cat-2); }
+    .fam-transport     { --node: var(--cat-5); }
+    .fam-routing       { --node: var(--cat-4); }
+    .fam-edge          { --node: var(--cat-3); }
+    .fam-platform      { --node: var(--cat-7); }
 
     /* ================================ base ============================== */
     *, *::before, *::after { box-sizing: border-box; }
@@ -431,7 +434,7 @@
 
     <div class="toolbar" role="group" aria-label="Category filters and view controls">
       <div class="filters" id="filters">
-        <span class="filters-label">Categories</span>
+        <span class="filters-label">Families</span>
         <!-- chips injected -->
       </div>
       <div class="toolbar-spacer"></div>
@@ -459,7 +462,7 @@
       </svg>
 
       <div class="legend" id="legend">
-        <h4>Categories</h4>
+        <h4>Families</h4>
         <div id="legend-cats"></div>
         <button class="legend-toggle" id="legend-toggle" type="button" aria-expanded="false">Show relationship key</button>
         <div class="legend-edges" id="legend-edges"></div>
@@ -1907,9 +1910,35 @@
 
     /* ----------------------------- data ------------------------------ */
     const DATA = JSON.parse(document.getElementById('zta-data').textContent);
+
+    // Functional families — the colour/grouping layer (each term's original
+    // glossary type + provenance are preserved as tags in the detail panel).
+    // Zero-Trust core uses ink (var(--text)) so the anchor stands apart from the
+    // six categorical hues and never collides with the indigo brand accent.
+    const FAMILIES = [
+      { key: 'ztcore',        label: 'Zero-Trust core',       short: 'Zero-Trust',      cssvar: '--text' },
+      { key: 'iam',           label: 'Identity & access',     short: 'Identity',        cssvar: '--cat-1' },
+      { key: 'securechannel', label: 'Secure channels & VPN', short: 'Secure channels', cssvar: '--cat-2' },
+      { key: 'transport',     label: 'Transport & web',       short: 'Transport',       cssvar: '--cat-5' },
+      { key: 'routing',       label: 'Addressing & routing',  short: 'Routing',         cssvar: '--cat-4' },
+      { key: 'edge',          label: 'Network edge & ops',    short: 'Network edge',    cssvar: '--cat-3' },
+      { key: 'platform',      label: 'Platforms & apps',      short: 'Platforms',       cssvar: '--cat-7' },
+    ];
+    const FAMILY = {
+      zerotrust: 'ztcore', peppdp: 'ztcore', spiffe: 'ztcore', openziti: 'ztcore', mtls: 'ztcore',
+      idp: 'iam', oauth: 'iam', oidc: 'iam', saml: 'iam', jwt: 'iam', pkce: 'iam', scim: 'iam', radius: 'iam',
+      tls: 'securechannel', ipsec: 'securechannel', ssh: 'securechannel', wireguard: 'securechannel', vpn: 'securechannel',
+      tcpip: 'transport', http: 'transport', quic: 'transport', websockets: 'transport', webtransport: 'transport', grpc: 'transport', mqtt: 'transport', cors: 'transport',
+      dns: 'routing', dhcp: 'routing', nat: 'routing', bgp: 'routing',
+      firewall: 'edge', vlan: 'edge', microseg: 'edge', loadbalancer: 'edge', sdwan: 'edge', sase: 'edge', siem: 'edge',
+      docker: 'platform', kubernetes: 'platform', django: 'platform', react: 'platform',
+    };
+    const famOf = (id) => FAMILY[id] || 'transport';
+    const famMeta = (key) => FAMILIES.find((f) => f.key === key) || FAMILIES[0];
+
     const byId = new Map();
     const nodes = DATA.terms.map((t) => {
-      const n = Object.assign({}, t, { x: 0, y: 0, vx: 0, vy: 0, fx: null, fy: null, deg: 0 });
+      const n = Object.assign({}, t, { x: 0, y: 0, vx: 0, vy: 0, fx: null, fy: null, deg: 0, family: FAMILY[t.id] || 'transport' });
       byId.set(t.id, n);
       return n;
     });
@@ -1922,14 +1951,6 @@
       adj.get(e.s.id).push({ other: e.t, edge: e, dir: 'out' });
       adj.get(e.t.id).push({ other: e.s, edge: e, dir: 'in' });
     });
-
-    const CATS = [
-      { key: 'protocol', label: 'Protocol', match: 'Protocol', cssvar: '--cat-5' },
-      { key: 'network', label: 'Network', match: 'Network Technology', cssvar: '--cat-4' },
-      { key: 'security', label: 'Security', match: 'Security Technology', cssvar: '--cat-7' },
-      { key: 'framework', label: 'Dev Framework', match: 'Development Framework', cssvar: '--cat-2' },
-    ];
-    const catKey = (c) => (CATS.find((x) => x.match === c) || CATS[0]).key;
 
     // short labels for the few long names (full name stays in tooltip + panel)
     const SHORT = { idp: 'IdP', microseg: 'Microseg.', loadbalancer: 'Load Bal.', spiffe: 'SPIFFE', http: 'HTTP(S)', webtransport: 'WebTransp.' };
@@ -1980,20 +2001,22 @@
     /* -------------------- seeded initial layout ---------------------- */
     function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
     const rand = mulberry32(20260606);
-    nodes.forEach((n, i) => {
-      const ci = CATS.findIndex((c) => c.key === catKey(n.category));
-      const ang = (ci / CATS.length) * Math.PI * 2 + (rand() - 0.5) * 1.1;
-      const rad = 60 + rand() * 230;
+    const ring = FAMILIES.filter((f) => f.key !== 'ztcore'); // 6 families around the core
+    nodes.forEach((n) => {
+      if (n.family === 'ztcore') { n.x = W / 2 + (rand() - 0.5) * 120; n.y = H / 2 + (rand() - 0.5) * 120; return; }
+      const fi = ring.findIndex((f) => f.key === n.family);
+      const ang = (fi / ring.length) * Math.PI * 2 + (rand() - 0.5) * 0.55;
+      const rad = 190 + rand() * 150;
       n.x = W / 2 + Math.cos(ang) * rad;
       n.y = H / 2 + Math.sin(ang) * rad;
     });
-    // seed the hub near centre
+    // seed the anchor at centre
     const hub = byId.get('zerotrust'); if (hub) { hub.x = W / 2; hub.y = H / 2; }
 
     /* ------------------------ force simulation ----------------------- */
     const LINK_LEN = { 'part-of': 104, 'requires': 112, 'enables': 122, 'alternative': 158, 'same-category': 180 };
     const LINK_K = { 'part-of': 0.085, 'requires': 0.055, 'enables': 0.05, 'alternative': 0.02, 'same-category': 0.012 };
-    const CHARGE = 3300, GRAVITY = 0.02, DAMP = 0.85, MAXV = 24;
+    const CHARGE = 3000, GRAVITY = 0.012, CLUSTER = 0.04, DAMP = 0.85, MAXV = 24;
 
     function visibleNodes() { return nodes.filter((n) => !n.hidden); }
     function visibleEdges() { return edges.filter((e) => !e.s.hidden && !e.t.hidden); }
@@ -2022,10 +2045,17 @@
         const mx = dx * diff, my = dy * diff;
         e.s.vx += mx; e.s.vy += my; e.t.vx -= mx; e.t.vy -= my;
       });
+      // family cohesion: pull each node gently toward its family's centroid
+      const fcx = {}, fcy = {}, fct = {};
+      for (const n of vn) { fcx[n.family] = (fcx[n.family] || 0) + n.x; fcy[n.family] = (fcy[n.family] || 0) + n.y; fct[n.family] = (fct[n.family] || 0) + 1; }
+      for (const k in fct) { fcx[k] /= fct[k]; fcy[k] /= fct[k]; }
       const cx = W / 2, cy = H / 2;
       vn.forEach((n) => {
         n.vx += (cx - n.x) * GRAVITY * alpha;
         n.vy += (cy - n.y) * GRAVITY * alpha;
+        n.vx += (fcx[n.family] - n.x) * CLUSTER * alpha;
+        n.vy += (fcy[n.family] - n.y) * CLUSTER * alpha;
+        if (n.family === 'ztcore') { n.vx += (cx - n.x) * 0.022 * alpha; n.vy += (cy - n.y) * 0.022 * alpha; }
         if (n.fx != null) { n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; return; }
         n.vx *= DAMP; n.vy *= DAMP;
         n.vx = Math.max(-MAXV, Math.min(MAXV, n.vx));
@@ -2046,10 +2076,10 @@
       });
       nodes.forEach((n) => {
         const g = document.createElementNS(SVGNS, 'g');
-        g.setAttribute('class', 'node cat-' + catKey(n.category));
+        g.setAttribute('class', 'node fam-' + n.family);
         g.setAttribute('tabindex', '0');
         g.setAttribute('role', 'button');
-        g.setAttribute('aria-label', n.name + ' — ' + n.category + '. ' + n.tldr + ' Activate to open details.');
+        g.setAttribute('aria-label', n.name + ' — ' + famMeta(n.family).label + '. ' + n.tldr + ' Activate to open details.');
         g.dataset.id = n.id;
         const r = rOf(n);
         const halo = document.createElementNS(SVGNS, 'circle');
@@ -2165,7 +2195,7 @@
     }
 
     function renderDetail(n) {
-      const ck = catKey(n.category);
+      const fk = n.family;
       const conns = adj.get(n.id).filter(({ other }) => !other.hidden);
       const groups = {};
       conns.forEach((c) => { (groups[c.edge.type] = groups[c.edge.type] || []).push(c); });
@@ -2173,7 +2203,7 @@
       ORDER.forEach((type) => {
         if (!groups[type]) return;
         const items = groups[type].sort((a, b) => a.other.name.localeCompare(b.other.name)).map((c) => {
-          return '<button class="rel-item cat-' + catKey(c.other.category) + '" data-goto="' + c.other.id + '">' +
+          return '<button class="rel-item fam-' + famOf(c.other.id) + '" data-goto="' + c.other.id + '">' +
             '<span class="swatch"></span><span class="rel-name">' + esc(c.other.name) + '</span>' + ARROW_SVG + '</button>';
         }).join('');
         // phrasing: use the first connection's direction is per-item, but group label is by type from focus perspective.
@@ -2185,18 +2215,20 @@
       });
 
       const aliasHTML = n.aliases && n.aliases.length ? ' <span class="alias">· also: ' + esc(n.aliases.join(', ')) + '</span>' : '';
-      const typeTags = n.types.map((t) => '<span class="tag cat-' + catKey(t) + '"><span class="swatch" style="background:var(' + (CATS.find((c) => c.match === t) || CATS[0]).cssvar + ')"></span>' + esc(t) + '</span>').join('');
+      // source glossary types preserved as neutral pills (the family is the colour layer)
+      const typeTags = n.types.map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
       const provTag = '<span class="tag prov">' + (PROV_ICON[n.provenance] || '') + esc(n.provenance) + '</span>';
 
       panelInner.innerHTML =
         '<button class="detail-back" id="detail-back" type="button">' +
           '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>All terms</button>' +
-        '<div class="detail cat-' + ck + '">' +
-          '<div class="detail-eyebrow"><span class="cat-badge"><span class="swatch"></span>' + esc(n.category) + '</span></div>' +
+        '<div class="detail fam-' + fk + '">' +
+          '<div class="detail-eyebrow"><span class="cat-badge"><span class="swatch"></span>' + esc(famMeta(fk).label) + '</span></div>' +
           '<h2>' + esc(n.name) + '</h2>' +
           '<p class="detail-full">' + esc(n.fullName) + aliasHTML + '</p>' +
           '<div class="tldr"><span class="lbl">TL;DR</span><p>' + esc(n.tldr) + '</p></div>' +
           '<p class="detail-explainer">' + esc(n.explainer) + '</p>' +
+          '<div class="section-label">Glossary type &amp; provenance</div>' +
           '<div class="meta-row">' + typeTags + provTag + '</div>' +
           '<div class="section-label">Connections · ' + conns.length + '</div>' + relHTML +
         '</div>';
@@ -2206,25 +2238,23 @@
     }
 
     function renderAbout() {
-      const counts = { protocol: 0, network: 0, security: 0, framework: 0 };
-      nodes.forEach((n) => counts[catKey(n.category)]++);
       panelInner.innerHTML =
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
           '<h2>How the internet keeps its secrets — mapped</h2>' +
-          '<p><strong>41 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph. Each <strong>node</strong> is a term, coloured by category; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
-          '<p class="about-text-extra">The layout is anchored on <strong>Zero Trust</strong>: its building blocks pull in around it, and the supporting protocols, network, and security primitives fan out from there.</p>' +
+          '<p><strong>41 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph. Each <strong>node</strong> is a term, grouped into <strong>seven functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> settles at the centre, with the identity, secure-channel, transport, routing, network-edge, and platform families clustered around it. Every term\'s original glossary type and provenance stay in its detail panel.</p>' +
           '<div class="stat-row">' +
             '<div class="stat"><b>41</b><span>terms</span></div>' +
-            '<div class="stat"><b>90</b><span>relationships</span></div>' +
-            '<div class="stat"><b>5</b><span>link types</span></div>' +
+            '<div class="stat"><b>7</b><span>families</span></div>' +
+            '<div class="stat"><b>90</b><span>links</span></div>' +
           '</div>' +
           '<div class="section-label">How to use it</div>' +
           '<ul class="about-how">' +
             '<li>' + ICON('mouse-pointer') + '<span><strong>Click</strong> any node for its definition and connections.</span></li>' +
             '<li>' + ICON('spotlight') + '<span><strong>Hover</strong> to spotlight a term and its direct neighbours.</span></li>' +
             '<li>' + ICON('search') + '<span><strong>Search</strong> to locate and filter terms live.</span></li>' +
-            '<li>' + ICON('filter') + '<span><strong>Toggle categories</strong> in the toolbar to focus a group.</span></li>' +
+            '<li>' + ICON('filter') + '<span><strong>Toggle families</strong> in the toolbar to focus a group.</span></li>' +
             '<li>' + ICON('drag') + '<span><strong>Drag</strong> the canvas to pan, scroll to zoom, drag a node to reposition.</span></li>' +
           '</ul>' +
           '<button class="btn btn-accent about-cta" id="about-tour" type="button">' + ICON('route') + 'Take the guided tour</button>' +
@@ -2274,7 +2304,7 @@
       svg.classList.add('graph-dim-unmatched');
       let matches = [];
       nodes.forEach((n) => {
-        const hay = (n.name + ' ' + n.fullName + ' ' + (n.aliases || []).join(' ') + ' ' + n.tldr + ' ' + n.category).toLowerCase();
+        const hay = (n.name + ' ' + n.fullName + ' ' + (n.aliases || []).join(' ') + ' ' + n.tldr + ' ' + n.category + ' ' + famMeta(n.family).label).toLowerCase();
         const hit = !n.hidden && hay.indexOf(q) >= 0;
         n.el.classList.toggle('is-match', hit);
         if (hit) matches.push(n);
@@ -2297,18 +2327,19 @@
     });
 
     /* ---------------------------- filters ---------------------------- */
-    const active = new Set(CATS.map((c) => c.key));
+    const active = new Set(FAMILIES.map((f) => f.key));
     const filtersEl = document.getElementById('filters');
-    CATS.forEach((c) => {
+    FAMILIES.forEach((f) => {
       const b = document.createElement('button');
-      b.className = 'chip cat-' + c.key; b.type = 'button'; b.dataset.cat = c.key;
+      b.className = 'chip fam-' + f.key; b.type = 'button'; b.dataset.fam = f.key;
       b.setAttribute('aria-pressed', 'true');
-      b.innerHTML = '<span class="swatch"></span>' + c.label;
-      b.addEventListener('click', () => toggleCat(c.key, b));
+      b.title = f.label;
+      b.innerHTML = '<span class="swatch"></span>' + f.short;
+      b.addEventListener('click', () => toggleCat(f.key, b));
       filtersEl.appendChild(b);
     });
     function applyVisibility() {
-      nodes.forEach((n) => { n.hidden = !active.has(catKey(n.category)); n.el.classList.toggle('is-hidden', n.hidden); });
+      nodes.forEach((n) => { n.hidden = !active.has(n.family); n.el.classList.toggle('is-hidden', n.hidden); });
       edges.forEach((e) => e.el.classList.toggle('is-hidden', e.s.hidden || e.t.hidden));
       if (selectedId && byId.get(selectedId).hidden) { select(null); renderAbout(); }
       refreshHot();
@@ -2323,10 +2354,10 @@
 
     /* --------------------------- legend ------------------------------ */
     const legendCats = document.getElementById('legend-cats');
-    CATS.forEach((c) => {
+    FAMILIES.forEach((f) => {
       const row = document.createElement('div');
       row.className = 'legend-row';
-      row.innerHTML = '<span class="swatch" style="background:var(' + c.cssvar + ')"></span>' + c.label;
+      row.innerHTML = '<span class="swatch" style="background:var(' + f.cssvar + ')"></span>' + f.label;
       legendCats.appendChild(row);
     });
     const legendEdges = document.getElementById('legend-edges');
@@ -2349,7 +2380,7 @@
     const tooltip = document.getElementById('tooltip');
     function showTip(n, clientX, clientY) {
       const rect = svg.getBoundingClientRect();
-      tooltip.innerHTML = '<strong>' + esc(n.name) + ' <span class="tt-cat">· ' + esc(n.category) + '</span></strong>' + esc(n.tldr);
+      tooltip.innerHTML = '<strong>' + esc(n.name) + ' <span class="tt-cat">· ' + esc(famMeta(n.family).label) + '</span></strong>' + esc(n.tldr);
       tooltip.style.left = (clientX - rect.left) + 'px';
       tooltip.style.top = (clientY - rect.top) + 'px';
       tooltip.classList.add('show');
@@ -2429,9 +2460,9 @@
     let tourActive = false, tourIdx = 0;
     const tourBar = document.getElementById('tour-bar');
     function startTour() {
-      // ensure all categories on so every step is visible
+      // ensure all families on so every step is visible
       let changed = false;
-      CATS.forEach((c) => { if (!active.has(c.key)) { active.add(c.key); changed = true; } });
+      FAMILIES.forEach((f) => { if (!active.has(f.key)) { active.add(f.key); changed = true; } });
       if (changed) { filtersEl.querySelectorAll('.chip').forEach((b) => b.setAttribute('aria-pressed', 'true')); applyVisibility(); }
       searchInput.value = ''; doSearch('');
       tourActive = true; tourIdx = 0; tourBar.hidden = false; showTourStep();
