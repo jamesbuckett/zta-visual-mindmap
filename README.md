@@ -5,11 +5,11 @@
 [![Last commit](https://img.shields.io/github/last-commit/jamesbuckett/zta-visual-mindmap)](https://github.com/jamesbuckett/zta-visual-mindmap/commits)
 [![Open issues](https://img.shields.io/github/issues/jamesbuckett/zta-visual-mindmap)](https://github.com/jamesbuckett/zta-visual-mindmap/issues)
 
-> Interactive force-directed mindmap of 41 zero-trust, networking & IT terms.
+> Interactive force-directed mindmap of 68 zero-trust, networking & IT terms.
 
 ## About
 
-Maps 41 IT, networking, and zero-trust terms from the [ZTA Visual Glossary](https://zta-visual-glossary.vercel.app/) as an interactive, force-directed graph. Colour-codes nodes by category and links them with five typed relationships — requires, enables, part-of, alternative, and same-category — inferred from each term's own explainer. Lets you click any node for its definition and connections, search and filter live, toggle light or dark, or follow a guided tour anchored on Zero Trust. Ships as a single self-contained `index.html` with no build step, no server, and no runtime dependencies.
+Maps 68 IT, networking, and zero-trust terms from the [ZTA Visual Glossary](https://zta-visual-glossary.vercel.app/) as an interactive, force-directed graph. Groups nodes into nine functional families by colour and links them with five typed relationships — requires, enables, part-of, alternative, and same-category — inferred from each term's own explainer. Lets you click any node for its definition and connections, search and filter live, toggle light or dark, or follow a guided tour anchored on Zero Trust. Ships as a single self-contained `index.html` with no build step, no server, and no runtime dependencies.
 
 ## Usage
 
@@ -18,11 +18,11 @@ Open `index.html` in any modern browser — double-click it, or serve the folder
 - **Click** a node for its definition, tags, provenance, and typed connections.
 - **Hover** to spotlight a term and its direct neighbours, dimming the rest.
 - **Search** (or press `/`) to locate and filter terms live.
-- **Toggle categories** in the toolbar to focus a group.
+- **Toggle families** in the toolbar to focus a group.
 - **Guided tour** walks the core zero-trust concepts in a suggested learning order.
 - **Drag** the canvas to pan, scroll to zoom, drag a node to reposition; keyboard and screen-reader navigable.
 
-`zta-glossary-data.json` is the same dataset as a standalone file — 41 terms and 90 typed edges — for reuse outside the page.
+`zta-glossary-data.json` is the same dataset as a standalone file — 68 terms and 177 typed edges — for reuse outside the page.
 
 ## Contributing
 
