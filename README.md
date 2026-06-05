@@ -7,6 +7,8 @@
 
 > Interactive force-directed mindmap of 68 zero-trust, networking & IT terms.
 
+[![ZTA Visual Mindmap — 68 terms across nine functional families, drawn as a force-directed graph](docs/screenshot.png)](https://zta-visual-mindmap.vercel.app)
+
 ## About
 
 Maps 68 IT, networking, and zero-trust terms from the [ZTA Visual Glossary](https://zta-visual-glossary.vercel.app/) as an interactive, force-directed graph. Groups nodes into nine functional families by colour and links them with five typed relationships — requires, enables, part-of, alternative, and same-category — inferred from each term's own explainer. Lets you click any node for its definition and connections, search and filter live, toggle light or dark, or follow a guided tour anchored on Zero Trust. Ships as a single self-contained `index.html` with no build step, no server, and no runtime dependencies.
