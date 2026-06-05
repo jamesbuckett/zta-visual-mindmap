@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZTA Visual Mindmap — Zero-Trust, Networking &amp; IT Terms, Mapped</title>
+  <meta name="description" content="An interactive force-directed mindmap of 41 zero-trust, networking, and IT terms — colour-coded by category, with typed relationships, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Noto+Sans+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==================================================================
+       Design tokens — palette / spacing / type (skill-style-guide chassis)
+       ================================================================== */
+    :root {
+      --bg: #FAFAFA;
+      --surface: #FFFFFF;
+      --text: #0A0A0A;
+      --text-muted: #6B7280;
+      --border: #E5E7EB;
+      --border-strong: #D1D5DB;
+
+      /* Exactly ONE brand accent. Alternatives commented. */
+      /* --accent: #2563EB; */
+      --accent: #4F46E5;        /* indigo */
+      /* --accent: #059669; */
+      /* --accent: #EA580C; */
+      --accent-hover: color-mix(in srgb, var(--accent) 88%, black);
+      --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--bg));
+
+      /* Categorical (data-viz) palette — used ONLY for node categories + legend. */
+      --cat-1: #DC2626;  /* red */
+      --cat-2: #EA580C;  /* orange  -> Development Framework */
+      --cat-3: #CA8A04;  /* yellow */
+      --cat-4: #16A34A;  /* green   -> Network Technology */
+      --cat-5: #2563EB;  /* blue    -> Protocol */
+      --cat-6: #4F46E5;  /* indigo */
+      --cat-7: #7C3AED;  /* violet  -> Security Technology */
+
+      /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 */
+      --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+      --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+
+      --font-sans: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "Noto Sans Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --fs-body: 16px;
+      --fs-mono: 13px;
+      --fs-small: 13px;
+      --fs-tiny: 11.5px;
+      --leading-body: 1.55;
+      --leading-tight: 1.2;
+      --tracking-tight: -0.02em;
+
+      --radius: 8px;
+      --radius-lg: 12px;
+      --shadow-sm: 0 1px 2px rgba(10, 10, 10, 0.04);
+      --shadow: 0 1px 3px rgba(10, 10, 10, 0.08), 0 1px 2px rgba(10, 10, 10, 0.04);
+      --shadow-lg: 0 10px 30px rgba(10, 10, 10, 0.12), 0 2px 8px rgba(10,10,10,0.06);
+      --transition: 170ms ease;
+
+      /* category -> node colour resolver (set per .node via category class) */
+      --node: var(--cat-5);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0B0B0C;
+      --surface: #161618;
+      --text: #F5F5F5;
+      --text-muted: #9CA3AF;
+      --border: #27272A;
+      --border-strong: #3F3F46;
+      --accent-soft: color-mix(in srgb, var(--accent) 22%, var(--bg));
+      --cat-1: #F87171;
+      --cat-2: #FB923C;
+      --cat-3: #FACC15;
+      --cat-4: #4ADE80;
+      --cat-5: #60A5FA;
+      --cat-6: #818CF8;
+      --cat-7: #A78BFA;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 12px 34px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    /* category colour map (the one place categories bind to --cat-*) */
+    .cat-protocol  { --node: var(--cat-5); }
+    .cat-network   { --node: var(--cat-4); }
+    .cat-security  { --node: var(--cat-7); }
+    .cat-framework { --node: var(--cat-2); }
+
+    /* ================================ base ============================== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; height: 100%; }
+    body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: var(--fs-body);
+      line-height: var(--leading-body);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: background-color var(--transition), color var(--transition);
+    }
+    h1, h2, h3, h4 { font-weight: 700; letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); margin: 0; }
+    p { margin: 0; }
+    a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
+    a:hover { color: var(--accent-hover); }
+    code, kbd { font-family: var(--font-mono); font-size: var(--fs-mono); }
+    button { font-family: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+    /* ============================== app bar ============================= */
+    .appbar {
+      flex: 0 0 auto;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: saturate(180%) blur(8px);
+      border-bottom: 1px solid var(--border);
+      z-index: 30;
+    }
+    .appbar-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+    }
+    .brand { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 700; letter-spacing: var(--tracking-tight); color: var(--text); white-space: nowrap; }
+    .brand-mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: var(--accent); color: #fff; flex: 0 0 auto; }
+    .brand-mark svg { width: 17px; height: 17px; }
+    .brand-name { font-size: 15px; }
+    .brand-name .sub { color: var(--text-muted); font-weight: 500; }
+
+    .search { position: relative; flex: 1 1 auto; max-width: 420px; margin-inline: auto; }
+    .search svg.search-ic { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none; }
+    .search input {
+      width: 100%; height: 38px; padding: 0 var(--space-6);
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--border); border-radius: 999px;
+      font-size: var(--fs-small); font-family: inherit;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .search input::placeholder { color: var(--text-muted); }
+    .search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .search-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: none; place-items: center; width: 24px; height: 24px; border: 0; background: transparent; color: var(--text-muted); border-radius: 50%; cursor: pointer; }
+    .search-clear svg { width: 15px; height: 15px; }
+    .search.has-value .search-clear { display: grid; }
+
+    .appbar-actions { display: flex; align-items: center; gap: var(--space-2); flex: 0 0 auto; }
+    .btn {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      height: 38px; padding: 0 var(--space-3);
+      font-size: var(--fs-small); font-weight: 700; color: var(--text);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      cursor: pointer; white-space: nowrap;
+      transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .btn:hover { border-color: var(--border-strong); background: color-mix(in srgb, var(--surface) 80%, var(--bg)); }
+    .btn svg { width: 16px; height: 16px; }
+    .btn-accent { background: var(--accent); color: #fff; border-color: transparent; }
+    .btn-accent:hover { background: var(--accent-hover); color: #fff; }
+    .icon-button { display: inline-grid; place-items: center; width: 38px; height: 38px; padding: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; transition: background-color var(--transition), border-color var(--transition); }
+    .icon-button:hover { border-color: var(--border-strong); }
+    .icon-button svg { width: 18px; height: 18px; }
+    [data-theme="light"] #icon-moon { display: block; } [data-theme="light"] #icon-sun { display: none; }
+    [data-theme="dark"]  #icon-moon { display: none; }  [data-theme="dark"]  #icon-sun  { display: block; }
+
+    .branding { display: flex; align-items: center; gap: var(--space-1); list-style: none; margin: 0; padding: 0; }
+    .branding a { display: inline-grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); transition: color var(--transition), border-color var(--transition); }
+    .branding a:hover { color: var(--text); border-color: var(--border-strong); }
+    .branding svg { width: 16px; height: 16px; }
+
+    /* ============================== toolbar ============================ */
+    .toolbar { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-4); border-top: 1px solid var(--border); overflow-x: auto; }
+    .filters { display: flex; align-items: center; gap: var(--space-2); }
+    .filters-label { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 700; margin-right: var(--space-1); }
+    .chip {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      height: 30px; padding: 0 var(--space-3);
+      font-size: var(--fs-small); font-weight: 500; color: var(--text);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+      cursor: pointer; white-space: nowrap; transition: border-color var(--transition), background-color var(--transition), opacity var(--transition);
+    }
+    .chip .swatch { width: 10px; height: 10px; border-radius: 50%; background: var(--node); flex: 0 0 auto; }
+    .chip[aria-pressed="false"] { opacity: 0.45; }
+    .chip:hover { border-color: var(--border-strong); }
+    .toolbar-spacer { flex: 1 1 auto; min-width: var(--space-2); }
+    .view-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+    /* ============================== main =============================== */
+    .app { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 384px; min-height: 0; }
+    .graph-wrap { position: relative; min-width: 0; overflow: hidden; }
+    #graph { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; background:
+        radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 0) 0 0 / 26px 26px; }
+    #graph.panning { cursor: grabbing; }
+
+    /* edges */
+    .edge { fill: none; stroke: var(--text-muted); stroke-width: 1.4; opacity: 0.5; transition: opacity 120ms ease, stroke 120ms ease; }
+    .edge.t-partof   { stroke: var(--accent); stroke-width: 2.1; opacity: 0.72; }
+    .edge.t-requires { stroke: var(--text-muted); stroke-width: 1.7; opacity: 0.6; }
+    .edge.t-enables  { stroke: var(--text-muted); stroke-width: 1.6; opacity: 0.6; stroke-dasharray: 5 4; }
+    .edge.t-alternative { stroke: var(--border-strong); stroke-width: 1.5; opacity: 0.7; stroke-dasharray: 8 5; }
+    .edge.t-samecategory { stroke: var(--border-strong); stroke-width: 1.3; opacity: 0.5; stroke-dasharray: 1 5; stroke-linecap: round; }
+    .graph-focus .edge { opacity: 0.06; }
+    .graph-focus .edge.is-hot { opacity: 0.95; stroke: var(--accent); }
+    .edge.t-samecategory.is-hot, .edge.t-alternative.is-hot { stroke: var(--accent); }
+
+    /* nodes */
+    .node { cursor: pointer; }
+    .node .halo { fill: none; stroke: var(--accent); stroke-width: 3; opacity: 0; transition: opacity 120ms ease; }
+    .node .dot { fill: var(--node); stroke: var(--surface); stroke-width: 2; transition: stroke 150ms ease; }
+    .node .label {
+      font-family: var(--font-sans); font-size: 11px; font-weight: 700; fill: var(--text);
+      text-anchor: middle; paint-order: stroke; stroke: var(--bg); stroke-width: 3.5px; stroke-linejoin: round;
+      pointer-events: none; transition: opacity 120ms ease;
+    }
+    .node:hover .dot, .node:focus-visible .dot { stroke: var(--accent); }
+    .node:focus-visible { outline: none; }
+    .node:focus-visible .halo { opacity: 0.5; }
+    .node.is-selected .halo { opacity: 1; }
+    .node.is-selected .dot { stroke: var(--accent); stroke-width: 2.5; }
+    .graph-focus .node { opacity: 0.22; }
+    .graph-focus .node.is-hot { opacity: 1; }
+    .graph-dim-unmatched .node:not(.is-match) { opacity: 0.12; }
+    .graph-dim-unmatched .node.is-match .dot { stroke: var(--accent); }
+    .node.is-hidden, .edge.is-hidden { display: none; }
+
+    /* legend */
+    .legend {
+      position: absolute; left: var(--space-3); bottom: var(--space-3);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); padding: var(--space-3);
+      max-width: 250px; font-size: var(--fs-tiny); z-index: 10;
+    }
+    .legend h4 { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: var(--space-2); }
+    .legend-row { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1); color: var(--text); }
+    .legend-row .swatch { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
+    .legend-edges { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--border); display: none; }
+    .legend.show-edges .legend-edges { display: block; }
+    .legend-edge { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1); }
+    .legend-edge svg { width: 34px; height: 10px; flex: 0 0 auto; }
+    .legend-toggle { margin-top: var(--space-2); background: none; border: 0; color: var(--accent); font-size: var(--fs-tiny); font-weight: 700; cursor: pointer; padding: 0; }
+
+    /* zoom controls */
+    .zoom-controls { position: absolute; right: var(--space-3); bottom: var(--space-3); display: flex; flex-direction: column; z-index: 10; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+    .zoom-controls button { width: 36px; height: 36px; display: grid; place-items: center; background: transparent; border: 0; color: var(--text); cursor: pointer; transition: background-color var(--transition); }
+    .zoom-controls button:hover { background: var(--accent-soft); }
+    .zoom-controls button + button { border-top: 1px solid var(--border); }
+    .zoom-controls svg { width: 17px; height: 17px; }
+
+    /* tooltip */
+    .tooltip {
+      position: absolute; z-index: 40; pointer-events: none; opacity: 0;
+      max-width: 260px; padding: var(--space-2) var(--space-3);
+      background: var(--text); color: var(--bg);
+      border-radius: 8px; box-shadow: var(--shadow-lg);
+      font-size: var(--fs-small); line-height: 1.45;
+      transform: translate(-50%, calc(-100% - 10px)); transition: opacity 110ms ease;
+    }
+    .tooltip strong { display: block; font-size: var(--fs-small); margin-bottom: var(--space-1); }
+    .tooltip .tt-cat { color: color-mix(in srgb, var(--bg) 70%, var(--text-muted)); font-weight: 500; }
+    .tooltip.show { opacity: 1; }
+
+    /* tour bar */
+    .tour-bar {
+      position: absolute; left: 50%; bottom: var(--space-3); transform: translateX(-50%);
+      width: min(540px, calc(100% - var(--space-6)));
+      background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg); padding: var(--space-3) var(--space-4); z-index: 20;
+    }
+    .tour-bar[hidden] { display: none; }
+    .tour-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-1); }
+    .tour-step { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); font-weight: 700; }
+    .tour-title { font-size: 15px; font-weight: 700; }
+    .tour-note { font-size: var(--fs-small); color: var(--text-muted); margin-bottom: var(--space-3); }
+    .tour-actions { display: flex; align-items: center; gap: var(--space-2); }
+    .tour-actions .btn { height: 32px; }
+    .tour-progress { flex: 1 1 auto; height: 4px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .tour-progress span { display: block; height: 100%; background: var(--accent); transition: width 200ms ease; }
+
+    /* ============================== panel ============================== */
+    .panel { background: var(--surface); border-left: 1px solid var(--border); overflow-y: auto; overflow-x: hidden; }
+    .panel-inner { padding: var(--space-5); }
+
+    .panel-close { display: none; }
+
+    .about-eyebrow { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; margin-bottom: var(--space-2); }
+    .about h2 { font-size: 20px; margin-bottom: var(--space-3); }
+    .about p { color: var(--text-muted); font-size: var(--fs-small); margin-bottom: var(--space-3); }
+    .about p strong { color: var(--text); font-weight: 700; }
+    .about-how { list-style: none; padding: 0; margin: var(--space-3) 0; display: grid; gap: var(--space-2); }
+    .about-how li { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-small); color: var(--text); }
+    .about-how svg { width: 16px; height: 16px; color: var(--accent); flex: 0 0 auto; }
+    .about-cta { width: 100%; justify-content: center; margin-top: var(--space-2); }
+    .stat-row { display: flex; gap: var(--space-2); margin: var(--space-4) 0; }
+    .stat { flex: 1 1 0; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-3); text-align: center; }
+    .stat b { display: block; font-size: 22px; line-height: 1.1; }
+    .stat span { font-size: var(--fs-tiny); color: var(--text-muted); }
+
+    /* detail */
+    .detail-back { display: inline-flex; align-items: center; gap: var(--space-1); background: none; border: 0; color: var(--text-muted); font-size: var(--fs-small); font-weight: 700; cursor: pointer; padding: 0; margin-bottom: var(--space-4); }
+    .detail-back:hover { color: var(--text); }
+    .detail-back svg { width: 15px; height: 15px; }
+    .detail-eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+    .cat-badge { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--fs-tiny); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+    .cat-badge .swatch { width: 10px; height: 10px; border-radius: 50%; background: var(--node); }
+    .detail h2 { font-size: 24px; margin-bottom: var(--space-1); }
+    .detail-full { font-size: var(--fs-small); color: var(--text-muted); margin-bottom: var(--space-4); }
+    .detail-full .alias { color: var(--text-muted); }
+    .tldr { background: var(--accent-soft); border-radius: var(--radius); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4); }
+    .tldr .lbl { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; display: block; margin-bottom: var(--space-1); }
+    .tldr p { font-size: var(--fs-small); color: var(--text); font-weight: 500; }
+    .detail-explainer { font-size: var(--fs-body); color: var(--text); line-height: 1.6; margin-bottom: var(--space-5); }
+    .meta-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-5); }
+    .tag { display: inline-flex; align-items: center; gap: var(--space-2); height: 26px; padding: 0 var(--space-3); border: 1px solid var(--border); border-radius: 999px; font-size: var(--fs-tiny); font-weight: 500; color: var(--text); }
+    .tag .swatch { width: 8px; height: 8px; border-radius: 50%; }
+    .tag.prov { background: var(--bg); color: var(--text-muted); }
+    .tag.prov svg { width: 13px; height: 13px; }
+
+    .section-label { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); font-weight: 700; margin-bottom: var(--space-3); }
+    .rel-group { margin-bottom: var(--space-4); }
+    .rel-group-head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+    .rel-line { width: 26px; height: 10px; flex: 0 0 auto; }
+    .rel-phrase { font-size: var(--fs-tiny); color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .rel-list { display: flex; flex-direction: column; gap: var(--space-1); }
+    .rel-item {
+      display: flex; align-items: center; gap: var(--space-2);
+      width: 100%; text-align: left; padding: var(--space-2) var(--space-3);
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); font-size: var(--fs-small); font-weight: 500; cursor: pointer;
+      transition: border-color var(--transition), background-color var(--transition);
+    }
+    .rel-item:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .rel-item .swatch { width: 9px; height: 9px; border-radius: 50%; background: var(--node); flex: 0 0 auto; }
+    .rel-item .rel-name { flex: 1 1 auto; }
+    .rel-item .rel-arrow { color: var(--text-muted); width: 15px; height: 15px; flex: 0 0 auto; }
+
+    /* ============================== footer ============================= */
+    .appfoot { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-2) var(--space-4); border-top: 1px solid var(--border); font-size: var(--fs-tiny); color: var(--text-muted); }
+    .appfoot a { font-weight: 700; }
+    .appfoot .credit { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+    /* ============================ responsive =========================== */
+    .scrim { display: none; }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .panel {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+        max-height: 78vh; border-left: 0; border-top: 1px solid var(--border-strong);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: var(--shadow-lg);
+        transform: translateY(101%); transition: transform 240ms ease;
+      }
+      body.panel-open .panel { transform: translateY(0); }
+      .panel-close { display: inline-grid; place-items: center; position: absolute; top: var(--space-3); right: var(--space-3); width: 32px; height: 32px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; z-index: 2; }
+      .panel-close svg { width: 16px; height: 16px; }
+      .panel-inner { padding: var(--space-5) var(--space-4) var(--space-6); }
+      body.panel-open .scrim { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 45; }
+      .brand-name .sub { display: none; }
+      .branding { display: none; }
+      .search { max-width: none; }
+    }
+    @media (max-width: 560px) {
+      .appbar-row { flex-wrap: wrap; }
+      .search { order: 3; flex-basis: 100%; max-width: none; }
+      .brand-name { font-size: 14px; }
+      .legend { max-width: 190px; padding: var(--space-2); }
+      .about-text-extra { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <div class="appbar-row">
+      <a class="brand" href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="ZTA Visual Mindmap home">
+        <span class="brand-mark" aria-hidden="true">
+          <!-- Lucide: share-2 (network) -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </span>
+        <span class="brand-name">ZTA Visual Mindmap<span class="sub"> · zero-trust mapped</span></span>
+      </a>
+
+      <div class="search" id="search">
+        <!-- Lucide: search -->
+        <svg class="search-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search-input" type="search" placeholder="Search 41 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
+        <span id="search-hint" class="visually-hidden">Type to filter and locate terms in the map.</span>
+        <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
+          <!-- Lucide: x -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="appbar-actions">
+        <button class="btn btn-accent" id="tour-btn" type="button">
+          <!-- Lucide: route -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
+          <span class="btn-label">Guided tour</span>
+        </button>
+        <button class="btn" id="about-btn" type="button">
+          <!-- Lucide: info -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span class="btn-label">About</span>
+        </button>
+        <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle light or dark theme">
+          <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <ul class="branding" aria-label="Author links">
+          <li><a href="https://github.com/jamesbuckett" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </a></li>
+          <li><a href="https://twitter.com/jamesbuckett" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+          </a></li>
+          <li><a href="https://www.linkedin.com/in/jamesbuckett" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="toolbar" role="group" aria-label="Category filters and view controls">
+      <div class="filters" id="filters">
+        <span class="filters-label">Categories</span>
+        <!-- chips injected -->
+      </div>
+      <div class="toolbar-spacer"></div>
+      <div class="view-actions">
+        <button class="btn" id="fit-btn" type="button" title="Fit the whole map to view">
+          <!-- Lucide: maximize -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+          <span class="btn-label">Fit</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <div class="graph-wrap">
+      <svg id="graph" role="application" aria-label="Force-directed mindmap of zero-trust and networking terms. Use Tab to move between terms, Enter to open details.">
+        <defs>
+          <marker id="ah-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="ah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+        <g id="viewport">
+          <g id="edges-layer"></g>
+          <g id="nodes-layer"></g>
+        </g>
+      </svg>
+
+      <div class="legend" id="legend">
+        <h4>Categories</h4>
+        <div id="legend-cats"></div>
+        <button class="legend-toggle" id="legend-toggle" type="button" aria-expanded="false">Show relationship key</button>
+        <div class="legend-edges" id="legend-edges"></div>
+      </div>
+
+      <div class="zoom-controls" role="group" aria-label="Zoom controls">
+        <button id="zoom-in" type="button" aria-label="Zoom in"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button id="zoom-out" type="button" aria-label="Zoom out"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button id="zoom-reset" type="button" aria-label="Reset zoom and fit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg></button>
+      </div>
+
+      <div class="tooltip" id="tooltip" role="status" aria-live="off"></div>
+
+      <div class="tour-bar" id="tour-bar" hidden role="region" aria-label="Guided tour">
+        <div class="tour-head">
+          <span class="tour-step" id="tour-step">Step 1 of 10</span>
+          <span class="tour-title" id="tour-title">Zero Trust</span>
+        </div>
+        <p class="tour-note" id="tour-note"></p>
+        <div class="tour-actions">
+          <button class="btn" id="tour-prev" type="button">Back</button>
+          <div class="tour-progress"><span id="tour-progress-bar"></span></div>
+          <button class="btn" id="tour-next" type="button">Next</button>
+          <button class="btn" id="tour-exit" type="button" aria-label="Exit tour">Exit</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel" id="panel" aria-label="Details">
+      <button class="panel-close" id="panel-close" type="button" aria-label="Close panel">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="panel-inner" id="panel-inner"></div>
+    </aside>
+  </main>
+
+  <div class="scrim" id="scrim"></div>
+
+  <footer class="appfoot">
+    <span class="credit">
+      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 41 terms, 90 typed relationships.
+    </span>
+    <span>Interactive mindmap built with <code>skill-style-guide</code> + <code>skill-build-educational-site</code>.</span>
+  </footer>
+
+  <script id="zta-data" type="application/json">{
+  "terms": [
+    {
+      "id": "bgp",
+      "name": "BGP",
+      "fullName": "Border Gateway Protocol",
+      "aliases": [
+        "autonomous system",
+        "peering"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The routing protocol that stitches the internet's networks together.",
+      "explainer": "The routing protocol autonomous systems use to advertise which IP ranges they can reach and to choose paths between one another. Its choices follow commercial peering and transit policy rather than pure shortest-path, so one bad announcement can reroute traffic worldwide.",
+      "related": [
+        "tcpip",
+        "nat",
+        "dns"
+      ]
+    },
+    {
+      "id": "cors",
+      "name": "CORS",
+      "fullName": "Cross-Origin Resource Sharing",
+      "aliases": [
+        "same-origin policy",
+        "preflight",
+        "Access-Control-Allow-Origin"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A browser rule that lets a server declare which other origins may read its responses.",
+      "explainer": "A browser-enforced mechanism that lets a server opt specific foreign origins into reading its responses via matching Access-Control-Allow-Origin headers, with a preflight check for non-simple requests. It only governs in-browser JavaScript and is no substitute for real authorization.",
+      "related": [
+        "http",
+        "oauth",
+        "zerotrust"
+      ]
+    },
+    {
+      "id": "dhcp",
+      "name": "DHCP",
+      "fullName": "Dynamic Host Configuration Protocol",
+      "aliases": [
+        "DORA",
+        "lease"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Automatically hands out IP addresses to devices joining a network.",
+      "explainer": "Automatically configures a newly connected device with its IP address, subnet mask, gateway, and DNS servers through a short Discover-Offer-Request-Acknowledge exchange. Addresses are handed out as time-limited leases, which is why devices 'just work' on a new network.",
+      "related": [
+        "dns",
+        "nat",
+        "tcpip"
+      ]
+    },
+    {
+      "id": "django",
+      "name": "Django",
+      "fullName": "Django (Python web framework)",
+      "aliases": [
+        "MTV",
+        "ORM"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A batteries-included Python web framework for building sites fast.",
+      "explainer": "A batteries-included Python web framework shipping an ORM, admin, auth, and routing, following a model-template-view pattern. Its convention-over-configuration philosophy handles the plumbing so developers can focus on the application.",
+      "related": [
+        "react",
+        "http"
+      ]
+    },
+    {
+      "id": "dns",
+      "name": "DNS",
+      "fullName": "Domain Name System",
+      "aliases": [
+        "DNSSEC",
+        "resolver"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The internet's phonebook: turns human names into IP addresses.",
+      "explainer": "Resolves human-readable names like example.com into the IP addresses machines route to, with a resolver walking the root → TLD → authoritative hierarchy and caching answers for speed. It is also a powerful control point for security and filtering.",
+      "related": [
+        "tcpip",
+        "http",
+        "dhcp"
+      ]
+    },
+    {
+      "id": "docker",
+      "name": "Docker",
+      "fullName": "Docker containers",
+      "aliases": [
+        "container",
+        "OCI image"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Packages an app and its dependencies into a portable container.",
+      "explainer": "Packages an application with its dependencies into a lightweight, isolated container that shares the host kernel instead of booting a full VM, built from cacheable layered images that run identically anywhere. It is the deployment unit most modern platforms, including Kubernetes, build on.",
+      "related": [
+        "kubernetes",
+        "grpc"
+      ]
+    },
+    {
+      "id": "firewall",
+      "name": "Firewall",
+      "fullName": "Network Firewall",
+      "aliases": [
+        "NGFW",
+        "iptables",
+        "packet filter"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Filters network traffic against a set of allow and deny rules.",
+      "explainer": "Sits at a network boundary and allows or blocks traffic by rules based on addresses, ports, and increasingly application and identity. Stateful and next-generation variants track connections and inspect deeper, forming the classic first line of defence between trusted and untrusted zones.",
+      "related": [
+        "microseg",
+        "nat",
+        "vlan",
+        "siem"
+      ]
+    },
+    {
+      "id": "grpc",
+      "name": "gRPC",
+      "fullName": "gRPC Remote Procedure Call",
+      "aliases": [
+        "protobuf",
+        "Protocol Buffers",
+        "RPC"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A fast, contract-first RPC framework using Protocol Buffers over HTTP/2.",
+      "explainer": "A contract-first RPC framework where a .proto file generates client and server code, letting services call each other like local functions. It uses compact binary Protocol Buffers over HTTP/2 for low-latency multiplexed streaming, favoured for internal microservice traffic where REST/JSON is too chatty.",
+      "related": [
+        "http",
+        "kubernetes",
+        "mtls"
+      ]
+    },
+    {
+      "id": "http",
+      "name": "HTTP / HTTPS",
+      "fullName": "HyperText Transfer Protocol (Secure)",
+      "aliases": [
+        "HTTP",
+        "HTTPS",
+        "HTTP/2",
+        "web"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The request/response protocol of the web; HTTPS is HTTP wrapped in TLS.",
+      "explainer": "The stateless request/response protocol browsers and APIs use to fetch and submit resources via methods like GET and POST, with cookies or tokens carrying context between requests. HTTPS is the very same protocol running inside a TLS-encrypted channel.",
+      "related": [
+        "tls",
+        "tcpip",
+        "grpc"
+      ]
+    },
+    {
+      "id": "idp",
+      "name": "Identity Provider",
+      "fullName": "Identity Provider (IdP)",
+      "aliases": [
+        "IdP",
+        "SSO",
+        "OIDC",
+        "Keycloak"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The trusted service that authenticates users and vouches for who they are.",
+      "explainer": "The central authority that authenticates users and issues the SAML/OAuth/OIDC assertions or tokens applications trust, so individual apps need not manage passwords. It is the hub of single sign-on and the anchor of identity in zero-trust designs.",
+      "related": [
+        "oauth",
+        "saml",
+        "zerotrust",
+        "radius"
+      ]
+    },
+    {
+      "id": "ipsec",
+      "name": "IPsec",
+      "fullName": "Internet Protocol Security",
+      "aliases": [
+        "IKE",
+        "ESP",
+        "tunnel mode"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Encrypts and authenticates IP traffic at the network layer.",
+      "explainer": "A suite that encrypts and integrity-protects traffic at the IP layer, so any application's packets are secured with no code changes. Transport mode protects host-to-host payloads while tunnel mode wraps whole packets between gateways — the basis of many site-to-site VPNs — with IKE handling key exchange.",
+      "related": [
+        "vpn",
+        "wireguard",
+        "tls"
+      ]
+    },
+    {
+      "id": "jwt",
+      "name": "JWT",
+      "fullName": "JSON Web Token",
+      "aliases": [
+        "bearer token",
+        "claims"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A signed, self-contained token that carries identity claims.",
+      "explainer": "A signed, self-contained token carrying identity claims in three base64url parts (header, payload, signature) that any holder can verify without a database lookup, making it popular for stateless sessions and API access. Payloads are readable, not encrypted, so secrets do not belong in them.",
+      "related": [
+        "oauth",
+        "saml",
+        "spiffe"
+      ]
+    },
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes",
+      "fullName": "Kubernetes (K8s)",
+      "aliases": [
+        "K8s",
+        "orchestration",
+        "pod"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework",
+        "Network Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Automates deploying, scaling, and healing containerized apps across machines.",
+      "explainer": "A container orchestrator that runs workloads across a cluster: you declare desired state and its control plane continuously reconciles reality, rescheduling failures and scaling on demand. It turns a fleet of machines into one programmable platform, with the pod as its smallest unit.",
+      "related": [
+        "docker",
+        "loadbalancer",
+        "spiffe"
+      ]
+    },
+    {
+      "id": "loadbalancer",
+      "name": "Load Balancer",
+      "fullName": "Load Balancer",
+      "aliases": [
+        "LB",
+        "reverse proxy",
+        "HAProxy"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Spreads incoming traffic across many backend servers.",
+      "explainer": "Distributes incoming requests across a pool of backend servers by round-robin, load, health, or content, automatically removing unhealthy backends to improve capacity and resilience. Operating at layer 4 or layer 7, it is also a natural place to terminate TLS.",
+      "related": [
+        "tls",
+        "kubernetes",
+        "http"
+      ]
+    },
+    {
+      "id": "microseg",
+      "name": "Microsegmentation",
+      "fullName": "Network Microsegmentation",
+      "aliases": [
+        "segmentation",
+        "lateral movement",
+        "east-west"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Divides a network into tiny zones, each with its own access policy.",
+      "explainer": "Pushes network isolation down to individual workloads, governing traffic between them with fine-grained per-segment policy instead of one flat internal network. By permitting only the flows each workload needs, it contains lateral movement if a host is compromised — a practical zero-trust building block.",
+      "related": [
+        "zerotrust",
+        "vlan",
+        "firewall"
+      ]
+    },
+    {
+      "id": "mqtt",
+      "name": "MQTT",
+      "fullName": "Message Queuing Telemetry Transport",
+      "aliases": [
+        "pub/sub",
+        "broker",
+        "IoT"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A lightweight publish/subscribe protocol for IoT and constrained devices.",
+      "explainer": "A lightweight publish/subscribe protocol for low-bandwidth or unreliable networks, where clients publish to named topics on a central broker and others subscribe, decoupling senders from receivers. Its tiny footprint and tiered quality-of-service make it the default for IoT sensors and telemetry.",
+      "related": [
+        "tcpip",
+        "grpc"
+      ]
+    },
+    {
+      "id": "mtls",
+      "name": "mTLS",
+      "fullName": "Mutual TLS",
+      "aliases": [
+        "mutual TLS",
+        "client certificate"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "TLS where both client and server prove identity with certificates.",
+      "explainer": "Mutual TLS extends ordinary TLS so the client also presents a certificate, giving strong two-way authentication without passwords before any data flows. It is a cornerstone of zero-trust service-to-service communication and service meshes, where every workload carries its own cryptographic identity.",
+      "related": [
+        "tls",
+        "zerotrust",
+        "spiffe"
+      ]
+    },
+    {
+      "id": "nat",
+      "name": "NAT",
+      "fullName": "Network Address Translation",
+      "aliases": [
+        "PAT",
+        "masquerade"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Lets many private devices share one public IP address.",
+      "explainer": "Rewrites the source/destination IP and port of packets crossing a boundary, typically mapping many private addresses onto one public IP to conserve IPv4 space while incidentally hiding internal structure. A translation table ensures replies return to the correct internal host.",
+      "related": [
+        "tcpip",
+        "firewall",
+        "vpn"
+      ]
+    },
+    {
+      "id": "oauth",
+      "name": "OAuth 2.0",
+      "fullName": "Open Authorization 2.0",
+      "aliases": [
+        "OAuth",
+        "OIDC",
+        "access token"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Lets an app access your data on another service without your password.",
+      "explainer": "An authorization framework that issues an app a scoped, revocable access token instead of your credentials: you log in, consent, and the app calls the API on your behalf. It powers 'Sign in with…' delegation and is about authorization, not authentication.",
+      "related": [
+        "jwt",
+        "saml",
+        "idp"
+      ]
+    },
+    {
+      "id": "oidc",
+      "name": "OIDC",
+      "fullName": "OpenID Connect",
+      "aliases": [
+        "OpenID Connect",
+        "ID Token",
+        "OpenID Provider",
+        "SSO"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "An identity layer on top of OAuth 2.0 that tells an app who the user is.",
+      "explainer": "An identity layer on top of OAuth 2.0 that adds authentication: alongside the access token, the provider issues a signed ID Token (a JWT) describing who the user is. Requesting the openid scope turns a plain OAuth exchange into OIDC, the modern JSON successor to SAML for SSO.",
+      "related": [
+        "oauth",
+        "jwt",
+        "idp",
+        "saml"
+      ]
+    },
+    {
+      "id": "openziti",
+      "name": "OpenZiti",
+      "fullName": "Open-source zero-trust networking overlay",
+      "aliases": [
+        "Ziti",
+        "NetFoundry",
+        "ZTNA",
+        "zero trust overlay"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "An open-source overlay that gives every app an identity and a default-deny, encrypted path — a zero-trust VPN replacement.",
+      "explainer": "An open-source zero-trust overlay where every app, device, or service carries an X.509 identity and a connection is allowed only when policy grants that identity access to a named service. Services are 'dark' — no inbound ports, mutually authenticated with mTLS — so unlike a VPN, being on the network grants nothing by itself.",
+      "related": [
+        "zerotrust",
+        "mtls",
+        "spiffe",
+        "vpn"
+      ]
+    },
+    {
+      "id": "peppdp",
+      "name": "PEP / PDP",
+      "fullName": "Policy Enforcement Point / Policy Decision Point",
+      "aliases": [
+        "policy enforcement",
+        "policy decision",
+        "policy engine"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The enforce-here, decide-there split at the heart of access control.",
+      "explainer": "The access-control pattern that splits enforcement from decision: the Policy Enforcement Point intercepts each request in-path while the Policy Decision Point evaluates the rules and returns allow or deny. Centralising the decision lets one policy brain govern many enforcement points — the control core of zero trust.",
+      "related": [
+        "zerotrust",
+        "idp"
+      ]
+    },
+    {
+      "id": "pkce",
+      "name": "PKCE",
+      "fullName": "Proof Key for Code Exchange",
+      "aliases": [
+        "pixy",
+        "code_verifier",
+        "code_challenge",
+        "RFC 7636"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Stops a stolen OAuth authorization code from being redeemed by anyone but the app that began the flow.",
+      "explainer": "Hardens OAuth's authorization-code flow against interception: the client sends only the hash of a random secret (code_verifier) when starting login and must present the original to redeem tokens, making a stolen code useless. Born for mobile and single-page apps, it is now recommended for all clients and mandatory in OAuth 2.1.",
+      "related": [
+        "oauth",
+        "oidc",
+        "idp"
+      ]
+    },
+    {
+      "id": "quic",
+      "name": "QUIC",
+      "fullName": "Quick UDP Internet Connections",
+      "aliases": [
+        "HTTP/3",
+        "gQUIC",
+        "RFC 9000"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A fast, always-encrypted transport that runs over UDP and folds in the work of TCP plus TLS.",
+      "explainer": "A UDP-based transport that folds connection setup, TLS 1.3 encryption, and multiplexed streams into one handshake, so a connection is usually ready in a single round trip (zero when resuming). Independent streams remove TCP's head-of-line blocking, and it is the always-encrypted foundation of HTTP/3.",
+      "related": [
+        "tls",
+        "tcpip",
+        "http"
+      ]
+    },
+    {
+      "id": "radius",
+      "name": "RADIUS",
+      "fullName": "Remote Authentication Dial-In User Service",
+      "aliases": [
+        "AAA",
+        "NAS",
+        "802.1X"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A protocol for centralized authentication, authorization, and accounting.",
+      "explainer": "Centralises network access control: when you join Wi-Fi, a VPN, or a switch port, the access device asks a RADIUS server to authenticate you, decide what you may do, and log the session. It is the long-standing AAA backbone separating the access device from the identity store.",
+      "related": [
+        "saml",
+        "idp"
+      ]
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "fullName": "React (UI library)",
+      "aliases": [
+        "ReactJS",
+        "JSX",
+        "component"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A JavaScript library for building user interfaces from composable components.",
+      "explainer": "A JavaScript library for building UIs as a tree of reusable components whose output is a function of their state and props. When state changes it re-renders efficiently by diffing a virtual DOM and patching only what changed, popularising the declarative front-end model.",
+      "related": [
+        "django",
+        "grpc"
+      ]
+    },
+    {
+      "id": "saml",
+      "name": "SAML",
+      "fullName": "Security Assertion Markup Language",
+      "aliases": [
+        "SSO",
+        "assertion",
+        "federation"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "An XML standard for single sign-on between identity and service providers.",
+      "explainer": "An XML standard for enterprise single sign-on where an identity provider authenticates the user and issues a digitally signed assertion that service providers trust, so one login unlocks many apps. It predates OAuth/OIDC but remains widespread in corporate and SaaS access.",
+      "related": [
+        "oauth",
+        "idp",
+        "jwt"
+      ]
+    },
+    {
+      "id": "sase",
+      "name": "SASE",
+      "fullName": "Secure Access Service Edge",
+      "aliases": [
+        "SSE",
+        "ZTNA",
+        "cloud security"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Network Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "Delivers networking and security together from the cloud edge, near the user.",
+      "explainer": "A cloud-delivered model converging wide-area networking with security services — secure web gateway, CASB, firewall-as-a-service, and ZTNA — enforced at points of presence near the user instead of backhauling traffic to a datacentre. It is how most organisations now operate zero trust.",
+      "related": [
+        "zerotrust",
+        "vpn",
+        "sdwan",
+        "firewall"
+      ]
+    },
+    {
+      "id": "scim",
+      "name": "SCIM",
+      "fullName": "System for Cross-domain Identity Management",
+      "aliases": [
+        "user provisioning",
+        "deprovisioning",
+        "SCIM 2.0",
+        "RFC 7644"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Automates creating and removing user accounts across apps when people join or leave.",
+      "explainer": "A REST/JSON standard that syncs user accounts between an identity provider and connected apps, pushing joiners, movers, and leavers via CRUD on /Users and /Groups. Where SAML and OIDC handle login, SCIM handles the account lifecycle around it — closing the gap left by orphaned accounts after offboarding.",
+      "related": [
+        "idp",
+        "saml",
+        "oidc"
+      ]
+    },
+    {
+      "id": "sdwan",
+      "name": "SD-WAN",
+      "fullName": "Software-Defined Wide Area Network",
+      "aliases": [
+        "overlay",
+        "WAN",
+        "edge"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "Software steers branch traffic across multiple links by policy, not fixed routing.",
+      "explainer": "Lays a software overlay across a branch's mixed transports (MPLS, broadband, cellular) while a central controller steers each application over the best path by policy and live link quality. It replaces device-by-device WAN config with centralised management and is often paired with SASE for security.",
+      "related": [
+        "sase",
+        "vpn",
+        "bgp",
+        "loadbalancer"
+      ]
+    },
+    {
+      "id": "siem",
+      "name": "SIEM",
+      "fullName": "Security Information and Event Management",
+      "aliases": [
+        "SOC",
+        "log management",
+        "correlation"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Collects logs from everywhere and correlates them into security alerts.",
+      "explainer": "Ingests and normalises logs from across the estate — firewalls, servers, apps, cloud — then correlates them to surface suspicious patterns as prioritised alerts for a security operations centre. Modern platforms add analytics and automated response and help satisfy audit requirements.",
+      "related": [
+        "firewall",
+        "zerotrust",
+        "radius"
+      ]
+    },
+    {
+      "id": "spiffe",
+      "name": "SPIFFE / SPIRE",
+      "fullName": "Secure Production Identity Framework For Everyone",
+      "aliases": [
+        "SVID",
+        "SPIRE",
+        "workload identity"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A standard and engine for giving workloads cryptographic identities.",
+      "explainer": "Defines a universal workload identity (the SPIFFE ID) and a provable document for it (the SVID, an X.509 certificate or JWT), with SPIRE as the reference engine that attests workloads and issues short-lived identities. Together they let services authenticate with mTLS instead of shared secrets — foundational zero-trust plumbing.",
+      "related": [
+        "mtls",
+        "zerotrust",
+        "jwt"
+      ]
+    },
+    {
+      "id": "ssh",
+      "name": "SSH",
+      "fullName": "Secure Shell",
+      "aliases": [
+        "OpenSSH",
+        "SCP",
+        "key pair"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "An encrypted channel for remote login and command execution.",
+      "explainer": "Provides an authenticated, encrypted connection to a remote machine — a safe replacement for cleartext remote access — using passwords or, preferably, public-key pairs. It secures interactive shells, file transfer, and port forwarding, and is the everyday tool for administering servers.",
+      "related": [
+        "tls",
+        "vpn"
+      ]
+    },
+    {
+      "id": "tcpip",
+      "name": "TCP/IP",
+      "fullName": "Transmission Control Protocol / Internet Protocol",
+      "aliases": [
+        "internet protocol suite",
+        "UDP"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The layered addressing-and-delivery system that moves data across the internet.",
+      "explainer": "The foundational layered suite that interconnects dissimilar networks: IP addresses and routes packets, TCP adds reliable ordered delivery (with UDP as the lightweight alternative), organised into link, internet, transport, and application layers. Almost every other protocol here runs on top of it.",
+      "related": [
+        "dns",
+        "http",
+        "nat",
+        "bgp"
+      ]
+    },
+    {
+      "id": "tls",
+      "name": "TLS",
+      "fullName": "Transport Layer Security",
+      "aliases": [
+        "SSL"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Encrypts data in transit and authenticates the server you are talking to.",
+      "explainer": "The successor to SSL, giving any TCP connection confidentiality, integrity, and server authentication: a handshake uses the server's certificate and public-key crypto to agree session keys, then encrypts traffic with fast symmetric ciphers. It underpins HTTPS, secure email, and many VPNs; mTLS extends it to both sides.",
+      "related": [
+        "mtls",
+        "ssh",
+        "ipsec",
+        "http"
+      ]
+    },
+    {
+      "id": "vlan",
+      "name": "VLAN",
+      "fullName": "Virtual Local Area Network",
+      "aliases": [
+        "802.1Q",
+        "trunk"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Splits one physical switch into several isolated logical networks.",
+      "explainer": "Partitions one physical network into separate broadcast domains by tagging Ethernet frames (802.1Q), so devices on different VLANs cannot talk directly without a router even on the same switch. It separates traffic like guest, voice, and server for better security, performance, and manageability.",
+      "related": [
+        "microseg",
+        "nat",
+        "firewall"
+      ]
+    },
+    {
+      "id": "vpn",
+      "name": "VPN",
+      "fullName": "Virtual Private Network",
+      "aliases": [
+        "tunnel",
+        "remote access"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "An encrypted tunnel that extends a private network over the public internet.",
+      "explainer": "Builds an encrypted tunnel between a device or site and a network so traffic crosses the untrusted internet as if on a private link, used for remote access and to shield traffic on hostile networks. Its security and topology depend entirely on the underlying protocol — IPsec, WireGuard, or a TLS-based design.",
+      "related": [
+        "wireguard",
+        "ipsec",
+        "tls",
+        "sase"
+      ]
+    },
+    {
+      "id": "websockets",
+      "name": "WebSockets",
+      "fullName": "WebSocket Protocol (RFC 6455)",
+      "aliases": [
+        "ws",
+        "wss",
+        "RFC 6455",
+        "Sec-WebSocket-Key"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Upgrades an HTTP connection into a persistent, two-way channel for live data.",
+      "explainer": "Upgrades an HTTP/1.1 request into a long-lived, full-duplex TCP connection (the server replies 101 Switching Protocols) so client and server can push lightweight frames at any time. That removes plain HTTP's turn-taking, powering chat, collaborative editing, and live feeds; use wss:// to wrap it in TLS.",
+      "related": [
+        "http",
+        "tcpip",
+        "webtransport"
+      ]
+    },
+    {
+      "id": "webtransport",
+      "name": "WebTransport",
+      "fullName": "Multiplexed streams and datagrams over HTTP/3",
+      "aliases": [
+        "HTTP/3 transport",
+        "datagrams",
+        "WebTransport API"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A newer browser transport over HTTP/3 offering multiplexed streams and fire-and-forget datagrams.",
+      "explainer": "Gives browser code a low-latency session over HTTP/3 (and thus QUIC/UDP), mixing reliable streams with unreliable datagrams for uses like game state or live media. Inheriting QUIC's independent streams avoids the head-of-line blocking WebSockets suffer over TCP — an emerging alternative that reached cross-browser support in 2026.",
+      "related": [
+        "quic",
+        "http",
+        "websockets"
+      ]
+    },
+    {
+      "id": "wireguard",
+      "name": "WireGuard",
+      "fullName": "WireGuard VPN protocol",
+      "aliases": [
+        "wg"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A fast, modern, minimal VPN protocol built on current cryptography.",
+      "explainer": "A deliberately minimal, fast VPN protocol whose codebase is small enough to audit by hand, identifying peers by public keys and establishing low-overhead encrypted tunnels with quick handshakes. Shipping in the Linux kernel, it has become the modern default over heavier IPsec and OpenVPN.",
+      "related": [
+        "vpn",
+        "ipsec",
+        "tls"
+      ]
+    },
+    {
+      "id": "zerotrust",
+      "name": "Zero Trust",
+      "fullName": "Zero Trust Architecture",
+      "aliases": [
+        "ZTA",
+        "ZTNA",
+        "BeyondCorp"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Trust nothing by default; verify every request regardless of network location.",
+      "explainer": "A security model that abandons the trusted internal network: every request is authenticated, authorized, and encrypted based on identity and context, whether it comes from inside or outside the old perimeter. It rests on strong identity, least-privilege access, and continuous verification.",
+      "related": [
+        "mtls",
+        "microseg",
+        "peppdp",
+        "idp",
+        "sase"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "bgp",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "bgp",
+      "target": "nat",
+      "type": "same-category"
+    },
+    {
+      "source": "bgp",
+      "target": "dns",
+      "type": "same-category"
+    },
+    {
+      "source": "cors",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "cors",
+      "target": "oauth",
+      "type": "same-category"
+    },
+    {
+      "source": "cors",
+      "target": "zerotrust",
+      "type": "same-category"
+    },
+    {
+      "source": "dhcp",
+      "target": "dns",
+      "type": "enables"
+    },
+    {
+      "source": "dhcp",
+      "target": "nat",
+      "type": "same-category"
+    },
+    {
+      "source": "dhcp",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "django",
+      "target": "react",
+      "type": "same-category"
+    },
+    {
+      "source": "django",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "dns",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "http",
+      "target": "dns",
+      "type": "requires"
+    },
+    {
+      "source": "docker",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "docker",
+      "target": "grpc",
+      "type": "same-category"
+    },
+    {
+      "source": "firewall",
+      "target": "microseg",
+      "type": "alternative"
+    },
+    {
+      "source": "firewall",
+      "target": "nat",
+      "type": "same-category"
+    },
+    {
+      "source": "firewall",
+      "target": "vlan",
+      "type": "same-category"
+    },
+    {
+      "source": "firewall",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "grpc",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "grpc",
+      "target": "kubernetes",
+      "type": "same-category"
+    },
+    {
+      "source": "mtls",
+      "target": "grpc",
+      "type": "enables"
+    },
+    {
+      "source": "http",
+      "target": "tls",
+      "type": "requires"
+    },
+    {
+      "source": "http",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "oauth",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "saml",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "idp",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "radius",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "ipsec",
+      "target": "vpn",
+      "type": "enables"
+    },
+    {
+      "source": "ipsec",
+      "target": "wireguard",
+      "type": "alternative"
+    },
+    {
+      "source": "ipsec",
+      "target": "tls",
+      "type": "alternative"
+    },
+    {
+      "source": "jwt",
+      "target": "oauth",
+      "type": "enables"
+    },
+    {
+      "source": "jwt",
+      "target": "saml",
+      "type": "alternative"
+    },
+    {
+      "source": "jwt",
+      "target": "spiffe",
+      "type": "enables"
+    },
+    {
+      "source": "loadbalancer",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "spiffe",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "tls",
+      "target": "loadbalancer",
+      "type": "enables"
+    },
+    {
+      "source": "http",
+      "target": "loadbalancer",
+      "type": "enables"
+    },
+    {
+      "source": "microseg",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "microseg",
+      "target": "vlan",
+      "type": "alternative"
+    },
+    {
+      "source": "mqtt",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "mqtt",
+      "target": "grpc",
+      "type": "alternative"
+    },
+    {
+      "source": "mtls",
+      "target": "tls",
+      "type": "part-of"
+    },
+    {
+      "source": "mtls",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "spiffe",
+      "target": "mtls",
+      "type": "enables"
+    },
+    {
+      "source": "nat",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "nat",
+      "target": "vpn",
+      "type": "same-category"
+    },
+    {
+      "source": "oauth",
+      "target": "saml",
+      "type": "alternative"
+    },
+    {
+      "source": "oidc",
+      "target": "oauth",
+      "type": "requires"
+    },
+    {
+      "source": "oidc",
+      "target": "jwt",
+      "type": "requires"
+    },
+    {
+      "source": "oidc",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "oidc",
+      "target": "saml",
+      "type": "alternative"
+    },
+    {
+      "source": "openziti",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "mtls",
+      "target": "openziti",
+      "type": "enables"
+    },
+    {
+      "source": "openziti",
+      "target": "spiffe",
+      "type": "same-category"
+    },
+    {
+      "source": "openziti",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "peppdp",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "idp",
+      "target": "peppdp",
+      "type": "enables"
+    },
+    {
+      "source": "pkce",
+      "target": "oauth",
+      "type": "part-of"
+    },
+    {
+      "source": "pkce",
+      "target": "oidc",
+      "type": "same-category"
+    },
+    {
+      "source": "pkce",
+      "target": "idp",
+      "type": "same-category"
+    },
+    {
+      "source": "quic",
+      "target": "tls",
+      "type": "requires"
+    },
+    {
+      "source": "quic",
+      "target": "tcpip",
+      "type": "alternative"
+    },
+    {
+      "source": "quic",
+      "target": "http",
+      "type": "enables"
+    },
+    {
+      "source": "radius",
+      "target": "saml",
+      "type": "same-category"
+    },
+    {
+      "source": "react",
+      "target": "grpc",
+      "type": "same-category"
+    },
+    {
+      "source": "sase",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "sase",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "sdwan",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "firewall",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "scim",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "scim",
+      "target": "saml",
+      "type": "same-category"
+    },
+    {
+      "source": "scim",
+      "target": "oidc",
+      "type": "same-category"
+    },
+    {
+      "source": "vpn",
+      "target": "sdwan",
+      "type": "enables"
+    },
+    {
+      "source": "sdwan",
+      "target": "bgp",
+      "type": "alternative"
+    },
+    {
+      "source": "loadbalancer",
+      "target": "sdwan",
+      "type": "same-category"
+    },
+    {
+      "source": "siem",
+      "target": "zerotrust",
+      "type": "enables"
+    },
+    {
+      "source": "radius",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "spiffe",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "ssh",
+      "target": "tls",
+      "type": "alternative"
+    },
+    {
+      "source": "ssh",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "nat",
+      "target": "vlan",
+      "type": "same-category"
+    },
+    {
+      "source": "wireguard",
+      "target": "vpn",
+      "type": "enables"
+    },
+    {
+      "source": "tls",
+      "target": "vpn",
+      "type": "enables"
+    },
+    {
+      "source": "websockets",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "websockets",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "websockets",
+      "target": "webtransport",
+      "type": "alternative"
+    },
+    {
+      "source": "webtransport",
+      "target": "quic",
+      "type": "requires"
+    },
+    {
+      "source": "webtransport",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "wireguard",
+      "target": "tls",
+      "type": "alternative"
+    }
+  ]
+}</script>
+  <script>
+  (function () {
+    "use strict";
+
+    /* ----------------------------- theme ----------------------------- */
+    const root = document.documentElement;
+    const storedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', storedTheme ?? (prefersDark ? 'dark' : 'light'));
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ----------------------------- data ------------------------------ */
+    const DATA = JSON.parse(document.getElementById('zta-data').textContent);
+    const byId = new Map();
+    const nodes = DATA.terms.map((t) => {
+      const n = Object.assign({}, t, { x: 0, y: 0, vx: 0, vy: 0, fx: null, fy: null, deg: 0 });
+      byId.set(t.id, n);
+      return n;
+    });
+    const edges = DATA.edges.map((e) => ({ type: e.type, s: byId.get(e.source), t: byId.get(e.target) }));
+    edges.forEach((e) => { e.s.deg++; e.t.deg++; });
+
+    // adjacency for highlight / connections / keyboard nav
+    const adj = new Map(nodes.map((n) => [n.id, []]));
+    edges.forEach((e) => {
+      adj.get(e.s.id).push({ other: e.t, edge: e, dir: 'out' });
+      adj.get(e.t.id).push({ other: e.s, edge: e, dir: 'in' });
+    });
+
+    const CATS = [
+      { key: 'protocol', label: 'Protocol', match: 'Protocol', cssvar: '--cat-5' },
+      { key: 'network', label: 'Network', match: 'Network Technology', cssvar: '--cat-4' },
+      { key: 'security', label: 'Security', match: 'Security Technology', cssvar: '--cat-7' },
+      { key: 'framework', label: 'Dev Framework', match: 'Development Framework', cssvar: '--cat-2' },
+    ];
+    const catKey = (c) => (CATS.find((x) => x.match === c) || CATS[0]).key;
+
+    // short labels for the few long names (full name stays in tooltip + panel)
+    const SHORT = { idp: 'IdP', microseg: 'Microseg.', loadbalancer: 'Load Bal.', spiffe: 'SPIFFE', http: 'HTTP(S)', webtransport: 'WebTransp.' };
+
+    const EDGE_META = {
+      'part-of':       { cls: 't-partof',       dir: true,  marker: 'ah-accent', label: 'building block of', key: 'Building block / part-of' },
+      'requires':      { cls: 't-requires',     dir: true,  marker: 'ah-muted',  label: 'requires',          key: 'Depends on / requires' },
+      'enables':       { cls: 't-enables',      dir: true,  marker: 'ah-muted',  label: 'enables',           key: 'Enables / used-by' },
+      'alternative':   { cls: 't-alternative',  dir: false, marker: null,        label: 'alternative to',    key: 'Alternative / contrasts' },
+      'same-category': { cls: 't-samecategory', dir: false, marker: null,        label: 'same category',     key: 'Same category (weak)' },
+    };
+    // relationship phrasing from the perspective of the focused node
+    const PHRASE = {
+      'part-of':       { out: 'is a building block of', in: 'includes' },
+      'requires':      { out: 'requires', in: 'is required by' },
+      'enables':       { out: 'enables', in: 'is enabled by' },
+      'alternative':   { out: 'is an alternative to', in: 'is an alternative to' },
+      'same-category': { out: 'shares a category with', in: 'shares a category with' },
+    };
+    const ORDER = ['part-of', 'requires', 'enables', 'alternative', 'same-category'];
+
+    const TOUR = [
+      { id: 'zerotrust', note: 'Start here. Zero Trust abandons the safe-internal-network idea: every request is authenticated, authorized, and encrypted on identity and context. Everything else on this map is a piece of how that gets done.' },
+      { id: 'idp', note: 'Identity becomes the new perimeter. The Identity Provider authenticates users and issues the tokens applications trust — the hub of single sign-on.' },
+      { id: 'oidc', note: 'How an app actually learns who you are: OpenID Connect adds a signed ID Token on top of OAuth 2.0 authorization.' },
+      { id: 'mtls', note: 'Past the front door, services prove themselves to each other with certificates instead of passwords — mutual TLS, both sides authenticated.' },
+      { id: 'spiffe', note: 'Where those workload certificates come from: SPIFFE/SPIRE issues a short-lived cryptographic identity to every workload automatically.' },
+      { id: 'peppdp', note: 'The control core of zero trust: a Policy Decision Point decides allow/deny, a Policy Enforcement Point enforces it in every request path.' },
+      { id: 'microseg', note: 'On the network, microsegmentation confines each workload to only the flows it needs, so a breach cannot move laterally.' },
+      { id: 'sase', note: 'A delivery model: SASE converges networking and security in the cloud edge near the user — how many organisations now run zero trust.' },
+      { id: 'openziti', note: 'A concrete open-source realization: OpenZiti gives every app an identity and a default-deny, mTLS-secured overlay — being "on the network" grants nothing.' },
+      { id: 'tls', note: 'Finally, the bedrock: TLS provides the encryption and server authentication that mTLS, HTTPS, and much of the map are built on.' },
+    ];
+
+    /* --------------------------- svg refs ---------------------------- */
+    const svg = document.getElementById('graph');
+    const viewport = document.getElementById('viewport');
+    const edgesLayer = document.getElementById('edges-layer');
+    const nodesLayer = document.getElementById('nodes-layer');
+    const SVGNS = 'http://www.w3.org/2000/svg';
+
+    let W = svg.clientWidth || 900;
+    let H = svg.clientHeight || 600;
+
+    // radius by degree
+    const rOf = (n) => 7 + Math.sqrt(n.deg) * 2.3;
+
+    /* -------------------- seeded initial layout ---------------------- */
+    function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+    const rand = mulberry32(20260606);
+    nodes.forEach((n, i) => {
+      const ci = CATS.findIndex((c) => c.key === catKey(n.category));
+      const ang = (ci / CATS.length) * Math.PI * 2 + (rand() - 0.5) * 1.1;
+      const rad = 60 + rand() * 230;
+      n.x = W / 2 + Math.cos(ang) * rad;
+      n.y = H / 2 + Math.sin(ang) * rad;
+    });
+    // seed the hub near centre
+    const hub = byId.get('zerotrust'); if (hub) { hub.x = W / 2; hub.y = H / 2; }
+
+    /* ------------------------ force simulation ----------------------- */
+    const LINK_LEN = { 'part-of': 104, 'requires': 112, 'enables': 122, 'alternative': 158, 'same-category': 180 };
+    const LINK_K = { 'part-of': 0.085, 'requires': 0.055, 'enables': 0.05, 'alternative': 0.02, 'same-category': 0.012 };
+    const CHARGE = 3300, GRAVITY = 0.02, DAMP = 0.85, MAXV = 24;
+
+    function visibleNodes() { return nodes.filter((n) => !n.hidden); }
+    function visibleEdges() { return edges.filter((e) => !e.s.hidden && !e.t.hidden); }
+
+    function tick(alpha) {
+      const vn = visibleNodes();
+      for (let i = 0; i < vn.length; i++) {
+        const a = vn[i];
+        for (let j = i + 1; j < vn.length; j++) {
+          const b = vn[j];
+          let dx = a.x - b.x, dy = a.y - b.y;
+          let d2 = dx * dx + dy * dy;
+          if (d2 < 0.01) { d2 = 0.01; dx = (rand() - 0.5) * 0.1; dy = (rand() - 0.5) * 0.1; }
+          const minD = rOf(a) + rOf(b) + 14;
+          const f = (CHARGE / d2 + (d2 < minD * minD ? 1.2 : 0)) * alpha;
+          const invd = 1 / Math.sqrt(d2);
+          const fx = dx * invd * f, fy = dy * invd * f;
+          a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+        }
+      }
+      visibleEdges().forEach((e) => {
+        const len = LINK_LEN[e.type], k = LINK_K[e.type];
+        let dx = e.t.x - e.s.x, dy = e.t.y - e.s.y;
+        let d = Math.sqrt(dx * dx + dy * dy) || 0.01;
+        const diff = ((d - len) / d) * k * alpha;
+        const mx = dx * diff, my = dy * diff;
+        e.s.vx += mx; e.s.vy += my; e.t.vx -= mx; e.t.vy -= my;
+      });
+      const cx = W / 2, cy = H / 2;
+      vn.forEach((n) => {
+        n.vx += (cx - n.x) * GRAVITY * alpha;
+        n.vy += (cy - n.y) * GRAVITY * alpha;
+        if (n.fx != null) { n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; return; }
+        n.vx *= DAMP; n.vy *= DAMP;
+        n.vx = Math.max(-MAXV, Math.min(MAXV, n.vx));
+        n.vy = Math.max(-MAXV, Math.min(MAXV, n.vy));
+        n.x += n.vx; n.y += n.vy;
+      });
+    }
+
+    /* ---------------------------- render ----------------------------- */
+    const edgeEls = new Map(), nodeEls = new Map();
+    function buildSVG() {
+      edges.forEach((e, i) => {
+        const m = EDGE_META[e.type];
+        const line = document.createElementNS(SVGNS, 'line');
+        line.setAttribute('class', 'edge ' + m.cls);
+        if (m.dir) line.setAttribute('marker-end', 'url(#' + m.marker + ')');
+        e.el = line; edgeEls.set(i, line); edgesLayer.appendChild(line);
+      });
+      nodes.forEach((n) => {
+        const g = document.createElementNS(SVGNS, 'g');
+        g.setAttribute('class', 'node cat-' + catKey(n.category));
+        g.setAttribute('tabindex', '0');
+        g.setAttribute('role', 'button');
+        g.setAttribute('aria-label', n.name + ' — ' + n.category + '. ' + n.tldr + ' Activate to open details.');
+        g.dataset.id = n.id;
+        const r = rOf(n);
+        const halo = document.createElementNS(SVGNS, 'circle');
+        halo.setAttribute('class', 'halo'); halo.setAttribute('r', r + 4);
+        const dot = document.createElementNS(SVGNS, 'circle');
+        dot.setAttribute('class', 'dot'); dot.setAttribute('r', r);
+        const label = document.createElementNS(SVGNS, 'text');
+        label.setAttribute('class', 'label'); label.setAttribute('y', r + 13);
+        label.textContent = SHORT[n.id] || n.name;
+        g.appendChild(halo); g.appendChild(dot); g.appendChild(label);
+        n.el = g; nodeEls.set(n.id, g); nodesLayer.appendChild(g);
+      });
+    }
+
+    function render() {
+      visibleEdges().forEach((e) => {
+        const sx = e.s.x, sy = e.s.y, tx = e.t.x, ty = e.t.y;
+        let dx = tx - sx, dy = ty - sy; const d = Math.sqrt(dx * dx + dy * dy) || 1;
+        const ux = dx / d, uy = dy / d;
+        const sr = rOf(e.s) + 1, tr = rOf(e.t) + (EDGE_META[e.type].dir ? 6 : 1);
+        e.el.setAttribute('x1', sx + ux * sr); e.el.setAttribute('y1', sy + uy * sr);
+        e.el.setAttribute('x2', tx - ux * tr); e.el.setAttribute('y2', ty - uy * tr);
+      });
+      nodes.forEach((n) => { if (!n.hidden) n.el.setAttribute('transform', 'translate(' + n.x + ',' + n.y + ')'); });
+    }
+
+    /* ----------------------- animation control ----------------------- */
+    let animAlpha = 0, rafId = null;
+    function loop() {
+      tick(animAlpha);
+      render();
+      animAlpha *= 0.94;
+      if (animAlpha > 0.012) { rafId = requestAnimationFrame(loop); }
+      else { animAlpha = 0; rafId = null; }
+    }
+    function reheat(a) {
+      animAlpha = Math.max(animAlpha, a == null ? 0.32 : a);
+      if (!rafId && !reduceMotion) rafId = requestAnimationFrame(loop);
+      else if (reduceMotion) { for (let i = 0; i < 60; i++) tick(animAlpha); animAlpha = 0; render(); }
+    }
+    function warmup() {
+      let a = 0.6;
+      for (let i = 0; i < 320; i++) { tick(a); a *= 0.992; }
+      render();
+    }
+
+    /* --------------------------- transform --------------------------- */
+    const view = { x: 0, y: 0, k: 1 };
+    function applyTransform() { viewport.setAttribute('transform', 'translate(' + view.x + ',' + view.y + ') scale(' + view.k + ')'); }
+    function fitView(pad) {
+      const vn = visibleNodes(); if (!vn.length) return;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      vn.forEach((n) => { const r = rOf(n) + 16; minX = Math.min(minX, n.x - r); minY = Math.min(minY, n.y - r); maxX = Math.max(maxX, n.x + r); maxY = Math.max(maxY, n.y + r); });
+      const bw = maxX - minX, bh = maxY - minY;
+      const p = pad == null ? 40 : pad;
+      const k = Math.min((W - p * 2) / bw, (H - p * 2) / bh, 2.2);
+      view.k = Math.max(0.25, k);
+      view.x = W / 2 - ((minX + maxX) / 2) * view.k;
+      view.y = H / 2 - ((minY + maxY) / 2) * view.k;
+      applyTransform();
+    }
+    function centerOn(n, targetK) {
+      const k = targetK == null ? Math.max(view.k, 1.15) : targetK;
+      view.k = k; view.x = W / 2 - n.x * k; view.y = H / 2 - n.y * k; applyTransform();
+    }
+
+    /* -------------------------- highlighting ------------------------- */
+    let selectedId = null;
+    function clearHot() {
+      svg.classList.remove('graph-focus');
+      nodes.forEach((n) => n.el.classList.remove('is-hot'));
+      edges.forEach((e) => e.el.classList.remove('is-hot'));
+    }
+    function highlightNeighbors(id) {
+      svg.classList.add('graph-focus');
+      nodes.forEach((n) => n.el.classList.remove('is-hot'));
+      edges.forEach((e) => e.el.classList.remove('is-hot'));
+      const center = byId.get(id);
+      center.el.classList.add('is-hot');
+      adj.get(id).forEach(({ other, edge }) => {
+        if (other.hidden) return;
+        other.el.classList.add('is-hot');
+        edge.el.classList.add('is-hot');
+      });
+    }
+    function refreshHot() {
+      if (selectedId && byId.get(selectedId) && !byId.get(selectedId).hidden) highlightNeighbors(selectedId);
+      else clearHot();
+    }
+
+    /* ----------------------------- panel ----------------------------- */
+    const panel = document.getElementById('panel');
+    const panelInner = document.getElementById('panel-inner');
+    const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+    function openPanelMobile() { if (isMobile()) document.body.classList.add('panel-open'); }
+    function closePanelMobile() { document.body.classList.remove('panel-open'); }
+
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const PROV_ICON = {
+      'Open standard': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+      'Open Source': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+      'Vendor': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>',
+    };
+    const ARROW_SVG = '<svg class="rel-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+
+    function relMiniLine(type) {
+      const hot = 'var(--accent)';
+      if (type === 'part-of') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="' + hot + '" stroke-width="2.1"/></svg>';
+      if (type === 'requires') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--text-muted)" stroke-width="1.7"/></svg>';
+      if (type === 'enables') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--text-muted)" stroke-width="1.6" stroke-dasharray="5 4"/></svg>';
+      if (type === 'alternative') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--border-strong)" stroke-width="1.6" stroke-dasharray="7 5"/></svg>';
+      return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--border-strong)" stroke-width="1.4" stroke-dasharray="1 5" stroke-linecap="round"/></svg>';
+    }
+
+    function renderDetail(n) {
+      const ck = catKey(n.category);
+      const conns = adj.get(n.id).filter(({ other }) => !other.hidden);
+      const groups = {};
+      conns.forEach((c) => { (groups[c.edge.type] = groups[c.edge.type] || []).push(c); });
+      let relHTML = '';
+      ORDER.forEach((type) => {
+        if (!groups[type]) return;
+        const items = groups[type].sort((a, b) => a.other.name.localeCompare(b.other.name)).map((c) => {
+          return '<button class="rel-item cat-' + catKey(c.other.category) + '" data-goto="' + c.other.id + '">' +
+            '<span class="swatch"></span><span class="rel-name">' + esc(c.other.name) + '</span>' + ARROW_SVG + '</button>';
+        }).join('');
+        // phrasing: use the first connection's direction is per-item, but group label is by type from focus perspective.
+        // Show the directional phrase by sampling out/in within the type group when mixed.
+        const phrases = new Set(groups[type].map((c) => PHRASE[type][c.dir]));
+        const phraseLabel = Array.from(phrases).join(' / ');
+        relHTML += '<div class="rel-group"><div class="rel-group-head">' + relMiniLine(type) +
+          '<span class="rel-phrase">' + esc(phraseLabel) + '</span></div><div class="rel-list">' + items + '</div></div>';
+      });
+
+      const aliasHTML = n.aliases && n.aliases.length ? ' <span class="alias">· also: ' + esc(n.aliases.join(', ')) + '</span>' : '';
+      const typeTags = n.types.map((t) => '<span class="tag cat-' + catKey(t) + '"><span class="swatch" style="background:var(' + (CATS.find((c) => c.match === t) || CATS[0]).cssvar + ')"></span>' + esc(t) + '</span>').join('');
+      const provTag = '<span class="tag prov">' + (PROV_ICON[n.provenance] || '') + esc(n.provenance) + '</span>';
+
+      panelInner.innerHTML =
+        '<button class="detail-back" id="detail-back" type="button">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>All terms</button>' +
+        '<div class="detail cat-' + ck + '">' +
+          '<div class="detail-eyebrow"><span class="cat-badge"><span class="swatch"></span>' + esc(n.category) + '</span></div>' +
+          '<h2>' + esc(n.name) + '</h2>' +
+          '<p class="detail-full">' + esc(n.fullName) + aliasHTML + '</p>' +
+          '<div class="tldr"><span class="lbl">TL;DR</span><p>' + esc(n.tldr) + '</p></div>' +
+          '<p class="detail-explainer">' + esc(n.explainer) + '</p>' +
+          '<div class="meta-row">' + typeTags + provTag + '</div>' +
+          '<div class="section-label">Connections · ' + conns.length + '</div>' + relHTML +
+        '</div>';
+      panelInner.querySelector('#detail-back').addEventListener('click', () => { select(null); renderAbout(); });
+      panelInner.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => select(b.dataset.goto)));
+      panel.scrollTop = 0;
+    }
+
+    function renderAbout() {
+      const counts = { protocol: 0, network: 0, security: 0, framework: 0 };
+      nodes.forEach((n) => counts[catKey(n.category)]++);
+      panelInner.innerHTML =
+        '<div class="about">' +
+          '<div class="about-eyebrow">Interactive mindmap</div>' +
+          '<h2>How the internet keeps its secrets — mapped</h2>' +
+          '<p><strong>41 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph. Each <strong>node</strong> is a term, coloured by category; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p class="about-text-extra">The layout is anchored on <strong>Zero Trust</strong>: its building blocks pull in around it, and the supporting protocols, network, and security primitives fan out from there.</p>' +
+          '<div class="stat-row">' +
+            '<div class="stat"><b>41</b><span>terms</span></div>' +
+            '<div class="stat"><b>90</b><span>relationships</span></div>' +
+            '<div class="stat"><b>5</b><span>link types</span></div>' +
+          '</div>' +
+          '<div class="section-label">How to use it</div>' +
+          '<ul class="about-how">' +
+            '<li>' + ICON('mouse-pointer') + '<span><strong>Click</strong> any node for its definition and connections.</span></li>' +
+            '<li>' + ICON('spotlight') + '<span><strong>Hover</strong> to spotlight a term and its direct neighbours.</span></li>' +
+            '<li>' + ICON('search') + '<span><strong>Search</strong> to locate and filter terms live.</span></li>' +
+            '<li>' + ICON('filter') + '<span><strong>Toggle categories</strong> in the toolbar to focus a group.</span></li>' +
+            '<li>' + ICON('drag') + '<span><strong>Drag</strong> the canvas to pan, scroll to zoom, drag a node to reposition.</span></li>' +
+          '</ul>' +
+          '<button class="btn btn-accent about-cta" id="about-tour" type="button">' + ICON('route') + 'Take the guided tour</button>' +
+        '</div>';
+      panelInner.querySelector('#about-tour').addEventListener('click', startTour);
+      panel.scrollTop = 0;
+    }
+
+    function ICON(name) {
+      const I = {
+        'mouse-pointer': '<path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>',
+        'spotlight': '<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/>',
+        'search': '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+        'filter': '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
+        'drag': '<polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/>',
+        'route': '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+      };
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (I[name] || '') + '</svg>';
+    }
+
+    /* --------------------------- selection --------------------------- */
+    function select(id, opts) {
+      opts = opts || {};
+      if (id && byId.get(id)) {
+        if (tourActive && !opts.fromTour) exitTour();
+        selectedId = id;
+        nodes.forEach((n) => n.el.classList.toggle('is-selected', n.id === id));
+        highlightNeighbors(id);
+        renderDetail(byId.get(id));
+        if (!opts.noCenter) centerOn(byId.get(id), Math.max(view.k, 1.15));
+        if (!opts.silentPanel) openPanelMobile();
+      } else {
+        selectedId = null;
+        nodes.forEach((n) => n.el.classList.remove('is-selected'));
+        clearHot();
+      }
+    }
+
+    /* ---------------------------- search ----------------------------- */
+    const searchWrap = document.getElementById('search');
+    const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
+    function doSearch(q) {
+      q = (q || '').trim().toLowerCase();
+      searchWrap.classList.toggle('has-value', q.length > 0);
+      if (!q) { svg.classList.remove('graph-dim-unmatched'); nodes.forEach((n) => n.el.classList.remove('is-match')); return; }
+      svg.classList.add('graph-dim-unmatched');
+      let matches = [];
+      nodes.forEach((n) => {
+        const hay = (n.name + ' ' + n.fullName + ' ' + (n.aliases || []).join(' ') + ' ' + n.tldr + ' ' + n.category).toLowerCase();
+        const hit = !n.hidden && hay.indexOf(q) >= 0;
+        n.el.classList.toggle('is-match', hit);
+        if (hit) matches.push(n);
+      });
+      if (matches.length === 1) centerOn(matches[0], Math.max(view.k, 1.2));
+      else if (matches.length > 1) fitMatches(matches);
+    }
+    function fitMatches(ms) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      ms.forEach((n) => { minX = Math.min(minX, n.x); minY = Math.min(minY, n.y); maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y); });
+      const bw = Math.max(maxX - minX, 1), bh = Math.max(maxY - minY, 1);
+      const k = Math.min((W - 160) / bw, (H - 160) / bh, 1.8);
+      view.k = Math.max(0.4, k); view.x = W / 2 - ((minX + maxX) / 2) * view.k; view.y = H / 2 - ((minY + maxY) / 2) * view.k; applyTransform();
+    }
+    searchInput.addEventListener('input', (e) => doSearch(e.target.value));
+    searchClear.addEventListener('click', () => { searchInput.value = ''; doSearch(''); searchInput.focus(); });
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { const m = nodes.find((n) => n.el.classList.contains('is-match')); if (m) select(m.id); }
+      if (e.key === 'Escape') { searchInput.value = ''; doSearch(''); }
+    });
+
+    /* ---------------------------- filters ---------------------------- */
+    const active = new Set(CATS.map((c) => c.key));
+    const filtersEl = document.getElementById('filters');
+    CATS.forEach((c) => {
+      const b = document.createElement('button');
+      b.className = 'chip cat-' + c.key; b.type = 'button'; b.dataset.cat = c.key;
+      b.setAttribute('aria-pressed', 'true');
+      b.innerHTML = '<span class="swatch"></span>' + c.label;
+      b.addEventListener('click', () => toggleCat(c.key, b));
+      filtersEl.appendChild(b);
+    });
+    function applyVisibility() {
+      nodes.forEach((n) => { n.hidden = !active.has(catKey(n.category)); n.el.classList.toggle('is-hidden', n.hidden); });
+      edges.forEach((e) => e.el.classList.toggle('is-hidden', e.s.hidden || e.t.hidden));
+      if (selectedId && byId.get(selectedId).hidden) { select(null); renderAbout(); }
+      refreshHot();
+      reheat(0.3);
+    }
+    function toggleCat(key, btn) {
+      if (active.has(key)) { if (active.size > 1) active.delete(key); else return; } else active.add(key);
+      btn.setAttribute('aria-pressed', active.has(key) ? 'true' : 'false');
+      applyVisibility();
+      if (searchInput.value) doSearch(searchInput.value);
+    }
+
+    /* --------------------------- legend ------------------------------ */
+    const legendCats = document.getElementById('legend-cats');
+    CATS.forEach((c) => {
+      const row = document.createElement('div');
+      row.className = 'legend-row';
+      row.innerHTML = '<span class="swatch" style="background:var(' + c.cssvar + ')"></span>' + c.label;
+      legendCats.appendChild(row);
+    });
+    const legendEdges = document.getElementById('legend-edges');
+    ORDER.forEach((type) => {
+      const m = EDGE_META[type];
+      const row = document.createElement('div');
+      row.className = 'legend-edge';
+      row.innerHTML = relMiniLine(type) + '<span>' + m.key + '</span>';
+      legendEdges.appendChild(row);
+    });
+    const legend = document.getElementById('legend');
+    const legendToggle = document.getElementById('legend-toggle');
+    legendToggle.addEventListener('click', () => {
+      const on = legend.classList.toggle('show-edges');
+      legendToggle.setAttribute('aria-expanded', on ? 'true' : 'false');
+      legendToggle.textContent = on ? 'Hide relationship key' : 'Show relationship key';
+    });
+
+    /* ---------------------------- tooltip ---------------------------- */
+    const tooltip = document.getElementById('tooltip');
+    function showTip(n, clientX, clientY) {
+      const rect = svg.getBoundingClientRect();
+      tooltip.innerHTML = '<strong>' + esc(n.name) + ' <span class="tt-cat">· ' + esc(n.category) + '</span></strong>' + esc(n.tldr);
+      tooltip.style.left = (clientX - rect.left) + 'px';
+      tooltip.style.top = (clientY - rect.top) + 'px';
+      tooltip.classList.add('show');
+    }
+    function hideTip() { tooltip.classList.remove('show'); }
+
+    /* ------------------- pointer: pan / zoom / drag ------------------ */
+    let dragNode = null, panning = false, last = null, downAt = null, moved = false;
+    function clientToWorld(cx, cy) { const rect = svg.getBoundingClientRect(); return { x: (cx - rect.left - view.x) / view.k, y: (cy - rect.top - view.y) / view.k }; }
+
+    svg.addEventListener('pointerdown', (e) => {
+      const g = e.target.closest('.node');
+      downAt = { x: e.clientX, y: e.clientY }; moved = false;
+      if (g) {
+        dragNode = byId.get(g.dataset.id);
+        const w = clientToWorld(e.clientX, e.clientY);
+        dragNode.fx = dragNode.x; dragNode.fy = dragNode.y; dragNode._ox = w.x - dragNode.x; dragNode._oy = w.y - dragNode.y;
+      } else {
+        panning = true; last = { x: e.clientX, y: e.clientY }; svg.classList.add('panning');
+      }
+      svg.setPointerCapture(e.pointerId);
+    });
+    svg.addEventListener('pointermove', (e) => {
+      if (downAt && (Math.abs(e.clientX - downAt.x) + Math.abs(e.clientY - downAt.y)) > 4) moved = true;
+      if (dragNode) {
+        const w = clientToWorld(e.clientX, e.clientY);
+        dragNode.fx = w.x - dragNode._ox; dragNode.fy = w.y - dragNode._oy;
+        reheat(0.15);
+      } else if (panning) {
+        view.x += e.clientX - last.x; view.y += e.clientY - last.y; last = { x: e.clientX, y: e.clientY }; applyTransform();
+      } else {
+        const g = e.target.closest('.node');
+        if (g) { const n = byId.get(g.dataset.id); showTip(n, e.clientX, e.clientY); if (!selectedId) { svg.classList.add('graph-focus'); highlightNeighbors(n.id); } }
+        else { hideTip(); if (!selectedId) clearHot(); }
+      }
+    });
+    function endPointer(e) {
+      if (dragNode) { dragNode.fx = null; dragNode.fy = null; if (!moved) select(dragNode.id); dragNode = null; }
+      else if (panning && !moved && e && e.target === svg) { /* click empty space */ }
+      panning = false; svg.classList.remove('panning'); downAt = null;
+      try { svg.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    svg.addEventListener('pointerup', endPointer);
+    svg.addEventListener('pointercancel', endPointer);
+    svg.addEventListener('pointerleave', () => { hideTip(); if (!selectedId) clearHot(); });
+
+    svg.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      const px = e.clientX - rect.left, py = e.clientY - rect.top;
+      const factor = Math.exp(-e.deltaY * 0.0014);
+      const nk = Math.max(0.25, Math.min(3.2, view.k * factor));
+      view.x = px - (px - view.x) * (nk / view.k);
+      view.y = py - (py - view.y) * (nk / view.k);
+      view.k = nk; applyTransform();
+    }, { passive: false });
+
+    /* node keyboard interaction (click handled via pointer; keys for a11y) */
+    nodesLayer.addEventListener('keydown', (e) => {
+      const g = e.target.closest('.node'); if (!g) return;
+      const n = byId.get(g.dataset.id);
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(n.id); }
+      else if (e.key.startsWith('Arrow')) {
+        e.preventDefault();
+        const neigh = adj.get(n.id).map((a) => a.other).filter((o) => !o.hidden);
+        if (neigh.length) { neigh.sort((a, b) => a.name.localeCompare(b.name)); const nx = neigh[0]; nx.el.focus(); }
+      }
+    });
+    nodesLayer.addEventListener('focusin', (e) => {
+      const g = e.target.closest('.node'); if (!g) return; const n = byId.get(g.dataset.id);
+      if (!selectedId) { svg.classList.add('graph-focus'); highlightNeighbors(n.id); }
+      const r = g.getBoundingClientRect(); showTip(n, r.left + r.width / 2, r.top + r.height / 2);
+    });
+    nodesLayer.addEventListener('focusout', () => { hideTip(); if (!selectedId) clearHot(); });
+
+    /* ---------------------------- tour ------------------------------- */
+    let tourActive = false, tourIdx = 0;
+    const tourBar = document.getElementById('tour-bar');
+    function startTour() {
+      // ensure all categories on so every step is visible
+      let changed = false;
+      CATS.forEach((c) => { if (!active.has(c.key)) { active.add(c.key); changed = true; } });
+      if (changed) { filtersEl.querySelectorAll('.chip').forEach((b) => b.setAttribute('aria-pressed', 'true')); applyVisibility(); }
+      searchInput.value = ''; doSearch('');
+      tourActive = true; tourIdx = 0; tourBar.hidden = false; showTourStep();
+    }
+    function showTourStep() {
+      const step = TOUR[tourIdx]; const n = byId.get(step.id);
+      document.getElementById('tour-step').textContent = 'Step ' + (tourIdx + 1) + ' of ' + TOUR.length;
+      document.getElementById('tour-title').textContent = n.name;
+      document.getElementById('tour-note').textContent = step.note;
+      document.getElementById('tour-progress-bar').style.width = (((tourIdx + 1) / TOUR.length) * 100) + '%';
+      document.getElementById('tour-prev').disabled = tourIdx === 0;
+      document.getElementById('tour-next').textContent = tourIdx === TOUR.length - 1 ? 'Finish' : 'Next';
+      select(step.id, { fromTour: true, silentPanel: true, noCenter: true });
+      centerOn(n, 1.3);
+    }
+    function tourNext() { if (tourIdx < TOUR.length - 1) { tourIdx++; showTourStep(); } else exitTour(); }
+    function tourPrev() { if (tourIdx > 0) { tourIdx--; showTourStep(); } }
+    function exitTour() { tourActive = false; tourBar.hidden = true; }
+    document.getElementById('tour-next').addEventListener('click', tourNext);
+    document.getElementById('tour-prev').addEventListener('click', tourPrev);
+    document.getElementById('tour-exit').addEventListener('click', () => { exitTour(); select(null); renderAbout(); });
+    document.getElementById('tour-btn').addEventListener('click', startTour);
+    document.getElementById('about-btn').addEventListener('click', () => { if (tourActive) exitTour(); select(null); renderAbout(); openPanelMobile(); });
+
+    /* --------------------- buttons / misc wiring --------------------- */
+    document.getElementById('zoom-in').addEventListener('click', () => zoomBy(1.25));
+    document.getElementById('zoom-out').addEventListener('click', () => zoomBy(0.8));
+    document.getElementById('zoom-reset').addEventListener('click', () => fitView());
+    document.getElementById('fit-btn').addEventListener('click', () => fitView());
+    function zoomBy(f) { const nk = Math.max(0.25, Math.min(3.2, view.k * f)); view.x = W / 2 - (W / 2 - view.x) * (nk / view.k); view.y = H / 2 - (H / 2 - view.y) * (nk / view.k); view.k = nk; applyTransform(); }
+    document.getElementById('panel-close').addEventListener('click', closePanelMobile);
+    document.getElementById('scrim').addEventListener('click', closePanelMobile);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { if (tourActive) exitTour(); if (document.body.classList.contains('panel-open')) closePanelMobile(); }
+      if (e.key === '/' && document.activeElement !== searchInput) { e.preventDefault(); searchInput.focus(); }
+      if (tourActive && e.key === 'ArrowRight') tourNext();
+      if (tourActive && e.key === 'ArrowLeft') tourPrev();
+    });
+
+    /* --------------------------- resize ------------------------------ */
+    let resizeT = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(() => { W = svg.clientWidth || W; H = svg.clientHeight || H; reheat(0.18); fitView(); }, 160);
+    });
+
+    /* ---------------------------- boot ------------------------------- */
+    buildSVG();
+    W = svg.clientWidth || W; H = svg.clientHeight || H;
+    warmup();
+    fitView();
+    renderAbout();
+    if (!reduceMotion) reheat(0.16);
+
+    // public api for screenshots / debugging / agent control
+    window.zta = {
+      select: (id) => select(id),
+      search: (q) => { searchInput.value = q; doSearch(q); },
+      clear: () => { searchInput.value = ''; doSearch(''); select(null); renderAbout(); },
+      startTour, tourNext, exitTour, fit: () => fitView(),
+      data: DATA,
+    };
+  })();
+  </script>
+</body>
+</html>

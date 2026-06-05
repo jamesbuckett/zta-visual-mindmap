@@ -1,0 +1,11 @@
+# Local scratch / build provenance (machine-specific absolute paths)
+_extract/
+screenshot.mjs
+
+# Validation artifacts
+screenshots/
+
+# Node / OS noise
+node_modules/
+*.log
+.DS_Store

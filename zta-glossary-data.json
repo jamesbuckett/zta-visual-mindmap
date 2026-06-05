@@ -1,0 +1,1384 @@
+{
+  "terms": [
+    {
+      "id": "bgp",
+      "name": "BGP",
+      "fullName": "Border Gateway Protocol",
+      "aliases": [
+        "autonomous system",
+        "peering"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The routing protocol that stitches the internet's networks together.",
+      "explainer": "The routing protocol autonomous systems use to advertise which IP ranges they can reach and to choose paths between one another. Its choices follow commercial peering and transit policy rather than pure shortest-path, so one bad announcement can reroute traffic worldwide.",
+      "related": [
+        "tcpip",
+        "nat",
+        "dns"
+      ]
+    },
+    {
+      "id": "cors",
+      "name": "CORS",
+      "fullName": "Cross-Origin Resource Sharing",
+      "aliases": [
+        "same-origin policy",
+        "preflight",
+        "Access-Control-Allow-Origin"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A browser rule that lets a server declare which other origins may read its responses.",
+      "explainer": "A browser-enforced mechanism that lets a server opt specific foreign origins into reading its responses via matching Access-Control-Allow-Origin headers, with a preflight check for non-simple requests. It only governs in-browser JavaScript and is no substitute for real authorization.",
+      "related": [
+        "http",
+        "oauth",
+        "zerotrust"
+      ]
+    },
+    {
+      "id": "dhcp",
+      "name": "DHCP",
+      "fullName": "Dynamic Host Configuration Protocol",
+      "aliases": [
+        "DORA",
+        "lease"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Automatically hands out IP addresses to devices joining a network.",
+      "explainer": "Automatically configures a newly connected device with its IP address, subnet mask, gateway, and DNS servers through a short Discover-Offer-Request-Acknowledge exchange. Addresses are handed out as time-limited leases, which is why devices 'just work' on a new network.",
+      "related": [
+        "dns",
+        "nat",
+        "tcpip"
+      ]
+    },
+    {
+      "id": "django",
+      "name": "Django",
+      "fullName": "Django (Python web framework)",
+      "aliases": [
+        "MTV",
+        "ORM"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A batteries-included Python web framework for building sites fast.",
+      "explainer": "A batteries-included Python web framework shipping an ORM, admin, auth, and routing, following a model-template-view pattern. Its convention-over-configuration philosophy handles the plumbing so developers can focus on the application.",
+      "related": [
+        "react",
+        "http"
+      ]
+    },
+    {
+      "id": "dns",
+      "name": "DNS",
+      "fullName": "Domain Name System",
+      "aliases": [
+        "DNSSEC",
+        "resolver"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The internet's phonebook: turns human names into IP addresses.",
+      "explainer": "Resolves human-readable names like example.com into the IP addresses machines route to, with a resolver walking the root → TLD → authoritative hierarchy and caching answers for speed. It is also a powerful control point for security and filtering.",
+      "related": [
+        "tcpip",
+        "http",
+        "dhcp"
+      ]
+    },
+    {
+      "id": "docker",
+      "name": "Docker",
+      "fullName": "Docker containers",
+      "aliases": [
+        "container",
+        "OCI image"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Packages an app and its dependencies into a portable container.",
+      "explainer": "Packages an application with its dependencies into a lightweight, isolated container that shares the host kernel instead of booting a full VM, built from cacheable layered images that run identically anywhere. It is the deployment unit most modern platforms, including Kubernetes, build on.",
+      "related": [
+        "kubernetes",
+        "grpc"
+      ]
+    },
+    {
+      "id": "firewall",
+      "name": "Firewall",
+      "fullName": "Network Firewall",
+      "aliases": [
+        "NGFW",
+        "iptables",
+        "packet filter"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Filters network traffic against a set of allow and deny rules.",
+      "explainer": "Sits at a network boundary and allows or blocks traffic by rules based on addresses, ports, and increasingly application and identity. Stateful and next-generation variants track connections and inspect deeper, forming the classic first line of defence between trusted and untrusted zones.",
+      "related": [
+        "microseg",
+        "nat",
+        "vlan",
+        "siem"
+      ]
+    },
+    {
+      "id": "grpc",
+      "name": "gRPC",
+      "fullName": "gRPC Remote Procedure Call",
+      "aliases": [
+        "protobuf",
+        "Protocol Buffers",
+        "RPC"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A fast, contract-first RPC framework using Protocol Buffers over HTTP/2.",
+      "explainer": "A contract-first RPC framework where a .proto file generates client and server code, letting services call each other like local functions. It uses compact binary Protocol Buffers over HTTP/2 for low-latency multiplexed streaming, favoured for internal microservice traffic where REST/JSON is too chatty.",
+      "related": [
+        "http",
+        "kubernetes",
+        "mtls"
+      ]
+    },
+    {
+      "id": "http",
+      "name": "HTTP / HTTPS",
+      "fullName": "HyperText Transfer Protocol (Secure)",
+      "aliases": [
+        "HTTP",
+        "HTTPS",
+        "HTTP/2",
+        "web"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The request/response protocol of the web; HTTPS is HTTP wrapped in TLS.",
+      "explainer": "The stateless request/response protocol browsers and APIs use to fetch and submit resources via methods like GET and POST, with cookies or tokens carrying context between requests. HTTPS is the very same protocol running inside a TLS-encrypted channel.",
+      "related": [
+        "tls",
+        "tcpip",
+        "grpc"
+      ]
+    },
+    {
+      "id": "idp",
+      "name": "Identity Provider",
+      "fullName": "Identity Provider (IdP)",
+      "aliases": [
+        "IdP",
+        "SSO",
+        "OIDC",
+        "Keycloak"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The trusted service that authenticates users and vouches for who they are.",
+      "explainer": "The central authority that authenticates users and issues the SAML/OAuth/OIDC assertions or tokens applications trust, so individual apps need not manage passwords. It is the hub of single sign-on and the anchor of identity in zero-trust designs.",
+      "related": [
+        "oauth",
+        "saml",
+        "zerotrust",
+        "radius"
+      ]
+    },
+    {
+      "id": "ipsec",
+      "name": "IPsec",
+      "fullName": "Internet Protocol Security",
+      "aliases": [
+        "IKE",
+        "ESP",
+        "tunnel mode"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Encrypts and authenticates IP traffic at the network layer.",
+      "explainer": "A suite that encrypts and integrity-protects traffic at the IP layer, so any application's packets are secured with no code changes. Transport mode protects host-to-host payloads while tunnel mode wraps whole packets between gateways — the basis of many site-to-site VPNs — with IKE handling key exchange.",
+      "related": [
+        "vpn",
+        "wireguard",
+        "tls"
+      ]
+    },
+    {
+      "id": "jwt",
+      "name": "JWT",
+      "fullName": "JSON Web Token",
+      "aliases": [
+        "bearer token",
+        "claims"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A signed, self-contained token that carries identity claims.",
+      "explainer": "A signed, self-contained token carrying identity claims in three base64url parts (header, payload, signature) that any holder can verify without a database lookup, making it popular for stateless sessions and API access. Payloads are readable, not encrypted, so secrets do not belong in them.",
+      "related": [
+        "oauth",
+        "saml",
+        "spiffe"
+      ]
+    },
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes",
+      "fullName": "Kubernetes (K8s)",
+      "aliases": [
+        "K8s",
+        "orchestration",
+        "pod"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework",
+        "Network Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Automates deploying, scaling, and healing containerized apps across machines.",
+      "explainer": "A container orchestrator that runs workloads across a cluster: you declare desired state and its control plane continuously reconciles reality, rescheduling failures and scaling on demand. It turns a fleet of machines into one programmable platform, with the pod as its smallest unit.",
+      "related": [
+        "docker",
+        "loadbalancer",
+        "spiffe"
+      ]
+    },
+    {
+      "id": "loadbalancer",
+      "name": "Load Balancer",
+      "fullName": "Load Balancer",
+      "aliases": [
+        "LB",
+        "reverse proxy",
+        "HAProxy"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Spreads incoming traffic across many backend servers.",
+      "explainer": "Distributes incoming requests across a pool of backend servers by round-robin, load, health, or content, automatically removing unhealthy backends to improve capacity and resilience. Operating at layer 4 or layer 7, it is also a natural place to terminate TLS.",
+      "related": [
+        "tls",
+        "kubernetes",
+        "http"
+      ]
+    },
+    {
+      "id": "microseg",
+      "name": "Microsegmentation",
+      "fullName": "Network Microsegmentation",
+      "aliases": [
+        "segmentation",
+        "lateral movement",
+        "east-west"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Divides a network into tiny zones, each with its own access policy.",
+      "explainer": "Pushes network isolation down to individual workloads, governing traffic between them with fine-grained per-segment policy instead of one flat internal network. By permitting only the flows each workload needs, it contains lateral movement if a host is compromised — a practical zero-trust building block.",
+      "related": [
+        "zerotrust",
+        "vlan",
+        "firewall"
+      ]
+    },
+    {
+      "id": "mqtt",
+      "name": "MQTT",
+      "fullName": "Message Queuing Telemetry Transport",
+      "aliases": [
+        "pub/sub",
+        "broker",
+        "IoT"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A lightweight publish/subscribe protocol for IoT and constrained devices.",
+      "explainer": "A lightweight publish/subscribe protocol for low-bandwidth or unreliable networks, where clients publish to named topics on a central broker and others subscribe, decoupling senders from receivers. Its tiny footprint and tiered quality-of-service make it the default for IoT sensors and telemetry.",
+      "related": [
+        "tcpip",
+        "grpc"
+      ]
+    },
+    {
+      "id": "mtls",
+      "name": "mTLS",
+      "fullName": "Mutual TLS",
+      "aliases": [
+        "mutual TLS",
+        "client certificate"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "TLS where both client and server prove identity with certificates.",
+      "explainer": "Mutual TLS extends ordinary TLS so the client also presents a certificate, giving strong two-way authentication without passwords before any data flows. It is a cornerstone of zero-trust service-to-service communication and service meshes, where every workload carries its own cryptographic identity.",
+      "related": [
+        "tls",
+        "zerotrust",
+        "spiffe"
+      ]
+    },
+    {
+      "id": "nat",
+      "name": "NAT",
+      "fullName": "Network Address Translation",
+      "aliases": [
+        "PAT",
+        "masquerade"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Lets many private devices share one public IP address.",
+      "explainer": "Rewrites the source/destination IP and port of packets crossing a boundary, typically mapping many private addresses onto one public IP to conserve IPv4 space while incidentally hiding internal structure. A translation table ensures replies return to the correct internal host.",
+      "related": [
+        "tcpip",
+        "firewall",
+        "vpn"
+      ]
+    },
+    {
+      "id": "oauth",
+      "name": "OAuth 2.0",
+      "fullName": "Open Authorization 2.0",
+      "aliases": [
+        "OAuth",
+        "OIDC",
+        "access token"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Lets an app access your data on another service without your password.",
+      "explainer": "An authorization framework that issues an app a scoped, revocable access token instead of your credentials: you log in, consent, and the app calls the API on your behalf. It powers 'Sign in with…' delegation and is about authorization, not authentication.",
+      "related": [
+        "jwt",
+        "saml",
+        "idp"
+      ]
+    },
+    {
+      "id": "oidc",
+      "name": "OIDC",
+      "fullName": "OpenID Connect",
+      "aliases": [
+        "OpenID Connect",
+        "ID Token",
+        "OpenID Provider",
+        "SSO"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "An identity layer on top of OAuth 2.0 that tells an app who the user is.",
+      "explainer": "An identity layer on top of OAuth 2.0 that adds authentication: alongside the access token, the provider issues a signed ID Token (a JWT) describing who the user is. Requesting the openid scope turns a plain OAuth exchange into OIDC, the modern JSON successor to SAML for SSO.",
+      "related": [
+        "oauth",
+        "jwt",
+        "idp",
+        "saml"
+      ]
+    },
+    {
+      "id": "openziti",
+      "name": "OpenZiti",
+      "fullName": "Open-source zero-trust networking overlay",
+      "aliases": [
+        "Ziti",
+        "NetFoundry",
+        "ZTNA",
+        "zero trust overlay"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "An open-source overlay that gives every app an identity and a default-deny, encrypted path — a zero-trust VPN replacement.",
+      "explainer": "An open-source zero-trust overlay where every app, device, or service carries an X.509 identity and a connection is allowed only when policy grants that identity access to a named service. Services are 'dark' — no inbound ports, mutually authenticated with mTLS — so unlike a VPN, being on the network grants nothing by itself.",
+      "related": [
+        "zerotrust",
+        "mtls",
+        "spiffe",
+        "vpn"
+      ]
+    },
+    {
+      "id": "peppdp",
+      "name": "PEP / PDP",
+      "fullName": "Policy Enforcement Point / Policy Decision Point",
+      "aliases": [
+        "policy enforcement",
+        "policy decision",
+        "policy engine"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The enforce-here, decide-there split at the heart of access control.",
+      "explainer": "The access-control pattern that splits enforcement from decision: the Policy Enforcement Point intercepts each request in-path while the Policy Decision Point evaluates the rules and returns allow or deny. Centralising the decision lets one policy brain govern many enforcement points — the control core of zero trust.",
+      "related": [
+        "zerotrust",
+        "idp"
+      ]
+    },
+    {
+      "id": "pkce",
+      "name": "PKCE",
+      "fullName": "Proof Key for Code Exchange",
+      "aliases": [
+        "pixy",
+        "code_verifier",
+        "code_challenge",
+        "RFC 7636"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Stops a stolen OAuth authorization code from being redeemed by anyone but the app that began the flow.",
+      "explainer": "Hardens OAuth's authorization-code flow against interception: the client sends only the hash of a random secret (code_verifier) when starting login and must present the original to redeem tokens, making a stolen code useless. Born for mobile and single-page apps, it is now recommended for all clients and mandatory in OAuth 2.1.",
+      "related": [
+        "oauth",
+        "oidc",
+        "idp"
+      ]
+    },
+    {
+      "id": "quic",
+      "name": "QUIC",
+      "fullName": "Quick UDP Internet Connections",
+      "aliases": [
+        "HTTP/3",
+        "gQUIC",
+        "RFC 9000"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A fast, always-encrypted transport that runs over UDP and folds in the work of TCP plus TLS.",
+      "explainer": "A UDP-based transport that folds connection setup, TLS 1.3 encryption, and multiplexed streams into one handshake, so a connection is usually ready in a single round trip (zero when resuming). Independent streams remove TCP's head-of-line blocking, and it is the always-encrypted foundation of HTTP/3.",
+      "related": [
+        "tls",
+        "tcpip",
+        "http"
+      ]
+    },
+    {
+      "id": "radius",
+      "name": "RADIUS",
+      "fullName": "Remote Authentication Dial-In User Service",
+      "aliases": [
+        "AAA",
+        "NAS",
+        "802.1X"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A protocol for centralized authentication, authorization, and accounting.",
+      "explainer": "Centralises network access control: when you join Wi-Fi, a VPN, or a switch port, the access device asks a RADIUS server to authenticate you, decide what you may do, and log the session. It is the long-standing AAA backbone separating the access device from the identity store.",
+      "related": [
+        "saml",
+        "idp"
+      ]
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "fullName": "React (UI library)",
+      "aliases": [
+        "ReactJS",
+        "JSX",
+        "component"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A JavaScript library for building user interfaces from composable components.",
+      "explainer": "A JavaScript library for building UIs as a tree of reusable components whose output is a function of their state and props. When state changes it re-renders efficiently by diffing a virtual DOM and patching only what changed, popularising the declarative front-end model.",
+      "related": [
+        "django",
+        "grpc"
+      ]
+    },
+    {
+      "id": "saml",
+      "name": "SAML",
+      "fullName": "Security Assertion Markup Language",
+      "aliases": [
+        "SSO",
+        "assertion",
+        "federation"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "An XML standard for single sign-on between identity and service providers.",
+      "explainer": "An XML standard for enterprise single sign-on where an identity provider authenticates the user and issues a digitally signed assertion that service providers trust, so one login unlocks many apps. It predates OAuth/OIDC but remains widespread in corporate and SaaS access.",
+      "related": [
+        "oauth",
+        "idp",
+        "jwt"
+      ]
+    },
+    {
+      "id": "sase",
+      "name": "SASE",
+      "fullName": "Secure Access Service Edge",
+      "aliases": [
+        "SSE",
+        "ZTNA",
+        "cloud security"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Network Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "Delivers networking and security together from the cloud edge, near the user.",
+      "explainer": "A cloud-delivered model converging wide-area networking with security services — secure web gateway, CASB, firewall-as-a-service, and ZTNA — enforced at points of presence near the user instead of backhauling traffic to a datacentre. It is how most organisations now operate zero trust.",
+      "related": [
+        "zerotrust",
+        "vpn",
+        "sdwan",
+        "firewall"
+      ]
+    },
+    {
+      "id": "scim",
+      "name": "SCIM",
+      "fullName": "System for Cross-domain Identity Management",
+      "aliases": [
+        "user provisioning",
+        "deprovisioning",
+        "SCIM 2.0",
+        "RFC 7644"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Automates creating and removing user accounts across apps when people join or leave.",
+      "explainer": "A REST/JSON standard that syncs user accounts between an identity provider and connected apps, pushing joiners, movers, and leavers via CRUD on /Users and /Groups. Where SAML and OIDC handle login, SCIM handles the account lifecycle around it — closing the gap left by orphaned accounts after offboarding.",
+      "related": [
+        "idp",
+        "saml",
+        "oidc"
+      ]
+    },
+    {
+      "id": "sdwan",
+      "name": "SD-WAN",
+      "fullName": "Software-Defined Wide Area Network",
+      "aliases": [
+        "overlay",
+        "WAN",
+        "edge"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "Software steers branch traffic across multiple links by policy, not fixed routing.",
+      "explainer": "Lays a software overlay across a branch's mixed transports (MPLS, broadband, cellular) while a central controller steers each application over the best path by policy and live link quality. It replaces device-by-device WAN config with centralised management and is often paired with SASE for security.",
+      "related": [
+        "sase",
+        "vpn",
+        "bgp",
+        "loadbalancer"
+      ]
+    },
+    {
+      "id": "siem",
+      "name": "SIEM",
+      "fullName": "Security Information and Event Management",
+      "aliases": [
+        "SOC",
+        "log management",
+        "correlation"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Collects logs from everywhere and correlates them into security alerts.",
+      "explainer": "Ingests and normalises logs from across the estate — firewalls, servers, apps, cloud — then correlates them to surface suspicious patterns as prioritised alerts for a security operations centre. Modern platforms add analytics and automated response and help satisfy audit requirements.",
+      "related": [
+        "firewall",
+        "zerotrust",
+        "radius"
+      ]
+    },
+    {
+      "id": "spiffe",
+      "name": "SPIFFE / SPIRE",
+      "fullName": "Secure Production Identity Framework For Everyone",
+      "aliases": [
+        "SVID",
+        "SPIRE",
+        "workload identity"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A standard and engine for giving workloads cryptographic identities.",
+      "explainer": "Defines a universal workload identity (the SPIFFE ID) and a provable document for it (the SVID, an X.509 certificate or JWT), with SPIRE as the reference engine that attests workloads and issues short-lived identities. Together they let services authenticate with mTLS instead of shared secrets — foundational zero-trust plumbing.",
+      "related": [
+        "mtls",
+        "zerotrust",
+        "jwt"
+      ]
+    },
+    {
+      "id": "ssh",
+      "name": "SSH",
+      "fullName": "Secure Shell",
+      "aliases": [
+        "OpenSSH",
+        "SCP",
+        "key pair"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "An encrypted channel for remote login and command execution.",
+      "explainer": "Provides an authenticated, encrypted connection to a remote machine — a safe replacement for cleartext remote access — using passwords or, preferably, public-key pairs. It secures interactive shells, file transfer, and port forwarding, and is the everyday tool for administering servers.",
+      "related": [
+        "tls",
+        "vpn"
+      ]
+    },
+    {
+      "id": "tcpip",
+      "name": "TCP/IP",
+      "fullName": "Transmission Control Protocol / Internet Protocol",
+      "aliases": [
+        "internet protocol suite",
+        "UDP"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The layered addressing-and-delivery system that moves data across the internet.",
+      "explainer": "The foundational layered suite that interconnects dissimilar networks: IP addresses and routes packets, TCP adds reliable ordered delivery (with UDP as the lightweight alternative), organised into link, internet, transport, and application layers. Almost every other protocol here runs on top of it.",
+      "related": [
+        "dns",
+        "http",
+        "nat",
+        "bgp"
+      ]
+    },
+    {
+      "id": "tls",
+      "name": "TLS",
+      "fullName": "Transport Layer Security",
+      "aliases": [
+        "SSL"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Encrypts data in transit and authenticates the server you are talking to.",
+      "explainer": "The successor to SSL, giving any TCP connection confidentiality, integrity, and server authentication: a handshake uses the server's certificate and public-key crypto to agree session keys, then encrypts traffic with fast symmetric ciphers. It underpins HTTPS, secure email, and many VPNs; mTLS extends it to both sides.",
+      "related": [
+        "mtls",
+        "ssh",
+        "ipsec",
+        "http"
+      ]
+    },
+    {
+      "id": "vlan",
+      "name": "VLAN",
+      "fullName": "Virtual Local Area Network",
+      "aliases": [
+        "802.1Q",
+        "trunk"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Splits one physical switch into several isolated logical networks.",
+      "explainer": "Partitions one physical network into separate broadcast domains by tagging Ethernet frames (802.1Q), so devices on different VLANs cannot talk directly without a router even on the same switch. It separates traffic like guest, voice, and server for better security, performance, and manageability.",
+      "related": [
+        "microseg",
+        "nat",
+        "firewall"
+      ]
+    },
+    {
+      "id": "vpn",
+      "name": "VPN",
+      "fullName": "Virtual Private Network",
+      "aliases": [
+        "tunnel",
+        "remote access"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "An encrypted tunnel that extends a private network over the public internet.",
+      "explainer": "Builds an encrypted tunnel between a device or site and a network so traffic crosses the untrusted internet as if on a private link, used for remote access and to shield traffic on hostile networks. Its security and topology depend entirely on the underlying protocol — IPsec, WireGuard, or a TLS-based design.",
+      "related": [
+        "wireguard",
+        "ipsec",
+        "tls",
+        "sase"
+      ]
+    },
+    {
+      "id": "websockets",
+      "name": "WebSockets",
+      "fullName": "WebSocket Protocol (RFC 6455)",
+      "aliases": [
+        "ws",
+        "wss",
+        "RFC 6455",
+        "Sec-WebSocket-Key"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Upgrades an HTTP connection into a persistent, two-way channel for live data.",
+      "explainer": "Upgrades an HTTP/1.1 request into a long-lived, full-duplex TCP connection (the server replies 101 Switching Protocols) so client and server can push lightweight frames at any time. That removes plain HTTP's turn-taking, powering chat, collaborative editing, and live feeds; use wss:// to wrap it in TLS.",
+      "related": [
+        "http",
+        "tcpip",
+        "webtransport"
+      ]
+    },
+    {
+      "id": "webtransport",
+      "name": "WebTransport",
+      "fullName": "Multiplexed streams and datagrams over HTTP/3",
+      "aliases": [
+        "HTTP/3 transport",
+        "datagrams",
+        "WebTransport API"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A newer browser transport over HTTP/3 offering multiplexed streams and fire-and-forget datagrams.",
+      "explainer": "Gives browser code a low-latency session over HTTP/3 (and thus QUIC/UDP), mixing reliable streams with unreliable datagrams for uses like game state or live media. Inheriting QUIC's independent streams avoids the head-of-line blocking WebSockets suffer over TCP — an emerging alternative that reached cross-browser support in 2026.",
+      "related": [
+        "quic",
+        "http",
+        "websockets"
+      ]
+    },
+    {
+      "id": "wireguard",
+      "name": "WireGuard",
+      "fullName": "WireGuard VPN protocol",
+      "aliases": [
+        "wg"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A fast, modern, minimal VPN protocol built on current cryptography.",
+      "explainer": "A deliberately minimal, fast VPN protocol whose codebase is small enough to audit by hand, identifying peers by public keys and establishing low-overhead encrypted tunnels with quick handshakes. Shipping in the Linux kernel, it has become the modern default over heavier IPsec and OpenVPN.",
+      "related": [
+        "vpn",
+        "ipsec",
+        "tls"
+      ]
+    },
+    {
+      "id": "zerotrust",
+      "name": "Zero Trust",
+      "fullName": "Zero Trust Architecture",
+      "aliases": [
+        "ZTA",
+        "ZTNA",
+        "BeyondCorp"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Trust nothing by default; verify every request regardless of network location.",
+      "explainer": "A security model that abandons the trusted internal network: every request is authenticated, authorized, and encrypted based on identity and context, whether it comes from inside or outside the old perimeter. It rests on strong identity, least-privilege access, and continuous verification.",
+      "related": [
+        "mtls",
+        "microseg",
+        "peppdp",
+        "idp",
+        "sase"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "bgp",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "bgp",
+      "target": "nat",
+      "type": "same-category"
+    },
+    {
+      "source": "bgp",
+      "target": "dns",
+      "type": "same-category"
+    },
+    {
+      "source": "cors",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "cors",
+      "target": "oauth",
+      "type": "same-category"
+    },
+    {
+      "source": "cors",
+      "target": "zerotrust",
+      "type": "same-category"
+    },
+    {
+      "source": "dhcp",
+      "target": "dns",
+      "type": "enables"
+    },
+    {
+      "source": "dhcp",
+      "target": "nat",
+      "type": "same-category"
+    },
+    {
+      "source": "dhcp",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "django",
+      "target": "react",
+      "type": "same-category"
+    },
+    {
+      "source": "django",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "dns",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "http",
+      "target": "dns",
+      "type": "requires"
+    },
+    {
+      "source": "docker",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "docker",
+      "target": "grpc",
+      "type": "same-category"
+    },
+    {
+      "source": "firewall",
+      "target": "microseg",
+      "type": "alternative"
+    },
+    {
+      "source": "firewall",
+      "target": "nat",
+      "type": "same-category"
+    },
+    {
+      "source": "firewall",
+      "target": "vlan",
+      "type": "same-category"
+    },
+    {
+      "source": "firewall",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "grpc",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "grpc",
+      "target": "kubernetes",
+      "type": "same-category"
+    },
+    {
+      "source": "mtls",
+      "target": "grpc",
+      "type": "enables"
+    },
+    {
+      "source": "http",
+      "target": "tls",
+      "type": "requires"
+    },
+    {
+      "source": "http",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "oauth",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "saml",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "idp",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "radius",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "ipsec",
+      "target": "vpn",
+      "type": "enables"
+    },
+    {
+      "source": "ipsec",
+      "target": "wireguard",
+      "type": "alternative"
+    },
+    {
+      "source": "ipsec",
+      "target": "tls",
+      "type": "alternative"
+    },
+    {
+      "source": "jwt",
+      "target": "oauth",
+      "type": "enables"
+    },
+    {
+      "source": "jwt",
+      "target": "saml",
+      "type": "alternative"
+    },
+    {
+      "source": "jwt",
+      "target": "spiffe",
+      "type": "enables"
+    },
+    {
+      "source": "loadbalancer",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "spiffe",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "tls",
+      "target": "loadbalancer",
+      "type": "enables"
+    },
+    {
+      "source": "http",
+      "target": "loadbalancer",
+      "type": "enables"
+    },
+    {
+      "source": "microseg",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "microseg",
+      "target": "vlan",
+      "type": "alternative"
+    },
+    {
+      "source": "mqtt",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "mqtt",
+      "target": "grpc",
+      "type": "alternative"
+    },
+    {
+      "source": "mtls",
+      "target": "tls",
+      "type": "part-of"
+    },
+    {
+      "source": "mtls",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "spiffe",
+      "target": "mtls",
+      "type": "enables"
+    },
+    {
+      "source": "nat",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "nat",
+      "target": "vpn",
+      "type": "same-category"
+    },
+    {
+      "source": "oauth",
+      "target": "saml",
+      "type": "alternative"
+    },
+    {
+      "source": "oidc",
+      "target": "oauth",
+      "type": "requires"
+    },
+    {
+      "source": "oidc",
+      "target": "jwt",
+      "type": "requires"
+    },
+    {
+      "source": "oidc",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "oidc",
+      "target": "saml",
+      "type": "alternative"
+    },
+    {
+      "source": "openziti",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "mtls",
+      "target": "openziti",
+      "type": "enables"
+    },
+    {
+      "source": "openziti",
+      "target": "spiffe",
+      "type": "same-category"
+    },
+    {
+      "source": "openziti",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "peppdp",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "idp",
+      "target": "peppdp",
+      "type": "enables"
+    },
+    {
+      "source": "pkce",
+      "target": "oauth",
+      "type": "part-of"
+    },
+    {
+      "source": "pkce",
+      "target": "oidc",
+      "type": "same-category"
+    },
+    {
+      "source": "pkce",
+      "target": "idp",
+      "type": "same-category"
+    },
+    {
+      "source": "quic",
+      "target": "tls",
+      "type": "requires"
+    },
+    {
+      "source": "quic",
+      "target": "tcpip",
+      "type": "alternative"
+    },
+    {
+      "source": "quic",
+      "target": "http",
+      "type": "enables"
+    },
+    {
+      "source": "radius",
+      "target": "saml",
+      "type": "same-category"
+    },
+    {
+      "source": "react",
+      "target": "grpc",
+      "type": "same-category"
+    },
+    {
+      "source": "sase",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "sase",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "sdwan",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "firewall",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "scim",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "scim",
+      "target": "saml",
+      "type": "same-category"
+    },
+    {
+      "source": "scim",
+      "target": "oidc",
+      "type": "same-category"
+    },
+    {
+      "source": "vpn",
+      "target": "sdwan",
+      "type": "enables"
+    },
+    {
+      "source": "sdwan",
+      "target": "bgp",
+      "type": "alternative"
+    },
+    {
+      "source": "loadbalancer",
+      "target": "sdwan",
+      "type": "same-category"
+    },
+    {
+      "source": "siem",
+      "target": "zerotrust",
+      "type": "enables"
+    },
+    {
+      "source": "radius",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "spiffe",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "ssh",
+      "target": "tls",
+      "type": "alternative"
+    },
+    {
+      "source": "ssh",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "nat",
+      "target": "vlan",
+      "type": "same-category"
+    },
+    {
+      "source": "wireguard",
+      "target": "vpn",
+      "type": "enables"
+    },
+    {
+      "source": "tls",
+      "target": "vpn",
+      "type": "enables"
+    },
+    {
+      "source": "websockets",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "websockets",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "websockets",
+      "target": "webtransport",
+      "type": "alternative"
+    },
+    {
+      "source": "webtransport",
+      "target": "quic",
+      "type": "requires"
+    },
+    {
+      "source": "webtransport",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "wireguard",
+      "target": "tls",
+      "type": "alternative"
+    }
+  ]
+}
