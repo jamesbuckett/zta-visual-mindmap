@@ -1,6 +1,33 @@
 {
   "terms": [
     {
+      "id": "apigateway",
+      "name": "API Gateway",
+      "fullName": "API Gateway",
+      "aliases": [
+        "gateway",
+        "rate limiting",
+        "BFF",
+        "Kong",
+        "ingress",
+        "API management"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A single front door for APIs that handles auth, rate limits, and routing.",
+      "explainer": "A reverse proxy that gives a fleet of backend services one front door, handling the cross-cutting concerns no single service should reimplement: terminating TLS, validating OAuth tokens and API keys, enforcing rate limits, and routing or versioning requests. Centralising authentication and throttling makes it a natural zero-trust enforcement point at the application edge, though pushing too much logic into it turns it into a bottleneck.",
+      "related": [
+        "oauth",
+        "grpc",
+        "loadbalancer",
+        "http"
+      ]
+    },
+    {
       "id": "bgp",
       "name": "BGP",
       "fullName": "Border Gateway Protocol",
@@ -20,6 +47,54 @@
         "tcpip",
         "nat",
         "dns"
+      ]
+    },
+    {
+      "id": "casb",
+      "name": "CASB",
+      "fullName": "Cloud Access Security Broker",
+      "aliases": [
+        "shadow IT",
+        "SaaS security",
+        "cloud security",
+        "SSE"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A control point between users and SaaS apps that enforces cloud security policy.",
+      "explainer": "A control point between users and SaaS apps — inline proxy or API integration — that restores the visibility and policy enforcement the corporate network used to provide. It surfaces shadow IT, governs access and data flows, and applies data-loss-prevention controls, forming one of the core pillars of a SASE/SSE stack alongside secure web gateways and ZTNA.",
+      "related": [
+        "sase",
+        "dlp",
+        "idp"
+      ]
+    },
+    {
+      "id": "cilium",
+      "name": "Cilium / eBPF",
+      "fullName": "eBPF-Based Networking & Security",
+      "aliases": [
+        "eBPF",
+        "Cilium",
+        "network policy",
+        "Hubble",
+        "kernel"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Programmable, in-kernel networking and security policy for Kubernetes.",
+      "explainer": "Builds on eBPF — sandboxed programs running safely inside the Linux kernel — to provide networking, observability, and security for Kubernetes at kernel speed rather than through userspace proxies. Because it enforces identity-aware network policy in the kernel, it implements microsegmentation efficiently and offers service-mesh-like connectivity without sidecars.",
+      "related": [
+        "kubernetes",
+        "microseg",
+        "servicemesh"
       ]
     },
     {
@@ -43,6 +118,57 @@
         "http",
         "oauth",
         "zerotrust"
+      ]
+    },
+    {
+      "id": "websec",
+      "name": "CSRF / XSS / CSP",
+      "fullName": "Web App Attacks & Content Security Policy",
+      "aliases": [
+        "cross-site request forgery",
+        "cross-site scripting",
+        "content security policy",
+        "same-origin",
+        "SameSite",
+        "injection"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The two classic browser attacks — and the header that helps shut them down.",
+      "explainer": "The classic browser attacks and their defences: Cross-Site Scripting injects attacker script that runs with the victim's session, while Cross-Site Request Forgery tricks an authenticated browser into firing unwanted state-changing requests. They are countered by output escaping, anti-CSRF tokens and SameSite cookies, and a Content-Security-Policy header that whitelists what a page may load — defence in depth, since none suffices alone.",
+      "related": [
+        "cors",
+        "http",
+        "pkce",
+        "waf"
+      ]
+    },
+    {
+      "id": "cve",
+      "name": "CVE / CVSS",
+      "fullName": "Vulnerability IDs & Severity Scoring",
+      "aliases": [
+        "common vulnerabilities and exposures",
+        "CVSS",
+        "NVD",
+        "severity score",
+        "vulnerability"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The shared ID and 0–10 score that let everyone talk about the same flaw.",
+      "explainer": "A CVE identifier — like CVE-2021-44228 for Log4Shell — is the shared name, coordinated by MITRE, that lets vendors, scanners, and defenders point at the same flaw, while CVSS rates its severity from 0 to 10. NIST's National Vulnerability Database enriches CVE records with scores and affected-product data so teams can prioritise, but the number is guidance: real risk depends on whether the flaw is exploitable in your context.",
+      "related": [
+        "sbom",
+        "owasp",
+        "siem"
       ]
     },
     {
@@ -88,6 +214,29 @@
       ]
     },
     {
+      "id": "dlp",
+      "name": "DLP",
+      "fullName": "Data Loss Prevention",
+      "aliases": [
+        "data leak prevention",
+        "exfiltration",
+        "data classification",
+        "egress control"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Controls that detect and stop sensitive data from leaving where it should not.",
+      "explainer": "The set of controls that keep sensitive information — card numbers, health records, source code, secrets — from leaving via email, uploads, USB, or chat, inspecting content against patterns and classifications then warning, blocking, or encrypting on a policy breach. Operating at endpoints, on the network, and in the cloud via CASB, it addresses the Data pillar of zero trust, and is only as good as the data classification beneath it.",
+      "related": [
+        "casb",
+        "sase",
+        "siem"
+      ]
+    },
+    {
       "id": "dns",
       "name": "DNS",
       "fullName": "Domain Name System",
@@ -127,6 +276,31 @@
       "related": [
         "kubernetes",
         "grpc"
+      ]
+    },
+    {
+      "id": "edr",
+      "name": "EDR / XDR",
+      "fullName": "Endpoint / Extended Detection & Response",
+      "aliases": [
+        "endpoint detection",
+        "XDR",
+        "device posture",
+        "endpoint security",
+        "EDR agent"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Agents that watch endpoints for malicious behaviour — and feed device-trust signals.",
+      "explainer": "A lightweight agent on laptops and servers continuously records process, file, and network activity, flags behaviour matching known attack patterns, and lets responders isolate or roll back a compromised host; XDR widens that lens across email, identity, and cloud so a multi-stage attack reads as one incident. Its live health verdict also becomes the Devices-pillar posture signal a zero-trust policy engine weighs, so a failing device can be denied even with valid credentials.",
+      "related": [
+        "siem",
+        "soar",
+        "zerotrust",
+        "idsips"
       ]
     },
     {
@@ -224,6 +398,31 @@
       ]
     },
     {
+      "id": "idsips",
+      "name": "IDS / IPS",
+      "fullName": "Intrusion Detection / Prevention System",
+      "aliases": [
+        "Snort",
+        "Suricata",
+        "signature detection",
+        "NIDS",
+        "intrusion detection"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Sensors that spot attacks in network traffic — and optionally block them inline.",
+      "explainer": "Inspects network or host activity for attack signatures, protocol anomalies, or deviations from a baseline; an IDS raises an alert, while an IPS sits inline and can drop or reset the malicious connection. Open-source engines like Snort and Suricata pioneered the signature model, feeding a SIEM for correlation and complementing endpoint EDR by watching the wire — at the cost of false positives, and the risk of blocking legitimate traffic inline.",
+      "related": [
+        "firewall",
+        "siem",
+        "edr",
+        "soar"
+      ]
+    },
+    {
       "id": "ipsec",
       "name": "IPsec",
       "fullName": "Internet Protocol Security",
@@ -269,6 +468,32 @@
       ]
     },
     {
+      "id": "kerberos",
+      "name": "Kerberos",
+      "fullName": "Kerberos Authentication Protocol",
+      "aliases": [
+        "KDC",
+        "ticket-granting ticket",
+        "TGT",
+        "service principal",
+        "SPN",
+        "single sign-on"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Ticket-based authentication that proves identity without sending passwords over the wire.",
+      "explainer": "Lets a client prove its identity to many services using time-limited encrypted tickets instead of resending a password: after one authentication to a Key Distribution Center it receives a Ticket-Granting Ticket, then exchanges it for per-service tickets the targets can verify. It is the authentication half of Active Directory and the basis of Windows-domain single sign-on, and — relying on synchronised clocks — is notoriously sensitive to time drift.",
+      "related": [
+        "ldap",
+        "idp",
+        "ssh"
+      ]
+    },
+    {
       "id": "kubernetes",
       "name": "Kubernetes",
       "fullName": "Kubernetes (K8s)",
@@ -292,6 +517,33 @@
       ]
     },
     {
+      "id": "ldap",
+      "name": "LDAP / Active Directory",
+      "fullName": "Lightweight Directory Access Protocol",
+      "aliases": [
+        "Active Directory",
+        "AD",
+        "directory service",
+        "distinguished name",
+        "DN",
+        "OpenLDAP"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The directory that stores users, groups, and devices — and answers who is this?",
+      "explainer": "The protocol for querying and modifying a directory: a hierarchical database of users, groups, and devices, each with a distinguished name and attributes. Microsoft Active Directory is the dominant implementation, pairing an LDAP directory with Kerberos to become the identity backbone of most enterprises and the source of truth that RADIUS, SAML, and SCIM build on — which also makes it a prime target.",
+      "related": [
+        "idp",
+        "radius",
+        "kerberos",
+        "saml"
+      ]
+    },
+    {
       "id": "loadbalancer",
       "name": "Load Balancer",
       "fullName": "Load Balancer",
@@ -311,6 +563,35 @@
         "tls",
         "kubernetes",
         "http"
+      ]
+    },
+    {
+      "id": "mfa",
+      "name": "MFA / Passkeys",
+      "fullName": "Multi-Factor Authentication (FIDO2 · WebAuthn)",
+      "aliases": [
+        "MFA",
+        "2FA",
+        "FIDO2",
+        "WebAuthn",
+        "passkey",
+        "passwordless",
+        "TOTP",
+        "phishing-resistant"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Proving identity with more than a password — and passkeys that cannot be phished.",
+      "explainer": "Requires two or more independent proofs of identity — something you know, have, or are — so a stolen password alone is not enough; but SMS and TOTP codes can still be phished into a fake site. FIDO2 and WebAuthn close that gap by binding a public-key challenge to the real site's origin so the credential cannot be replayed, and passkeys are the consumer-friendly, password-replacing form — the strongest signal that the human is who they claim to be.",
+      "related": [
+        "oauth",
+        "oidc",
+        "idp",
+        "pkce"
       ]
     },
     {
@@ -402,6 +683,32 @@
       ]
     },
     {
+      "id": "nist207",
+      "name": "NIST SP 800-207",
+      "fullName": "Zero Trust Architecture (NIST)",
+      "aliases": [
+        "800-207",
+        "zero trust architecture",
+        "trust algorithm",
+        "policy engine",
+        "policy administrator",
+        "CISA ZTMM"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The reference document that defines Zero Trust and its policy components.",
+      "explainer": "NIST Special Publication 800-207 (2020) is the vendor-neutral reference architecture that turned zero trust from a slogan into a defined model, setting out seven tenets and naming the logical components that enforce them — the Policy Engine and Policy Administrator behind the PDP, and the Policy Enforcement Point in the data path. It is the spec the PEP/PDP terms here come from, and the basis CISA's five-pillar Zero Trust Maturity Model builds on.",
+      "related": [
+        "zerotrust",
+        "peppdp",
+        "ztna",
+        "microseg"
+      ]
+    },
+    {
       "id": "oauth",
       "name": "OAuth 2.0",
       "fullName": "Open Authorization 2.0",
@@ -450,6 +757,30 @@
       ]
     },
     {
+      "id": "opa",
+      "name": "OPA",
+      "fullName": "Open Policy Agent",
+      "aliases": [
+        "Rego",
+        "policy as code",
+        "Gatekeeper",
+        "policy engine"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A general-purpose policy engine that answers allow / deny from code, not config.",
+      "explainer": "A CNCF-graduated engine that decouples authorization from application code: a service sends JSON context asking whether subject X may do action Y on resource Z, and OPA evaluates rules written in its declarative Rego language to return a structured decision. Because one engine serves microservices, Kubernetes admission, CI, and API gateways, authorization becomes version-controlled policy-as-code — the canonical software implementation of a zero-trust Policy Decision Point.",
+      "related": [
+        "peppdp",
+        "rbac",
+        "kubernetes",
+        "zerotrust"
+      ]
+    },
+    {
       "id": "openziti",
       "name": "OpenZiti",
       "fullName": "Open-source zero-trust networking overlay",
@@ -472,6 +803,54 @@
         "mtls",
         "spiffe",
         "vpn"
+      ]
+    },
+    {
+      "id": "owasp",
+      "name": "OWASP Top 10",
+      "fullName": "Open Worldwide Application Security Project",
+      "aliases": [
+        "OWASP",
+        "Top 10",
+        "broken access control",
+        "injection",
+        "ASVS"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The community's ranked list of the most critical web application risks.",
+      "explainer": "A non-profit community producing free, vendor-neutral application-security resources, best known for the Top 10: a periodically updated, ranked list of the most critical web-application risks drawn from real-world data. Developers code against it, WAFs ship rule sets named after it, and the 2025 edition keeps Broken Access Control at number one while adding Software Supply Chain Failures — but it is a floor for awareness, not a complete security programme.",
+      "related": [
+        "websec",
+        "waf",
+        "cve"
+      ]
+    },
+    {
+      "id": "pam",
+      "name": "PAM",
+      "fullName": "Privileged Access Management",
+      "aliases": [
+        "privileged accounts",
+        "just-in-time access",
+        "credential vaulting",
+        "session recording"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Tight control over the powerful admin accounts attackers most want.",
+      "explainer": "Wraps the handful of privileged accounts — domain admins, root, cloud owners — that can do catastrophic damage in extra control: vaulting their credentials, brokering sessions through a gateway that records keystrokes, and increasingly granting access just-in-time so privileges are elevated for one task and a short window, then revoked. A higher-assurance complement to ordinary identity management, it shrinks the standing attack surface and supplies the audit trail regulators expect.",
+      "related": [
+        "idp",
+        "vault",
+        "rbac",
+        "ssh"
       ]
     },
     {
@@ -520,6 +899,58 @@
       ]
     },
     {
+      "id": "pki",
+      "name": "PKI",
+      "fullName": "Public Key Infrastructure",
+      "aliases": [
+        "certificate authority",
+        "CA",
+        "X.509",
+        "root of trust",
+        "certificate chain",
+        "ACME"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The certificate-and-trust system that lets you prove who owns a public key.",
+      "explainer": "The machinery that binds a public key to an identity and lets a stranger trust that binding: a Certificate Authority signs X.509 certificates, and anyone holding the CA's certificate can verify the signature up a chain to a trusted root. It is the foundation under TLS, mTLS, code signing, and SPIFFE — every browser padlock is a PKI trust decision — with ACME automating issuance at scale; get the root of trust wrong and everything above it falls.",
+      "related": [
+        "tls",
+        "mtls",
+        "spiffe",
+        "ssh"
+      ]
+    },
+    {
+      "id": "pqc",
+      "name": "Post-Quantum Cryptography",
+      "fullName": "Post-Quantum Cryptography (PQC)",
+      "aliases": [
+        "PQC",
+        "ML-KEM",
+        "Kyber",
+        "ML-DSA",
+        "Dilithium",
+        "quantum-safe",
+        "harvest now decrypt later"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "New algorithms designed to survive attack by a large quantum computer.",
+      "explainer": "Replaces today's RSA and elliptic-curve public-key crypto — breakable by a large quantum computer running Shor's algorithm — with algorithms built on problems, chiefly structured lattices, that resist both classical and quantum attack. NIST finalised the first standards in 2024 (ML-KEM, ML-DSA, SLH-DSA); the urgency is 'harvest now, decrypt later', so long-lived secrets need protecting today, with rollout happening as a hybrid layer alongside classical algorithms in TLS.",
+      "related": [
+        "tls",
+        "pki",
+        "mtls"
+      ]
+    },
+    {
       "id": "quic",
       "name": "QUIC",
       "fullName": "Quick UDP Internet Connections",
@@ -562,6 +993,31 @@
       "explainer": "Centralises network access control: when you join Wi-Fi, a VPN, or a switch port, the access device asks a RADIUS server to authenticate you, decide what you may do, and log the session. It is the long-standing AAA backbone separating the access device from the identity store.",
       "related": [
         "saml",
+        "idp"
+      ]
+    },
+    {
+      "id": "rbac",
+      "name": "RBAC & ABAC",
+      "fullName": "Role- / Attribute-Based Access Control",
+      "aliases": [
+        "role-based access control",
+        "attribute-based access control",
+        "authorization",
+        "least privilege",
+        "entitlements"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Two models for deciding who may do what — by role, or by attributes and context.",
+      "explainer": "The two dominant models for deciding what an authenticated user may do. Role-Based Access Control groups permissions into roles and assigns people to them — simple but coarse and prone to role explosion — while Attribute-Based Access Control evaluates rules over subject, resource, action, and environment for fine-grained, context-aware decisions; zero trust leans toward ABAC because trust should follow live context, not a static role.",
+      "related": [
+        "peppdp",
+        "opa",
+        "zerotrust",
         "idp"
       ]
     },
@@ -634,6 +1090,32 @@
       ]
     },
     {
+      "id": "sbom",
+      "name": "SBOM & SLSA",
+      "fullName": "Software Supply-Chain Integrity",
+      "aliases": [
+        "software bill of materials",
+        "SLSA",
+        "provenance",
+        "CycloneDX",
+        "SPDX",
+        "supply chain"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Knowing exactly what is in your software, and proving how it was built.",
+      "explainer": "Modern apps are assembled from hundreds of dependencies, so attackers target the supply chain rather than the app itself. A Software Bill of Materials is a machine-readable inventory (CycloneDX or SPDX) of every component and version, so the next Log4Shell can be answered in seconds, while SLSA raises how tamper-resistant the build pipeline is and emits signed provenance — together making the supply chain auditable, now its own category in the OWASP Top 10:2025.",
+      "related": [
+        "sigstore",
+        "docker",
+        "cve",
+        "opa"
+      ]
+    },
+    {
       "id": "scim",
       "name": "SCIM",
       "fullName": "System for Cross-domain Identity Management",
@@ -681,6 +1163,58 @@
       ]
     },
     {
+      "id": "vault",
+      "name": "Secrets Management",
+      "fullName": "Secrets Management (HashiCorp Vault)",
+      "aliases": [
+        "HashiCorp Vault",
+        "secret store",
+        "dynamic secrets",
+        "credential rotation",
+        "KMS"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A central, audited vault for the passwords, keys, and tokens that machines need.",
+      "explainer": "Hard-coding credentials in config or source control leaks them, so a secrets manager such as HashiCorp Vault stores database passwords, API keys, and certificates centrally — encrypted, behind authentication and fine-grained policy — and releases them only to identities that prove they should have them. Its strongest pattern is dynamic secrets: short-lived credentials generated on demand and auto-revoked, every access logged, so in zero trust a workload (often via SPIFFE) fetches exactly what it needs, just in time.",
+      "related": [
+        "pki",
+        "mtls",
+        "spiffe",
+        "kubernetes"
+      ]
+    },
+    {
+      "id": "servicemesh",
+      "name": "Service Mesh",
+      "fullName": "Service Mesh (Istio · Linkerd · Envoy)",
+      "aliases": [
+        "Istio",
+        "Linkerd",
+        "Envoy",
+        "sidecar",
+        "data plane",
+        "control plane"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A networking layer that gives every service identity, mTLS, and traffic control for free.",
+      "explainer": "Moves the cross-cutting concerns of service-to-service traffic — mutual TLS, retries, timeouts, load balancing, observability — out of application code and into a dedicated layer: a sidecar proxy (commonly Envoy) beside each workload forms the data plane, configured by a control plane like Istio or Linkerd. Every call becomes a mutually authenticated, policy-checked hop, delivering encrypted east-west traffic and workload identity with no app changes — at the cost of operational complexity and an extra hop.",
+      "related": [
+        "mtls",
+        "spiffe",
+        "kubernetes",
+        "microseg"
+      ]
+    },
+    {
       "id": "siem",
       "name": "SIEM",
       "fullName": "Security Information and Event Management",
@@ -700,6 +1234,53 @@
         "firewall",
         "zerotrust",
         "radius"
+      ]
+    },
+    {
+      "id": "sigstore",
+      "name": "Sigstore",
+      "fullName": "Keyless Artifact Signing (Cosign)",
+      "aliases": [
+        "Cosign",
+        "Fulcio",
+        "Rekor",
+        "keyless signing",
+        "transparency log"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Easy, keyless signing of software artifacts backed by a public transparency log.",
+      "explainer": "Removes the long-lived signing key that, once leaked, forges trust: its Cosign tool signs an artifact with a short-lived certificate that Fulcio issues against an OIDC identity, so you sign as who you are rather than as a key you must hoard. Every signature is recorded in Rekor, a public append-only transparency log, making verifiable provenance practical at ecosystem scale and pairing naturally with SBOMs and SLSA.",
+      "related": [
+        "sbom",
+        "pki",
+        "docker"
+      ]
+    },
+    {
+      "id": "soar",
+      "name": "SOAR",
+      "fullName": "Security Orchestration, Automation & Response",
+      "aliases": [
+        "playbook",
+        "automation",
+        "incident response",
+        "orchestration"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Automation that turns security alerts into executed response playbooks.",
+      "explainer": "Automates the repetitive triage that drowns security teams by connecting the tools an analyst would otherwise click through — SIEM, EDR, threat intelligence, ticketing, firewalls — and running codified playbooks that enrich an alert, judge whether it is real, and act: isolate a host, disable an account, block an IP. Sitting atop SIEM detection in a modern SOC, it cuts response from hours to seconds, with destructive steps gated behind human approval lest it automate a wrong decision at machine speed.",
+      "related": [
+        "siem",
+        "edr",
+        "idsips"
       ]
     },
     {
@@ -748,6 +1329,32 @@
       ]
     },
     {
+      "id": "tailscale",
+      "name": "Tailscale",
+      "fullName": "WireGuard-Based Mesh VPN",
+      "aliases": [
+        "Headscale",
+        "mesh VPN",
+        "tailnet",
+        "DERP",
+        "overlay network"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "A zero-config mesh VPN that connects your devices directly over WireGuard.",
+      "explainer": "Instead of backhauling every device through a central gateway, builds a flat mesh in which devices connect directly over encrypted WireGuard tunnels; a coordination server handles authentication via your existing identity provider and key distribution, then steps out of the data path, with NAT traversal and DERP relays making peer-to-peer work behind firewalls. Access follows identity and ACLs rather than network location, making this tailnet a practical on-ramp to zero-trust networking and a peer to OpenZiti.",
+      "related": [
+        "wireguard",
+        "vpn",
+        "zerotrust",
+        "openziti"
+      ]
+    },
+    {
       "id": "tcpip",
       "name": "TCP/IP",
       "fullName": "Transmission Control Protocol / Internet Protocol",
@@ -793,6 +1400,30 @@
       ]
     },
     {
+      "id": "tpm",
+      "name": "TPM & Secure Boot",
+      "fullName": "Hardware Root of Trust",
+      "aliases": [
+        "trusted platform module",
+        "secure boot",
+        "measured boot",
+        "attestation",
+        "UEFI"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A hardware chip that protects keys and proves a machine booted clean.",
+      "explainer": "A tamper-resistant chip that generates and stores cryptographic keys so they never leave the hardware, and measures the software loaded at boot; Secure Boot verifies each startup stage against trusted signatures while measured boot records hashes into the chip's registers. A remote server can then ask the TPM to attest that the device booted into a known-good state — a hardware root of trust underpinning disk-encryption keys, device identity, and the device-posture checks zero trust relies on.",
+      "related": [
+        "edr",
+        "pki",
+        "mtls"
+      ]
+    },
+    {
       "id": "vlan",
       "name": "VLAN",
       "fullName": "Virtual Local Area Network",
@@ -834,6 +1465,30 @@
         "ipsec",
         "tls",
         "sase"
+      ]
+    },
+    {
+      "id": "waf",
+      "name": "WAF",
+      "fullName": "Web Application Firewall",
+      "aliases": [
+        "OWASP CRS",
+        "layer 7 firewall",
+        "application firewall",
+        "virtual patching"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A firewall that inspects HTTP to block web attacks a network firewall cannot see.",
+      "explainer": "Sits in front of an application and inspects HTTP at layer 7, blocking exploits — SQL injection, cross-site scripting, path traversal — that a packet-filtering network firewall, seeing only ports and addresses, would happily pass. It matches traffic against rule sets like the OWASP Core Rule Set and can virtually patch a known flaw by dropping the malicious pattern until the code is fixed, a control at the application edge that complements — but never replaces — secure code.",
+      "related": [
+        "firewall",
+        "http",
+        "owasp",
+        "websec"
       ]
     },
     {
@@ -926,6 +1581,32 @@
         "peppdp",
         "idp",
         "sase"
+      ]
+    },
+    {
+      "id": "ztna",
+      "name": "ZTNA",
+      "fullName": "Zero Trust Network Access",
+      "aliases": [
+        "zero trust network access",
+        "software-defined perimeter",
+        "SDP",
+        "identity-aware proxy",
+        "BeyondCorp"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The VPN replacement that grants access to single apps, never the whole network.",
+      "explainer": "Puts zero-trust principles on the wire and is the category replacing the traditional VPN: where a VPN drops an authenticated user onto the network to roam, ZTNA brokers access to one specific application at a time, re-verifying identity and device posture on every request and keeping everything else invisible. Apps connect outbound to the broker so there is no inbound port to attack — the software-defined-perimeter idea, pioneered by Google's BeyondCorp and now a core component of SASE/SSE.",
+      "related": [
+        "zerotrust",
+        "sase",
+        "openziti",
+        "vpn"
       ]
     }
   ],
@@ -1379,6 +2060,441 @@
       "source": "wireguard",
       "target": "tls",
       "type": "alternative"
+    },
+    {
+      "source": "apigateway",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "oauth",
+      "target": "apigateway",
+      "type": "enables"
+    },
+    {
+      "source": "apigateway",
+      "target": "grpc",
+      "type": "same-category"
+    },
+    {
+      "source": "apigateway",
+      "target": "loadbalancer",
+      "type": "same-category"
+    },
+    {
+      "source": "casb",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "idp",
+      "target": "casb",
+      "type": "enables"
+    },
+    {
+      "source": "casb",
+      "target": "dlp",
+      "type": "same-category"
+    },
+    {
+      "source": "cilium",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "cilium",
+      "target": "microseg",
+      "type": "enables"
+    },
+    {
+      "source": "cilium",
+      "target": "servicemesh",
+      "type": "alternative"
+    },
+    {
+      "source": "websec",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "websec",
+      "target": "cors",
+      "type": "same-category"
+    },
+    {
+      "source": "websec",
+      "target": "pkce",
+      "type": "same-category"
+    },
+    {
+      "source": "websec",
+      "target": "waf",
+      "type": "same-category"
+    },
+    {
+      "source": "cve",
+      "target": "owasp",
+      "type": "same-category"
+    },
+    {
+      "source": "cve",
+      "target": "sbom",
+      "type": "same-category"
+    },
+    {
+      "source": "cve",
+      "target": "siem",
+      "type": "same-category"
+    },
+    {
+      "source": "dlp",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "dlp",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "edr",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "edr",
+      "target": "soar",
+      "type": "enables"
+    },
+    {
+      "source": "edr",
+      "target": "idsips",
+      "type": "same-category"
+    },
+    {
+      "source": "edr",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "tpm",
+      "target": "edr",
+      "type": "same-category"
+    },
+    {
+      "source": "idsips",
+      "target": "firewall",
+      "type": "same-category"
+    },
+    {
+      "source": "idsips",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "idsips",
+      "target": "soar",
+      "type": "enables"
+    },
+    {
+      "source": "waf",
+      "target": "firewall",
+      "type": "same-category"
+    },
+    {
+      "source": "waf",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "owasp",
+      "target": "waf",
+      "type": "enables"
+    },
+    {
+      "source": "kerberos",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "kerberos",
+      "target": "ldap",
+      "type": "same-category"
+    },
+    {
+      "source": "kerberos",
+      "target": "ssh",
+      "type": "same-category"
+    },
+    {
+      "source": "ldap",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "ldap",
+      "target": "radius",
+      "type": "enables"
+    },
+    {
+      "source": "ldap",
+      "target": "saml",
+      "type": "enables"
+    },
+    {
+      "source": "mfa",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "mfa",
+      "target": "oauth",
+      "type": "same-category"
+    },
+    {
+      "source": "mfa",
+      "target": "oidc",
+      "type": "same-category"
+    },
+    {
+      "source": "mfa",
+      "target": "pkce",
+      "type": "same-category"
+    },
+    {
+      "source": "nist207",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "peppdp",
+      "target": "nist207",
+      "type": "part-of"
+    },
+    {
+      "source": "nist207",
+      "target": "ztna",
+      "type": "same-category"
+    },
+    {
+      "source": "nist207",
+      "target": "microseg",
+      "type": "same-category"
+    },
+    {
+      "source": "opa",
+      "target": "peppdp",
+      "type": "enables"
+    },
+    {
+      "source": "opa",
+      "target": "rbac",
+      "type": "enables"
+    },
+    {
+      "source": "opa",
+      "target": "zerotrust",
+      "type": "enables"
+    },
+    {
+      "source": "opa",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "sbom",
+      "target": "opa",
+      "type": "same-category"
+    },
+    {
+      "source": "owasp",
+      "target": "websec",
+      "type": "same-category"
+    },
+    {
+      "source": "pam",
+      "target": "idp",
+      "type": "same-category"
+    },
+    {
+      "source": "pam",
+      "target": "rbac",
+      "type": "same-category"
+    },
+    {
+      "source": "pam",
+      "target": "ssh",
+      "type": "same-category"
+    },
+    {
+      "source": "pam",
+      "target": "vault",
+      "type": "same-category"
+    },
+    {
+      "source": "pki",
+      "target": "tls",
+      "type": "enables"
+    },
+    {
+      "source": "pki",
+      "target": "mtls",
+      "type": "enables"
+    },
+    {
+      "source": "pki",
+      "target": "spiffe",
+      "type": "enables"
+    },
+    {
+      "source": "sigstore",
+      "target": "pki",
+      "type": "requires"
+    },
+    {
+      "source": "pki",
+      "target": "ssh",
+      "type": "same-category"
+    },
+    {
+      "source": "tpm",
+      "target": "pki",
+      "type": "same-category"
+    },
+    {
+      "source": "vault",
+      "target": "pki",
+      "type": "same-category"
+    },
+    {
+      "source": "pqc",
+      "target": "pki",
+      "type": "same-category"
+    },
+    {
+      "source": "pqc",
+      "target": "tls",
+      "type": "same-category"
+    },
+    {
+      "source": "pqc",
+      "target": "mtls",
+      "type": "same-category"
+    },
+    {
+      "source": "rbac",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "rbac",
+      "target": "idp",
+      "type": "same-category"
+    },
+    {
+      "source": "rbac",
+      "target": "peppdp",
+      "type": "enables"
+    },
+    {
+      "source": "sbom",
+      "target": "sigstore",
+      "type": "same-category"
+    },
+    {
+      "source": "sbom",
+      "target": "docker",
+      "type": "same-category"
+    },
+    {
+      "source": "sigstore",
+      "target": "docker",
+      "type": "same-category"
+    },
+    {
+      "source": "servicemesh",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "servicemesh",
+      "target": "microseg",
+      "type": "enables"
+    },
+    {
+      "source": "mtls",
+      "target": "servicemesh",
+      "type": "enables"
+    },
+    {
+      "source": "spiffe",
+      "target": "servicemesh",
+      "type": "enables"
+    },
+    {
+      "source": "mtls",
+      "target": "tpm",
+      "type": "same-category"
+    },
+    {
+      "source": "vault",
+      "target": "mtls",
+      "type": "same-category"
+    },
+    {
+      "source": "siem",
+      "target": "soar",
+      "type": "enables"
+    },
+    {
+      "source": "spiffe",
+      "target": "vault",
+      "type": "enables"
+    },
+    {
+      "source": "vault",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "tailscale",
+      "target": "wireguard",
+      "type": "requires"
+    },
+    {
+      "source": "tailscale",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "tailscale",
+      "target": "openziti",
+      "type": "alternative"
+    },
+    {
+      "source": "tailscale",
+      "target": "zerotrust",
+      "type": "enables"
+    },
+    {
+      "source": "ztna",
+      "target": "zerotrust",
+      "type": "part-of"
+    },
+    {
+      "source": "ztna",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "ztna",
+      "target": "vpn",
+      "type": "alternative"
+    },
+    {
+      "source": "ztna",
+      "target": "openziti",
+      "type": "same-category"
     }
   ]
 }
