@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ZTA Visual Mindmap — Zero-Trust, Networking &amp; IT Terms, Mapped</title>
-  <meta name="description" content="An interactive force-directed mindmap of 41 zero-trust, networking, and IT terms — colour-coded by category, with typed relationships, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
+  <meta name="description" content="An interactive mindmap of 76 zero-trust, networking, and IT terms — colour-coded into nine functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'/%3E%3Ccircle cx='6' cy='12' r='3'/%3E%3Ccircle cx='18' cy='19' r='3'/%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'/%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -330,6 +331,9 @@
     .tag .swatch { width: 8px; height: 8px; border-radius: 50%; }
     .tag.prov { background: var(--bg); color: var(--text-muted); }
     .tag.prov svg { width: 13px; height: 13px; }
+    .source-row { margin-bottom: var(--space-5); font-size: var(--fs-small); }
+    .source-row a { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 700; }
+    .source-row a svg { width: 14px; height: 14px; flex: 0 0 auto; }
 
     .section-label { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); font-weight: 700; margin-bottom: var(--space-3); }
     .rel-group { margin-bottom: var(--space-4); }
@@ -390,7 +394,7 @@
 <body>
   <header class="appbar">
     <div class="appbar-row">
-      <a class="brand" href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="ZTA Visual Mindmap home">
+      <a class="brand" href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="ZTA Visual Glossary — the source project">
         <span class="brand-mark" aria-hidden="true">
           <!-- Lucide: share-2 (network) -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -401,7 +405,7 @@
       <div class="search" id="search">
         <!-- Lucide: search -->
         <svg class="search-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="search-input" type="search" placeholder="Search 68 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
+        <input id="search-input" type="search" placeholder="Search 76 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
         <span id="search-hint" class="visually-hidden">Type to filter and locate terms in the map.</span>
         <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
           <!-- Lucide: x -->
@@ -438,7 +442,7 @@
       </div>
     </div>
 
-    <div class="toolbar" role="group" aria-label="Category filters and view controls">
+    <div class="toolbar" role="group" aria-label="Family filters and view controls">
       <div class="filters" id="filters">
         <span class="filters-label">Families</span>
         <!-- chips injected -->
@@ -509,7 +513,7 @@
 
   <footer class="appfoot">
     <span class="credit">
-      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 68 terms, 177 typed relationships.
+      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 76 terms, 208 typed relationships.
     </span>
     <span>Interactive mindmap built with <code>skill-style-guide</code> + <code>skill-build-educational-site</code>.</span>
   </footer>
@@ -541,7 +545,11 @@
         "grpc",
         "loadbalancer",
         "http"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-204 — Microservices Security",
+        "url": "https://csrc.nist.gov/pubs/sp/800/204/final"
+      }
     },
     {
       "id": "bgp",
@@ -563,7 +571,74 @@
         "tcpip",
         "nat",
         "dns"
-      ]
+      ],
+      "source": {
+        "label": "RFC 4271 — BGP-4",
+        "url": "https://www.rfc-editor.org/info/rfc4271"
+      }
+    },
+    {
+      "id": "bluefield",
+      "name": "BlueField",
+      "fullName": "NVIDIA Data Processing Unit (DPU)",
+      "aliases": [
+        "NVIDIA BlueField",
+        "BlueField-3",
+        "BlueField-2",
+        "BlueField-4",
+        "BF3",
+        "ConnectX",
+        "DPU"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "NVIDIA's DPU: a ConnectX NIC fused with Arm cores and accelerators that runs the data center's networking, storage, and zero-trust security on the card.",
+      "explainer": "NVIDIA's DPU product line: each card pairs a ConnectX network ASIC with Arm cores running their own Linux, isolated from the host across PCIe, so infrastructure and security services run on the card itself. A hardware root of trust proves the card and its software are unmodified, IPsec/TLS run at line rate, and DOCA Argus reads host memory from the card to catch malware that host agents would miss. BlueField-3 (400 Gb/s) is the current production generation, with BlueField-4 announced for the AI-factory era.",
+      "related": [
+        "dpu",
+        "doca",
+        "supernic",
+        "tpm",
+        "microseg",
+        "ipsec"
+      ],
+      "source": {
+        "label": "NVIDIA — BlueField Networking Platform",
+        "url": "https://www.nvidia.com/en-us/networking/products/data-processing-unit/"
+      }
+    },
+    {
+      "id": "bola",
+      "name": "BOLA",
+      "fullName": "Broken Object Level Authorization",
+      "aliases": [
+        "IDOR",
+        "insecure direct object reference",
+        "API1:2023",
+        "object-level authorization",
+        "broken access control"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Swap the ID in an API request and read another user's object — because the server never checked it was yours.",
+      "explainer": "The most common API flaw: an endpoint authenticates the caller but never checks that the requested object belongs to them, so changing /orders/1001 to /orders/1002 returns someone else's record. The API-era name for IDOR, it tops the OWASP API Security Top 10 (API1:2023); the fix is a server-side ownership or policy check on every client-supplied identifier — unpredictable UUIDs raise the bar but are obscurity, not authorization.",
+      "related": [
+        "owasp",
+        "apigateway",
+        "rbac",
+        "websec"
+      ],
+      "source": {
+        "label": "OWASP API Security Top 10 — API1:2023 BOLA",
+        "url": "https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/"
+      }
     },
     {
       "id": "casb",
@@ -586,7 +661,11 @@
         "sase",
         "dlp",
         "idp"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — Cloud Access Security Broker",
+        "url": "https://csrc.nist.gov/glossary/term/cloud_access_security_broker"
+      }
     },
     {
       "id": "cilium",
@@ -611,7 +690,11 @@
         "kubernetes",
         "microseg",
         "servicemesh"
-      ]
+      ],
+      "source": {
+        "label": "cilium.io",
+        "url": "https://cilium.io/"
+      }
     },
     {
       "id": "cors",
@@ -634,34 +717,11 @@
         "http",
         "oauth",
         "zerotrust"
-      ]
-    },
-    {
-      "id": "websec",
-      "name": "CSRF / XSS / CSP",
-      "fullName": "Web App Attacks & Content Security Policy",
-      "aliases": [
-        "cross-site request forgery",
-        "cross-site scripting",
-        "content security policy",
-        "same-origin",
-        "SameSite",
-        "injection"
       ],
-      "category": "Security Technology",
-      "types": [
-        "Security Technology",
-        "Protocol"
-      ],
-      "provenance": "Open standard",
-      "tldr": "The two classic browser attacks — and the header that helps shut them down.",
-      "explainer": "The classic browser attacks and their defences: Cross-Site Scripting injects attacker script that runs with the victim's session, while Cross-Site Request Forgery tricks an authenticated browser into firing unwanted state-changing requests. They are countered by output escaping, anti-CSRF tokens and SameSite cookies, and a Content-Security-Policy header that whitelists what a page may load — defence in depth, since none suffices alone.",
-      "related": [
-        "cors",
-        "http",
-        "pkce",
-        "waf"
-      ]
+      "source": {
+        "label": "WHATWG Fetch standard — CORS",
+        "url": "https://fetch.spec.whatwg.org/"
+      }
     },
     {
       "id": "cve",
@@ -685,7 +745,11 @@
         "sbom",
         "owasp",
         "siem"
-      ]
+      ],
+      "source": {
+        "label": "CVE Program",
+        "url": "https://www.cve.org/"
+      }
     },
     {
       "id": "dhcp",
@@ -707,7 +771,11 @@
         "dns",
         "nat",
         "tcpip"
-      ]
+      ],
+      "source": {
+        "label": "RFC 2131 — DHCP",
+        "url": "https://www.rfc-editor.org/info/rfc2131"
+      }
     },
     {
       "id": "django",
@@ -723,11 +791,15 @@
       ],
       "provenance": "Open Source",
       "tldr": "A batteries-included Python web framework for building sites fast.",
-      "explainer": "A batteries-included Python web framework shipping an ORM, admin, auth, and routing, following a model-template-view pattern. Its convention-over-configuration philosophy handles the plumbing so developers can focus on the application.",
+      "explainer": "A batteries-included Python web framework shipping an ORM, admin, auth, and routing, following a model-template-view pattern. Its philosophy is to handle the plumbing so developers can focus on the application.",
       "related": [
         "react",
         "http"
-      ]
+      ],
+      "source": {
+        "label": "djangoproject.com",
+        "url": "https://www.djangoproject.com/"
+      }
     },
     {
       "id": "dlp",
@@ -750,7 +822,11 @@
         "casb",
         "sase",
         "siem"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — Data Loss Prevention",
+        "url": "https://csrc.nist.gov/glossary/term/data_loss_prevention"
+      }
     },
     {
       "id": "dns",
@@ -772,7 +848,42 @@
         "tcpip",
         "http",
         "dhcp"
-      ]
+      ],
+      "source": {
+        "label": "RFC 1035 — Domain Names",
+        "url": "https://www.rfc-editor.org/info/rfc1035"
+      }
+    },
+    {
+      "id": "doca",
+      "name": "DOCA",
+      "fullName": "NVIDIA DPU Software Framework",
+      "aliases": [
+        "NVIDIA DOCA",
+        "DOCA SDK",
+        "DOCA Argus",
+        "App Shield",
+        "DOCA Flow"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework",
+        "Security Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "The SDK for BlueField — 'what CUDA is to the GPU, DOCA is to the DPU' — with libraries and services to offload networking, storage, and zero-trust security.",
+      "explainer": "NVIDIA's software framework for programming BlueField DPUs and SuperNICs: hardware drivers at the base, C/C++ libraries in the middle, and containerized microservices on top, exposed through standard interfaces such as DPDK and SPDK. Its zero-trust components run on the DPU's isolated cores — DOCA Argus inspects the host's live memory and processes agentlessly, App Shield monitors process integrity, and IPsec/TLS gateways encrypt at wire speed — and the common interface keeps that software portable across BlueField generations.",
+      "related": [
+        "bluefield",
+        "dpu",
+        "supernic",
+        "edr",
+        "microseg"
+      ],
+      "source": {
+        "label": "NVIDIA — DOCA Software Framework",
+        "url": "https://developer.nvidia.com/networking/doca"
+      }
     },
     {
       "id": "docker",
@@ -792,7 +903,43 @@
       "related": [
         "kubernetes",
         "grpc"
-      ]
+      ],
+      "source": {
+        "label": "Docker documentation",
+        "url": "https://docs.docker.com/"
+      }
+    },
+    {
+      "id": "dpu",
+      "name": "DPU",
+      "fullName": "Data Processing Unit",
+      "aliases": [
+        "data processing unit",
+        "SmartNIC",
+        "infrastructure processor",
+        "IPU",
+        "infrastructure processing unit"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A programmable processor on the network card that offloads networking, storage, and security from the host — and runs them in its own isolated trust domain.",
+      "explainer": "A system-on-chip on the network card that fuses a high-speed NIC with its own general-purpose cores (typically Arm) and accelerators, running packet switching, encryption, storage, and firewalling in an operating system the host cannot see or control. Because traffic passes through the DPU before it reaches the host, enforcement survives even a fully compromised host OS — a hardware zero-trust enforcement point on every server. NVIDIA BlueField, AWS Nitro, Intel IPU, and AMD Pensando are the leading implementations.",
+      "related": [
+        "bluefield",
+        "doca",
+        "supernic",
+        "microseg",
+        "ipsec",
+        "tpm"
+      ],
+      "source": {
+        "label": "NVIDIA — What Is a DPU?",
+        "url": "https://blogs.nvidia.com/blog/whats-a-dpu-data-processing-unit/"
+      }
     },
     {
       "id": "edr",
@@ -817,7 +964,11 @@
         "soar",
         "zerotrust",
         "idsips"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — Endpoint Detection & Response",
+        "url": "https://csrc.nist.gov/glossary/term/endpoint_detection_and_response"
+      }
     },
     {
       "id": "firewall",
@@ -841,7 +992,11 @@
         "nat",
         "vlan",
         "siem"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-41 Rev. 1 — Firewall Guidelines",
+        "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final"
+      }
     },
     {
       "id": "grpc",
@@ -864,7 +1019,11 @@
         "http",
         "kubernetes",
         "mtls"
-      ]
+      ],
+      "source": {
+        "label": "gRPC documentation",
+        "url": "https://grpc.io/docs/"
+      }
     },
     {
       "id": "http",
@@ -887,7 +1046,11 @@
         "tls",
         "tcpip",
         "grpc"
-      ]
+      ],
+      "source": {
+        "label": "RFC 9110 — HTTP Semantics",
+        "url": "https://www.rfc-editor.org/info/rfc9110"
+      }
     },
     {
       "id": "idp",
@@ -911,7 +1074,11 @@
         "saml",
         "zerotrust",
         "radius"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — Identity Provider",
+        "url": "https://csrc.nist.gov/glossary/term/identity_provider"
+      }
     },
     {
       "id": "idsips",
@@ -930,13 +1097,17 @@
       ],
       "provenance": "Open standard",
       "tldr": "Sensors that spot attacks in network traffic — and optionally block them inline.",
-      "explainer": "Inspects network or host activity for attack signatures, protocol anomalies, or deviations from a baseline; an IDS raises an alert, while an IPS sits inline and can drop or reset the malicious connection. Open-source engines like Snort and Suricata pioneered the signature model, feeding a SIEM for correlation and complementing endpoint EDR by watching the wire — at the cost of false positives, and the risk of blocking legitimate traffic inline.",
+      "explainer": "Inspects network or host activity for attack signatures, protocol anomalies, or deviations from a baseline; an IDS raises an alert, while an IPS sits inline and can drop or reset the malicious connection. Open-source engines like Snort and Suricata popularised the signature model, feeding a SIEM for correlation and complementing endpoint EDR by watching the wire — at the cost of false positives, and the risk of blocking legitimate traffic inline.",
       "related": [
         "firewall",
         "siem",
         "edr",
         "soar"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-94 — Guide to IDPS",
+        "url": "https://csrc.nist.gov/pubs/sp/800/94/final"
+      }
     },
     {
       "id": "ipsec",
@@ -959,7 +1130,11 @@
         "vpn",
         "wireguard",
         "tls"
-      ]
+      ],
+      "source": {
+        "label": "RFC 4301 — IPsec Architecture",
+        "url": "https://www.rfc-editor.org/info/rfc4301"
+      }
     },
     {
       "id": "jwt",
@@ -981,7 +1156,11 @@
         "oauth",
         "saml",
         "spiffe"
-      ]
+      ],
+      "source": {
+        "label": "RFC 7519 — JSON Web Token",
+        "url": "https://www.rfc-editor.org/info/rfc7519"
+      }
     },
     {
       "id": "kerberos",
@@ -1007,7 +1186,11 @@
         "ldap",
         "idp",
         "ssh"
-      ]
+      ],
+      "source": {
+        "label": "RFC 4120 — Kerberos V5",
+        "url": "https://www.rfc-editor.org/info/rfc4120"
+      }
     },
     {
       "id": "kubernetes",
@@ -1030,7 +1213,11 @@
         "docker",
         "loadbalancer",
         "spiffe"
-      ]
+      ],
+      "source": {
+        "label": "Kubernetes documentation — Concepts",
+        "url": "https://kubernetes.io/docs/concepts/"
+      }
     },
     {
       "id": "ldap",
@@ -1057,7 +1244,11 @@
         "radius",
         "kerberos",
         "saml"
-      ]
+      ],
+      "source": {
+        "label": "RFC 4511 — LDAP Protocol",
+        "url": "https://www.rfc-editor.org/info/rfc4511"
+      }
     },
     {
       "id": "loadbalancer",
@@ -1079,7 +1270,11 @@
         "tls",
         "kubernetes",
         "http"
-      ]
+      ],
+      "source": {
+        "label": "HAProxy documentation",
+        "url": "https://docs.haproxy.org/"
+      }
     },
     {
       "id": "mfa",
@@ -1108,7 +1303,11 @@
         "oidc",
         "idp",
         "pkce"
-      ]
+      ],
+      "source": {
+        "label": "W3C WebAuthn Level 2",
+        "url": "https://www.w3.org/TR/webauthn-2/"
+      }
     },
     {
       "id": "microseg",
@@ -1131,12 +1330,16 @@
         "zerotrust",
         "vlan",
         "firewall"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-215 — Secure Enterprise Network Landscape",
+        "url": "https://csrc.nist.gov/pubs/sp/800/215/final"
+      }
     },
     {
       "id": "mqtt",
       "name": "MQTT",
-      "fullName": "Message Queuing Telemetry Transport",
+      "fullName": "MQTT (historically 'MQ Telemetry Transport' — no longer an acronym)",
       "aliases": [
         "pub/sub",
         "broker",
@@ -1152,7 +1355,11 @@
       "related": [
         "tcpip",
         "grpc"
-      ]
+      ],
+      "source": {
+        "label": "OASIS MQTT 5.0 specification",
+        "url": "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html"
+      }
     },
     {
       "id": "mtls",
@@ -1174,7 +1381,11 @@
         "tls",
         "zerotrust",
         "spiffe"
-      ]
+      ],
+      "source": {
+        "label": "RFC 8446 — TLS 1.3 (mutual authentication)",
+        "url": "https://www.rfc-editor.org/info/rfc8446"
+      }
     },
     {
       "id": "nat",
@@ -1196,7 +1407,11 @@
         "tcpip",
         "firewall",
         "vpn"
-      ]
+      ],
+      "source": {
+        "label": "RFC 3022 — Traditional IP NAT",
+        "url": "https://www.rfc-editor.org/info/rfc3022"
+      }
     },
     {
       "id": "nist207",
@@ -1222,7 +1437,11 @@
         "peppdp",
         "ztna",
         "microseg"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-207 — Zero Trust Architecture",
+        "url": "https://csrc.nist.gov/pubs/sp/800/207/final"
+      }
     },
     {
       "id": "oauth",
@@ -1245,7 +1464,11 @@
         "jwt",
         "saml",
         "idp"
-      ]
+      ],
+      "source": {
+        "label": "RFC 6749 — OAuth 2.0 Framework",
+        "url": "https://www.rfc-editor.org/info/rfc6749"
+      }
     },
     {
       "id": "oidc",
@@ -1270,7 +1493,11 @@
         "jwt",
         "idp",
         "saml"
-      ]
+      ],
+      "source": {
+        "label": "OpenID Connect Core 1.0",
+        "url": "https://openid.net/specs/openid-connect-core-1_0.html"
+      }
     },
     {
       "id": "opa",
@@ -1294,7 +1521,11 @@
         "rbac",
         "kubernetes",
         "zerotrust"
-      ]
+      ],
+      "source": {
+        "label": "Open Policy Agent documentation",
+        "url": "https://www.openpolicyagent.org/docs"
+      }
     },
     {
       "id": "openziti",
@@ -1319,7 +1550,76 @@
         "mtls",
         "spiffe",
         "vpn"
-      ]
+      ],
+      "source": {
+        "label": "openziti.io",
+        "url": "https://openziti.io/"
+      }
+    },
+    {
+      "id": "ovn",
+      "name": "Open Virtual Network",
+      "fullName": "OVN — SDN control plane for OVS",
+      "aliases": [
+        "OVN",
+        "ovn-kubernetes",
+        "logical switch",
+        "logical router",
+        "Neutron OVN",
+        "northbound database",
+        "distributed firewall"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "An SDN control plane on top of Open vSwitch that compiles logical switches, routers, and ACLs into the flows each host runs — the virtual network behind OpenStack and Kubernetes.",
+      "explainer": "The SDN control plane on top of Open vSwitch: you declare logical switches, routers, and ACLs in its northbound database, and OVN compiles that intent into the OpenFlow rules every OVS instance runs, spanning hosts as one overlay network. Per-port ACLs and a stateful distributed firewall enforce east-west isolation in the data plane itself — the microsegmentation engine behind OpenStack Neutron and the ovn-kubernetes CNI.",
+      "related": [
+        "ovs",
+        "microseg",
+        "kubernetes",
+        "cilium",
+        "servicemesh"
+      ],
+      "source": {
+        "label": "OVN — ovn.org",
+        "url": "https://www.ovn.org/en/"
+      }
+    },
+    {
+      "id": "ovs",
+      "name": "Open vSwitch",
+      "fullName": "OVS — multilayer virtual switch",
+      "aliases": [
+        "OVS",
+        "openvswitch",
+        "vSwitch",
+        "OpenFlow",
+        "OVSDB",
+        "virtual switch",
+        "ovs-vswitchd"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The open-source programmable switch inside the hypervisor — it wires VMs and containers to the network and forwards their packets by flow rules.",
+      "explainer": "A production-grade, multilayer virtual switch that runs in the hypervisor or host and connects VMs, containers, and the physical NIC. Unlike a plain Linux bridge it is programmable — controllers install OpenFlow rules into its flow tables and OVSDB configures its bridges — so forwarding, tunnelling (VXLAN/Geneve), and filtering follow policy, and the same flows can be offloaded to a SmartNIC or DPU at line rate. It forwards packets on its own but needs a control plane like OVN to decide what the flows should be.",
+      "related": [
+        "ovn",
+        "kubernetes",
+        "cilium",
+        "dpu",
+        "bluefield"
+      ],
+      "source": {
+        "label": "Open vSwitch — openvswitch.org",
+        "url": "https://www.openvswitch.org/"
+      }
     },
     {
       "id": "owasp",
@@ -1338,12 +1638,48 @@
       ],
       "provenance": "Open standard",
       "tldr": "The community's ranked list of the most critical web application risks.",
-      "explainer": "A non-profit community producing free, vendor-neutral application-security resources, best known for the Top 10: a periodically updated, ranked list of the most critical web-application risks drawn from real-world data. Developers code against it, WAFs ship rule sets named after it, and the 2025 edition keeps Broken Access Control at number one while adding Software Supply Chain Failures — but it is a floor for awareness, not a complete security programme.",
+      "explainer": "A non-profit community producing free, vendor-neutral application-security resources, best known for the Top 10: a periodically updated, ranked list of the most critical web-application risks drawn from real-world data. Developers code against it, WAFs ship rule sets named after it, and the 2025 edition keeps Broken Access Control at number one while adding Software Supply Chain Failures (expanded from 2021's Vulnerable and Outdated Components) — but it is a floor for awareness, not a complete security programme.",
       "related": [
         "websec",
         "waf",
         "cve"
-      ]
+      ],
+      "source": {
+        "label": "OWASP Top 10:2025",
+        "url": "https://owasp.org/Top10/2025/"
+      }
+    },
+    {
+      "id": "pac",
+      "name": "PAC File",
+      "fullName": "Proxy Auto-Configuration",
+      "aliases": [
+        "proxy auto-config",
+        "FindProxyForURL",
+        "WPAD",
+        "wpad.dat",
+        "proxy.pac",
+        "automatic proxy configuration",
+        "explicit proxy"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A snippet of JavaScript the browser runs for every URL to decide: go direct, or through which proxy?",
+      "explainer": "A small JavaScript file exporting one function — FindProxyForURL(url, host) — that the browser calls for every request to decide: go direct, or through which proxy? Rules match on hostname, domain, or IP range, so internal traffic goes direct while everything else is steered into a forward proxy or Secure Web Gateway — the classic agentless on-ramp into SASE inspection. Browsers locate it via a configured URL or WPAD discovery (DHCP/DNS), a path attackers have abused, so modern browsers strip HTTPS paths before calling the script.",
+      "related": [
+        "sase",
+        "casb",
+        "dns",
+        "http"
+      ],
+      "source": {
+        "label": "MDN — Proxy Auto-Configuration (PAC) file",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Proxy_servers_and_tunneling/Proxy_Auto-Configuration_PAC_file"
+      }
     },
     {
       "id": "pam",
@@ -1367,7 +1703,11 @@
         "vault",
         "rbac",
         "ssh"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — Privileged Access Management",
+        "url": "https://csrc.nist.gov/glossary/term/privileged_access_management"
+      }
     },
     {
       "id": "peppdp",
@@ -1388,7 +1728,11 @@
       "related": [
         "zerotrust",
         "idp"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-207 — Zero Trust Architecture",
+        "url": "https://csrc.nist.gov/pubs/sp/800/207/final"
+      }
     },
     {
       "id": "pkce",
@@ -1407,12 +1751,16 @@
       ],
       "provenance": "Open standard",
       "tldr": "Stops a stolen OAuth authorization code from being redeemed by anyone but the app that began the flow.",
-      "explainer": "Hardens OAuth's authorization-code flow against interception: the client sends only the hash of a random secret (code_verifier) when starting login and must present the original to redeem tokens, making a stolen code useless. Born for mobile and single-page apps, it is now recommended for all clients and mandatory in OAuth 2.1.",
+      "explainer": "Hardens OAuth's authorization-code flow against interception: the client sends only the hash of a random secret (code_verifier) when starting login and must present the original to redeem tokens, making a stolen code useless. Born for mobile and single-page apps, it is now recommended for all clients and mandatory in the OAuth 2.1 draft.",
       "related": [
         "oauth",
         "oidc",
         "idp"
-      ]
+      ],
+      "source": {
+        "label": "RFC 7636 — PKCE",
+        "url": "https://www.rfc-editor.org/info/rfc7636"
+      }
     },
     {
       "id": "pki",
@@ -1438,7 +1786,11 @@
         "mtls",
         "spiffe",
         "ssh"
-      ]
+      ],
+      "source": {
+        "label": "RFC 5280 — X.509 PKI Certificates",
+        "url": "https://www.rfc-editor.org/info/rfc5280"
+      }
     },
     {
       "id": "pqc",
@@ -1464,12 +1816,16 @@
         "tls",
         "pki",
         "mtls"
-      ]
+      ],
+      "source": {
+        "label": "NIST Post-Quantum Cryptography project",
+        "url": "https://csrc.nist.gov/projects/post-quantum-cryptography"
+      }
     },
     {
       "id": "quic",
       "name": "QUIC",
-      "fullName": "Quick UDP Internet Connections",
+      "fullName": "QUIC (a name, not an acronym — RFC 9000)",
       "aliases": [
         "HTTP/3",
         "gQUIC",
@@ -1488,7 +1844,11 @@
         "tls",
         "tcpip",
         "http"
-      ]
+      ],
+      "source": {
+        "label": "RFC 9000 — QUIC",
+        "url": "https://www.rfc-editor.org/info/rfc9000"
+      }
     },
     {
       "id": "radius",
@@ -1510,7 +1870,11 @@
       "related": [
         "saml",
         "idp"
-      ]
+      ],
+      "source": {
+        "label": "RFC 2865 — RADIUS",
+        "url": "https://www.rfc-editor.org/info/rfc2865"
+      }
     },
     {
       "id": "rbac",
@@ -1535,7 +1899,11 @@
         "opa",
         "zerotrust",
         "idp"
-      ]
+      ],
+      "source": {
+        "label": "NIST — Role Based Access Control project",
+        "url": "https://csrc.nist.gov/projects/role-based-access-control"
+      }
     },
     {
       "id": "react",
@@ -1556,7 +1924,11 @@
       "related": [
         "django",
         "grpc"
-      ]
+      ],
+      "source": {
+        "label": "react.dev",
+        "url": "https://react.dev/"
+      }
     },
     {
       "id": "saml",
@@ -1579,7 +1951,11 @@
         "oauth",
         "idp",
         "jwt"
-      ]
+      ],
+      "source": {
+        "label": "OASIS SAML 2.0 Core",
+        "url": "https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf"
+      }
     },
     {
       "id": "sase",
@@ -1597,13 +1973,17 @@
       ],
       "provenance": "Vendor",
       "tldr": "Delivers networking and security together from the cloud edge, near the user.",
-      "explainer": "A cloud-delivered model converging wide-area networking with security services — secure web gateway, CASB, firewall-as-a-service, and ZTNA — enforced at points of presence near the user instead of backhauling traffic to a datacentre. It is how most organisations now operate zero trust.",
+      "explainer": "A cloud-delivered model converging wide-area networking with security services — secure web gateway, CASB, firewall-as-a-service, and ZTNA — enforced at points of presence near the user instead of backhauling traffic to a datacentre. It is how many organisations now operate zero trust.",
       "related": [
         "zerotrust",
         "vpn",
         "sdwan",
         "firewall"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — Secure Access Service Edge",
+        "url": "https://csrc.nist.gov/glossary/term/secure_access_service_edge"
+      }
     },
     {
       "id": "sbom",
@@ -1629,7 +2009,11 @@
         "docker",
         "cve",
         "opa"
-      ]
+      ],
+      "source": {
+        "label": "CISA — Software Bill of Materials",
+        "url": "https://www.cisa.gov/sbom"
+      }
     },
     {
       "id": "scim",
@@ -1653,7 +2037,11 @@
         "idp",
         "saml",
         "oidc"
-      ]
+      ],
+      "source": {
+        "label": "RFC 7644 — SCIM Protocol",
+        "url": "https://www.rfc-editor.org/info/rfc7644"
+      }
     },
     {
       "id": "sdwan",
@@ -1676,32 +2064,11 @@
         "vpn",
         "bgp",
         "loadbalancer"
-      ]
-    },
-    {
-      "id": "vault",
-      "name": "Secrets Management",
-      "fullName": "Secrets Management (HashiCorp Vault)",
-      "aliases": [
-        "HashiCorp Vault",
-        "secret store",
-        "dynamic secrets",
-        "credential rotation",
-        "KMS"
       ],
-      "category": "Security Technology",
-      "types": [
-        "Security Technology"
-      ],
-      "provenance": "Open Source",
-      "tldr": "A central, audited vault for the passwords, keys, and tokens that machines need.",
-      "explainer": "Hard-coding credentials in config or source control leaks them, so a secrets manager such as HashiCorp Vault stores database passwords, API keys, and certificates centrally — encrypted, behind authentication and fine-grained policy — and releases them only to identities that prove they should have them. Its strongest pattern is dynamic secrets: short-lived credentials generated on demand and auto-revoked, every access logged, so in zero trust a workload (often via SPIFFE) fetches exactly what it needs, just in time.",
-      "related": [
-        "pki",
-        "mtls",
-        "spiffe",
-        "kubernetes"
-      ]
+      "source": {
+        "label": "MEF 70.2 — SD-WAN Service Attributes",
+        "url": "https://www.mplify.net/wp-content/uploads/MEF-70.2.pdf"
+      }
     },
     {
       "id": "servicemesh",
@@ -1728,7 +2095,11 @@
         "spiffe",
         "kubernetes",
         "microseg"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-204A — Service-Mesh Security",
+        "url": "https://csrc.nist.gov/pubs/sp/800/204/a/final"
+      }
     },
     {
       "id": "siem",
@@ -1750,7 +2121,11 @@
         "firewall",
         "zerotrust",
         "radius"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — SIEM",
+        "url": "https://csrc.nist.gov/glossary/term/security_information_and_event_management"
+      }
     },
     {
       "id": "sigstore",
@@ -1774,7 +2149,11 @@
         "sbom",
         "pki",
         "docker"
-      ]
+      ],
+      "source": {
+        "label": "sigstore.dev",
+        "url": "https://www.sigstore.dev/"
+      }
     },
     {
       "id": "soar",
@@ -1797,7 +2176,11 @@
         "siem",
         "edr",
         "idsips"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — SOAR",
+        "url": "https://csrc.nist.gov/glossary/term/security_orchestration_automation_and_response"
+      }
     },
     {
       "id": "spiffe",
@@ -1820,7 +2203,11 @@
         "mtls",
         "zerotrust",
         "jwt"
-      ]
+      ],
+      "source": {
+        "label": "spiffe.io",
+        "url": "https://spiffe.io/"
+      }
     },
     {
       "id": "ssh",
@@ -1842,7 +2229,41 @@
       "related": [
         "tls",
         "vpn"
-      ]
+      ],
+      "source": {
+        "label": "RFC 4251 — SSH Protocol Architecture",
+        "url": "https://www.rfc-editor.org/info/rfc4251"
+      }
+    },
+    {
+      "id": "supernic",
+      "name": "SuperNIC",
+      "fullName": "NVIDIA AI-Network Accelerator",
+      "aliases": [
+        "NVIDIA SuperNIC",
+        "BlueField-3 SuperNIC",
+        "ConnectX SuperNIC",
+        "Spectrum-X",
+        "RoCE",
+        "AI networking"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "A network accelerator tuned for AI: line-rate GPU-to-GPU Ethernet (RoCE) with the congestion control huge training clusters need — the DPU's performance-focused sibling.",
+      "explainer": "NVIDIA's network accelerator for the east-west, GPU-to-GPU traffic of AI clusters: line-rate RDMA over Converged Ethernet (RoCE) with the adaptive routing and congestion control that keep thousands of GPUs fed, as a pillar of the Spectrum-X Ethernet platform. Two structurally different products share the name — the BlueField-3 SuperNIC, a slimmed-down DPU with eight Arm cores, and the ConnectX-8/9 SuperNICs, pure adapters with no separate OS. Its remit is performance over policy: traffic is still encrypted in flight, but the DPU's host-introspection services don't apply.",
+      "related": [
+        "dpu",
+        "bluefield",
+        "doca",
+        "ipsec"
+      ],
+      "source": {
+        "label": "NVIDIA — What Is a SuperNIC?",
+        "url": "https://blogs.nvidia.com/blog/what-is-a-supernic/"
+      }
     },
     {
       "id": "tailscale",
@@ -1868,7 +2289,11 @@
         "vpn",
         "zerotrust",
         "openziti"
-      ]
+      ],
+      "source": {
+        "label": "How Tailscale works (architecture)",
+        "url": "https://tailscale.com/blog/how-tailscale-works"
+      }
     },
     {
       "id": "tcpip",
@@ -1891,7 +2316,11 @@
         "http",
         "nat",
         "bgp"
-      ]
+      ],
+      "source": {
+        "label": "RFC 1122 — Requirements for Internet Hosts",
+        "url": "https://www.rfc-editor.org/info/rfc1122"
+      }
     },
     {
       "id": "tls",
@@ -1913,12 +2342,16 @@
         "ssh",
         "ipsec",
         "http"
-      ]
+      ],
+      "source": {
+        "label": "RFC 8446 — TLS 1.3",
+        "url": "https://www.rfc-editor.org/info/rfc8446"
+      }
     },
     {
       "id": "tpm",
       "name": "TPM & Secure Boot",
-      "fullName": "Hardware Root of Trust",
+      "fullName": "Trusted Platform Module & Secure Boot",
       "aliases": [
         "trusted platform module",
         "secure boot",
@@ -1937,7 +2370,40 @@
         "edr",
         "pki",
         "mtls"
-      ]
+      ],
+      "source": {
+        "label": "TCG TPM 2.0 Library Specification",
+        "url": "https://trustedcomputinggroup.org/resource/tpm-library-specification/"
+      }
+    },
+    {
+      "id": "vault",
+      "name": "Secrets Management",
+      "fullName": "Secrets Management (HashiCorp Vault)",
+      "aliases": [
+        "HashiCorp Vault",
+        "secret store",
+        "dynamic secrets",
+        "credential rotation",
+        "KMS"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A central, audited vault for the passwords, keys, and tokens that machines need.",
+      "explainer": "Hard-coding credentials in config or source control leaks them, so a secrets manager such as HashiCorp Vault stores database passwords, API keys, and certificates centrally — encrypted, behind authentication and fine-grained policy — and releases them only to identities that prove they should have them. Its strongest pattern is dynamic secrets: short-lived credentials generated on demand and auto-revoked, every access logged, so in zero trust a workload (often via SPIFFE) fetches exactly what it needs, just in time.",
+      "related": [
+        "pki",
+        "mtls",
+        "spiffe",
+        "kubernetes"
+      ],
+      "source": {
+        "label": "HashiCorp Vault documentation",
+        "url": "https://developer.hashicorp.com/vault"
+      }
     },
     {
       "id": "vlan",
@@ -1958,7 +2424,11 @@
         "microseg",
         "nat",
         "firewall"
-      ]
+      ],
+      "source": {
+        "label": "IEEE 802.1Q",
+        "url": "https://standards.ieee.org/ieee/802.1Q/10323/"
+      }
     },
     {
       "id": "vpn",
@@ -1981,7 +2451,11 @@
         "ipsec",
         "tls",
         "sase"
-      ]
+      ],
+      "source": {
+        "label": "NIST glossary — VPN",
+        "url": "https://csrc.nist.gov/glossary/term/virtual_private_network"
+      }
     },
     {
       "id": "waf",
@@ -2005,7 +2479,42 @@
         "http",
         "owasp",
         "websec"
-      ]
+      ],
+      "source": {
+        "label": "OWASP — Web Application Firewall",
+        "url": "https://owasp.org/www-community/Web_Application_Firewall"
+      }
+    },
+    {
+      "id": "websec",
+      "name": "CSRF / XSS / CSP",
+      "fullName": "Web App Attacks & Content Security Policy",
+      "aliases": [
+        "cross-site request forgery",
+        "cross-site scripting",
+        "content security policy",
+        "same-origin",
+        "SameSite",
+        "injection"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The two classic browser attacks — and the header that helps shut them down.",
+      "explainer": "The classic browser attacks and their defences: Cross-Site Scripting injects attacker script that runs with the victim's session, while Cross-Site Request Forgery tricks an authenticated browser into firing unwanted state-changing requests. They are countered by output escaping, anti-CSRF tokens and SameSite cookies, and a Content-Security-Policy header that whitelists what a page may load — defence in depth, since none suffices alone.",
+      "related": [
+        "cors",
+        "http",
+        "pkce",
+        "waf"
+      ],
+      "source": {
+        "label": "W3C Content Security Policy Level 3",
+        "url": "https://www.w3.org/TR/CSP3/"
+      }
     },
     {
       "id": "websockets",
@@ -2029,7 +2538,11 @@
         "http",
         "tcpip",
         "webtransport"
-      ]
+      ],
+      "source": {
+        "label": "RFC 6455 — WebSocket Protocol",
+        "url": "https://www.rfc-editor.org/info/rfc6455"
+      }
     },
     {
       "id": "webtransport",
@@ -2052,7 +2565,11 @@
         "quic",
         "http",
         "websockets"
-      ]
+      ],
+      "source": {
+        "label": "W3C WebTransport (Working Draft)",
+        "url": "https://www.w3.org/TR/webtransport/"
+      }
     },
     {
       "id": "wireguard",
@@ -2073,7 +2590,11 @@
         "vpn",
         "ipsec",
         "tls"
-      ]
+      ],
+      "source": {
+        "label": "WireGuard whitepaper",
+        "url": "https://www.wireguard.com/papers/wireguard.pdf"
+      }
     },
     {
       "id": "zerotrust",
@@ -2097,7 +2618,11 @@
         "peppdp",
         "idp",
         "sase"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 800-207 — Zero Trust Architecture",
+        "url": "https://csrc.nist.gov/pubs/sp/800/207/final"
+      }
     },
     {
       "id": "ztna",
@@ -2117,13 +2642,17 @@
       ],
       "provenance": "Open standard",
       "tldr": "The VPN replacement that grants access to single apps, never the whole network.",
-      "explainer": "Puts zero-trust principles on the wire and is the category replacing the traditional VPN: where a VPN drops an authenticated user onto the network to roam, ZTNA brokers access to one specific application at a time, re-verifying identity and device posture on every request and keeping everything else invisible. Apps connect outbound to the broker so there is no inbound port to attack — the software-defined-perimeter idea, pioneered by Google's BeyondCorp and now a core component of SASE/SSE.",
+      "explainer": "Puts zero-trust principles on the wire and is the category replacing the traditional VPN: where a VPN drops an authenticated user onto the network to roam, ZTNA brokers access to one specific application at a time, re-verifying identity and device posture on every request and keeping everything else invisible. Apps connect outbound to the broker so there is no inbound port to attack — the software-defined-perimeter idea. Google's BeyondCorp was the influential early implementation, and ZTNA is now a core component of SASE/SSE.",
       "related": [
         "zerotrust",
         "sase",
         "openziti",
         "vpn"
-      ]
+      ],
+      "source": {
+        "label": "NIST SP 1800-35 — Implementing Zero Trust",
+        "url": "https://csrc.nist.gov/pubs/sp/1800/35/final"
+      }
     }
   ],
   "edges": [
@@ -3011,6 +3540,161 @@
       "source": "ztna",
       "target": "openziti",
       "type": "same-category"
+    },
+    {
+      "source": "bluefield",
+      "target": "dpu",
+      "type": "part-of"
+    },
+    {
+      "source": "ovn",
+      "target": "ovs",
+      "type": "requires"
+    },
+    {
+      "source": "pac",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "doca",
+      "target": "bluefield",
+      "type": "enables"
+    },
+    {
+      "source": "doca",
+      "target": "dpu",
+      "type": "enables"
+    },
+    {
+      "source": "doca",
+      "target": "supernic",
+      "type": "enables"
+    },
+    {
+      "source": "doca",
+      "target": "edr",
+      "type": "enables"
+    },
+    {
+      "source": "doca",
+      "target": "microseg",
+      "type": "enables"
+    },
+    {
+      "source": "dpu",
+      "target": "microseg",
+      "type": "enables"
+    },
+    {
+      "source": "dpu",
+      "target": "ipsec",
+      "type": "enables"
+    },
+    {
+      "source": "dpu",
+      "target": "ovs",
+      "type": "enables"
+    },
+    {
+      "source": "bluefield",
+      "target": "microseg",
+      "type": "enables"
+    },
+    {
+      "source": "bluefield",
+      "target": "ipsec",
+      "type": "enables"
+    },
+    {
+      "source": "supernic",
+      "target": "ipsec",
+      "type": "enables"
+    },
+    {
+      "source": "ovs",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "ovn",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "ovn",
+      "target": "microseg",
+      "type": "enables"
+    },
+    {
+      "source": "pac",
+      "target": "sase",
+      "type": "enables"
+    },
+    {
+      "source": "pac",
+      "target": "casb",
+      "type": "enables"
+    },
+    {
+      "source": "supernic",
+      "target": "dpu",
+      "type": "alternative"
+    },
+    {
+      "source": "supernic",
+      "target": "bluefield",
+      "type": "alternative"
+    },
+    {
+      "source": "ovs",
+      "target": "cilium",
+      "type": "alternative"
+    },
+    {
+      "source": "ovn",
+      "target": "cilium",
+      "type": "alternative"
+    },
+    {
+      "source": "bluefield",
+      "target": "tpm",
+      "type": "same-category"
+    },
+    {
+      "source": "dpu",
+      "target": "tpm",
+      "type": "same-category"
+    },
+    {
+      "source": "ovn",
+      "target": "servicemesh",
+      "type": "same-category"
+    },
+    {
+      "source": "pac",
+      "target": "dns",
+      "type": "same-category"
+    },
+    {
+      "source": "bola",
+      "target": "owasp",
+      "type": "same-category"
+    },
+    {
+      "source": "bola",
+      "target": "apigateway",
+      "type": "same-category"
+    },
+    {
+      "source": "bola",
+      "target": "rbac",
+      "type": "same-category"
+    },
+    {
+      "source": "bola",
+      "target": "websec",
+      "type": "same-category"
     }
   ]
 }</script>
@@ -3051,12 +3735,12 @@
     ];
     const FAMILY = {
       zerotrust: 'ztcore', peppdp: 'ztcore', spiffe: 'ztcore', openziti: 'ztcore', mtls: 'ztcore', nist207: 'ztcore', ztna: 'ztcore', opa: 'ztcore',
-      idp: 'iam', oauth: 'iam', oidc: 'iam', saml: 'iam', jwt: 'iam', pkce: 'iam', scim: 'iam', radius: 'iam', kerberos: 'iam', ldap: 'iam', mfa: 'iam', pam: 'iam', rbac: 'iam',
-      tls: 'securechannel', ipsec: 'securechannel', ssh: 'securechannel', wireguard: 'securechannel', vpn: 'securechannel', tailscale: 'securechannel', pki: 'securechannel', pqc: 'securechannel', tpm: 'securechannel',
-      tcpip: 'transport', http: 'transport', quic: 'transport', websockets: 'transport', webtransport: 'transport', grpc: 'transport', mqtt: 'transport', cors: 'transport', websec: 'transport',
-      dns: 'routing', dhcp: 'routing', nat: 'routing', bgp: 'routing',
-      firewall: 'edge', vlan: 'edge', microseg: 'edge', loadbalancer: 'edge', sdwan: 'edge', sase: 'edge', apigateway: 'edge', waf: 'edge',
-      docker: 'platform', kubernetes: 'platform', django: 'platform', react: 'platform', cilium: 'platform', servicemesh: 'platform', vault: 'platform',
+      idp: 'iam', oauth: 'iam', oidc: 'iam', saml: 'iam', jwt: 'iam', pkce: 'iam', scim: 'iam', radius: 'iam', kerberos: 'iam', ldap: 'iam', mfa: 'iam', pam: 'iam', rbac: 'iam', bola: 'iam',
+      tls: 'securechannel', ipsec: 'securechannel', ssh: 'securechannel', wireguard: 'securechannel', vpn: 'securechannel', tailscale: 'securechannel', pki: 'securechannel', pqc: 'securechannel', tpm: 'securechannel', vault: 'securechannel',
+      tcpip: 'transport', http: 'transport', quic: 'transport', websockets: 'transport', webtransport: 'transport', grpc: 'transport', mqtt: 'transport', cors: 'transport', websec: 'transport', pac: 'transport',
+      dns: 'routing', dhcp: 'routing', nat: 'routing', bgp: 'routing', vlan: 'routing',
+      firewall: 'edge', microseg: 'edge', loadbalancer: 'edge', sdwan: 'edge', sase: 'edge', apigateway: 'edge', waf: 'edge', dpu: 'edge', bluefield: 'edge', supernic: 'edge', ovs: 'edge', ovn: 'edge',
+      docker: 'platform', kubernetes: 'platform', django: 'platform', react: 'platform', cilium: 'platform', servicemesh: 'platform', doca: 'platform',
       siem: 'detection', soar: 'detection', edr: 'detection', idsips: 'detection', dlp: 'detection', casb: 'detection',
       cve: 'governance', owasp: 'governance', sbom: 'governance', sigstore: 'governance',
     };
@@ -3080,7 +3764,7 @@
     });
 
     // short labels for the few long names (full name stays in tooltip + panel)
-    const SHORT = { idp: 'IdP', microseg: 'Microseg.', loadbalancer: 'Load Bal.', spiffe: 'SPIFFE', http: 'HTTP(S)', webtransport: 'WebTransp.' };
+    const SHORT = { idp: 'IdP', microseg: 'Microseg.', loadbalancer: 'Load Bal.', spiffe: 'SPIFFE', http: 'HTTP(S)', webtransport: 'WebTransp.', ovs: 'OVS', ovn: 'OVN' };
 
     const EDGE_META = {
       'part-of':       { cls: 't-partof',       dir: true,  marker: 'ah-accent', label: 'building block of', key: 'Building block / part-of' },
@@ -3091,7 +3775,7 @@
     };
     // relationship phrasing from the perspective of the focused node
     const PHRASE = {
-      'part-of':       { out: 'is a building block of', in: 'includes' },
+      'part-of':       { out: 'is part of', in: 'includes' },
       'requires':      { out: 'requires', in: 'is required by' },
       'enables':       { out: 'enables', in: 'is enabled by' },
       'alternative':   { out: 'is an alternative to', in: 'is an alternative to' },
@@ -3100,14 +3784,15 @@
     const ORDER = ['part-of', 'requires', 'enables', 'alternative', 'same-category'];
 
     const TOUR = [
-      { id: 'zerotrust', note: 'Start here. Zero Trust abandons the safe-internal-network idea: every request is authenticated, authorized, and encrypted on identity and context. Everything else on this map is a piece of how that gets done.' },
+      { id: 'zerotrust', note: 'Start here. Zero Trust abandons the safe-internal-network idea: every request is authenticated, authorized, and encrypted based on identity and context. Everything else on this map is a piece of how that gets done.' },
       { id: 'idp', note: 'Identity becomes the new perimeter. The Identity Provider authenticates users and issues the tokens applications trust — the hub of single sign-on.' },
       { id: 'oidc', note: 'How an app actually learns who you are: OpenID Connect adds a signed ID Token on top of OAuth 2.0 authorization.' },
       { id: 'mtls', note: 'Past the front door, services prove themselves to each other with certificates instead of passwords — mutual TLS, both sides authenticated.' },
       { id: 'spiffe', note: 'Where those workload certificates come from: SPIFFE/SPIRE issues a short-lived cryptographic identity to every workload automatically.' },
-      { id: 'peppdp', note: 'The control core of zero trust: a Policy Decision Point decides allow/deny, a Policy Enforcement Point enforces it in every request path.' },
-      { id: 'microseg', note: 'On the network, microsegmentation confines each workload to only the flows it needs, so a breach cannot move laterally.' },
-      { id: 'sase', note: 'A delivery model: SASE converges networking and security in the cloud edge near the user — how many organisations now run zero trust.' },
+      { id: 'peppdp', note: 'The control core of zero trust: a Policy Decision Point decides allow/deny; a Policy Enforcement Point enforces it in every request path.' },
+      { id: 'microseg', note: 'On the network, microsegmentation confines each workload to only the flows it needs, so a breach is contained instead of spreading laterally.' },
+      { id: 'dpu', note: 'Enforcement is even sinking into hardware: a DPU on the server\'s network card runs firewalling, encryption, and host inspection in its own trust domain — controls an attacker on the host cannot switch off.' },
+      { id: 'sase', note: 'A delivery model: SASE converges networking and security in the cloud edge near the user — the way many organisations now deliver zero trust.' },
       { id: 'openziti', note: 'A concrete open-source realization: OpenZiti gives every app an identity and a default-deny, mTLS-secured overlay — being "on the network" grants nothing.' },
       { id: 'tls', note: 'Finally, the bedrock: TLS provides the encryption and server authentication that mTLS, HTTPS, and much of the map are built on.' },
     ];
@@ -3128,7 +3813,7 @@
     /* -------------------- seeded initial layout ---------------------- */
     function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
     const rand = mulberry32(20260606);
-    const ring = FAMILIES.filter((f) => f.key !== 'ztcore'); // 6 families around the core
+    const ring = FAMILIES.filter((f) => f.key !== 'ztcore'); // 8 families around the core
     nodes.forEach((n) => {
       if (n.family === 'ztcore') { n.x = W / 2 + (rand() - 0.5) * 120; n.y = H / 2 + (rand() - 0.5) * 120; return; }
       const fi = ring.findIndex((f) => f.key === n.family);
@@ -3324,27 +4009,35 @@
     function renderDetail(n) {
       const fk = n.family;
       const conns = adj.get(n.id).filter(({ other }) => !other.hidden);
+      // one group per type AND direction, so "enables" and "is enabled by"
+      // never merge into a single ambiguous list (undirected types collapse to one group)
       const groups = {};
-      conns.forEach((c) => { (groups[c.edge.type] = groups[c.edge.type] || []).push(c); });
+      conns.forEach((c) => {
+        const dirKey = EDGE_META[c.edge.type].dir ? c.dir : 'both';
+        const k = c.edge.type + ':' + dirKey;
+        (groups[k] = groups[k] || []).push(c);
+      });
       let relHTML = '';
       ORDER.forEach((type) => {
-        if (!groups[type]) return;
-        const items = groups[type].sort((a, b) => a.other.name.localeCompare(b.other.name)).map((c) => {
-          return '<button class="rel-item fam-' + famOf(c.other.id) + '" data-goto="' + c.other.id + '">' +
-            '<span class="swatch"></span><span class="rel-name">' + esc(c.other.name) + '</span>' + ARROW_SVG + '</button>';
-        }).join('');
-        // phrasing: use the first connection's direction is per-item, but group label is by type from focus perspective.
-        // Show the directional phrase by sampling out/in within the type group when mixed.
-        const phrases = new Set(groups[type].map((c) => PHRASE[type][c.dir]));
-        const phraseLabel = Array.from(phrases).join(' / ');
-        relHTML += '<div class="rel-group"><div class="rel-group-head">' + relMiniLine(type) +
-          '<span class="rel-phrase">' + esc(phraseLabel) + '</span></div><div class="rel-list">' + items + '</div></div>';
+        ['out', 'in', 'both'].forEach((dir) => {
+          const g = groups[type + ':' + dir];
+          if (!g) return;
+          const items = g.sort((a, b) => a.other.name.localeCompare(b.other.name)).map((c) => {
+            return '<button class="rel-item fam-' + famOf(c.other.id) + '" data-goto="' + c.other.id + '">' +
+              '<span class="swatch"></span><span class="rel-name">' + esc(c.other.name) + '</span>' + ARROW_SVG + '</button>';
+          }).join('');
+          const phraseLabel = PHRASE[type][dir === 'both' ? 'out' : dir];
+          relHTML += '<div class="rel-group"><div class="rel-group-head">' + relMiniLine(type) +
+            '<span class="rel-phrase">' + esc(phraseLabel) + '</span></div><div class="rel-list">' + items + '</div></div>';
+        });
       });
 
       const aliasHTML = n.aliases && n.aliases.length ? ' <span class="alias">· also: ' + esc(n.aliases.join(', ')) + '</span>' : '';
       // source glossary types preserved as neutral pills (the family is the colour layer)
       const typeTags = n.types.map((t) => '<span class="tag">' + esc(t) + '</span>').join('');
       const provTag = '<span class="tag prov">' + (PROV_ICON[n.provenance] || '') + esc(n.provenance) + '</span>';
+      const sourceHTML = n.source ? '<div class="section-label">Primary source</div>' +
+        '<p class="source-row"><a href="' + esc(n.source.url) + '" target="_blank" rel="noopener noreferrer">' + esc(n.source.label) + ICON('external') + '</a></p>' : '';
 
       panelInner.innerHTML =
         '<button class="detail-back" id="detail-back" type="button">' +
@@ -3355,8 +4048,9 @@
           '<p class="detail-full">' + esc(n.fullName) + aliasHTML + '</p>' +
           '<div class="tldr"><span class="lbl">TL;DR</span><p>' + esc(n.tldr) + '</p></div>' +
           '<p class="detail-explainer">' + esc(n.explainer) + '</p>' +
-          '<div class="section-label">Glossary type &amp; provenance</div>' +
+          '<div class="section-label">Glossary type &amp; origin</div>' +
           '<div class="meta-row">' + typeTags + provTag + '</div>' +
+          sourceHTML +
           '<div class="section-label">Connections · ' + conns.length + '</div>' + relHTML +
         '</div>';
       panelInner.querySelector('#detail-back').addEventListener('click', () => { select(null); renderAbout(); });
@@ -3368,19 +4062,19 @@
       panelInner.innerHTML =
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
-          '<h2>How the internet keeps its secrets — mapped</h2>' +
-          '<p><strong>68 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph. Each <strong>node</strong> is a term, grouped into <strong>nine functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
-          '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> settles at the centre, with the identity, secure-channel, transport, routing, network-edge, platform, detection, and governance families clustered around it. Every term\'s original glossary type and provenance stay in its detail panel.</p>' +
+          '<h2>Zero trust and the modern network — mapped</h2>' +
+          '<p><strong>76 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph — related terms pull toward each other, so families cluster naturally. Each <strong>node</strong> is a term, grouped into <strong>nine functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> settles at the centre, with the identity, secure-channel, transport, routing, network-edge, platform, detection, and governance families clustered around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
-            '<div class="stat"><b>68</b><span>terms</span></div>' +
+            '<div class="stat"><b>76</b><span>terms</span></div>' +
             '<div class="stat"><b>9</b><span>families</span></div>' +
-            '<div class="stat"><b>177</b><span>links</span></div>' +
+            '<div class="stat"><b>208</b><span>links</span></div>' +
           '</div>' +
           '<div class="section-label">How to use it</div>' +
           '<ul class="about-how">' +
             '<li>' + ICON('mouse-pointer') + '<span><strong>Click</strong> any node for its definition and connections.</span></li>' +
             '<li>' + ICON('spotlight') + '<span><strong>Hover</strong> to spotlight a term and its direct neighbours.</span></li>' +
-            '<li>' + ICON('search') + '<span><strong>Search</strong> to locate and filter terms live.</span></li>' +
+            '<li>' + ICON('search') + '<span><strong>Search</strong> (press <kbd>/</kbd>) to locate and filter terms live.</span></li>' +
             '<li>' + ICON('filter') + '<span><strong>Toggle families</strong> in the toolbar to focus a group.</span></li>' +
             '<li>' + ICON('drag') + '<span><strong>Drag</strong> the canvas to pan, scroll to zoom, drag a node to reposition.</span></li>' +
           '</ul>' +
@@ -3398,6 +4092,7 @@
         'filter': '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
         'drag': '<polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/>',
         'route': '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+        'external': '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
       };
       return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (I[name] || '') + '</svg>';
     }
