@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ZTA Visual Mindmap — Zero-Trust, Networking &amp; IT Terms, Mapped</title>
-  <meta name="description" content="An interactive mindmap of 76 zero-trust, networking, and IT terms — colour-coded into nine functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
+  <meta name="description" content="An interactive mindmap of 78 zero-trust, networking, and IT terms — colour-coded into nine functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'/%3E%3Ccircle cx='6' cy='12' r='3'/%3E%3Ccircle cx='18' cy='19' r='3'/%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'/%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -405,7 +405,7 @@
       <div class="search" id="search">
         <!-- Lucide: search -->
         <svg class="search-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="search-input" type="search" placeholder="Search 76 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
+        <input id="search-input" type="search" placeholder="Search 78 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
         <span id="search-hint" class="visually-hidden">Type to filter and locate terms in the map.</span>
         <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
           <!-- Lucide: x -->
@@ -513,7 +513,7 @@
 
   <footer class="appfoot">
     <span class="credit">
-      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 76 terms, 208 typed relationships.
+      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 78 terms, 215 typed relationships.
     </span>
     <span>Interactive mindmap built with <code>skill-style-guide</code> + <code>skill-build-educational-site</code>.</span>
   </footer>
@@ -1414,6 +1414,37 @@
       }
     },
     {
+      "id": "ndlp",
+      "name": "nDLP",
+      "fullName": "Network Data Loss Prevention",
+      "aliases": [
+        "network DLP",
+        "data in motion",
+        "egress inspection",
+        "content inspection",
+        "SWG",
+        "secure web gateway"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The network arm of DLP — inspects data in motion at egress and blocks sensitive content before it leaves.",
+      "explainer": "The network-enforced arm of DLP: an inline inspection point — a forward proxy, secure web gateway, or cloud SSE service — that examines data in motion leaving via web uploads, email, and cloud sync, matching content against patterns and classifications, then warning, blocking, or quarantining on a policy breach. Because most egress traffic is encrypted it depends on TLS interception to see payloads, and in SASE architectures it shares the cloud enforcement point with CASB and ZTNA. It covers what endpoint agents cannot — unmanaged devices and server egress — while endpoint DLP handles USB, clipboard, and print.",
+      "related": [
+        "dlp",
+        "casb",
+        "sase",
+        "idsips"
+      ],
+      "source": {
+        "label": "IBM — What is data loss prevention (DLP)?",
+        "url": "https://www.ibm.com/think/topics/data-loss-prevention"
+      }
+    },
+    {
       "id": "nist207",
       "name": "NIST SP 800-207",
       "fullName": "Zero Trust Architecture (NIST)",
@@ -1983,6 +2014,36 @@
       "source": {
         "label": "NIST glossary — Secure Access Service Edge",
         "url": "https://csrc.nist.gov/glossary/term/secure_access_service_edge"
+      }
+    },
+    {
+      "id": "sbc",
+      "name": "SBC",
+      "fullName": "Session Border Controller",
+      "aliases": [
+        "SIP",
+        "VoIP",
+        "SIP trunking",
+        "RTP",
+        "voice firewall",
+        "Direct Routing"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The firewall for voice: polices, encrypts, and repairs SIP calls at the border between a phone system and the outside world.",
+      "explainer": "The border element for real-time voice and video: a back-to-back user agent that terminates each SIP session and re-originates it, hiding internal topology, policing signalling against toll fraud and DoS, encrypting calls with TLS and SRTP, fixing SIP's notorious NAT-traversal problems, and translating between vendor dialects and codecs. It does for telephony what an API gateway does for APIs — one controlled front door — sitting wherever an enterprise phone system meets a SIP trunk or Microsoft Teams Direct Routing. As a deliberate man-in-the-middle for every call it is a prime target itself, and modern deployments harden and monitor it like any other policy enforcement point.",
+      "related": [
+        "firewall",
+        "apigateway",
+        "nat"
+      ],
+      "source": {
+        "label": "RFC 5853 — SIP Session Border Control",
+        "url": "https://www.rfc-editor.org/info/rfc5853"
       }
     },
     {
@@ -3695,6 +3756,41 @@
       "source": "bola",
       "target": "websec",
       "type": "same-category"
+    },
+    {
+      "source": "ndlp",
+      "target": "dlp",
+      "type": "part-of"
+    },
+    {
+      "source": "ndlp",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "ndlp",
+      "target": "casb",
+      "type": "same-category"
+    },
+    {
+      "source": "ndlp",
+      "target": "idsips",
+      "type": "same-category"
+    },
+    {
+      "source": "sbc",
+      "target": "firewall",
+      "type": "same-category"
+    },
+    {
+      "source": "sbc",
+      "target": "apigateway",
+      "type": "same-category"
+    },
+    {
+      "source": "sbc",
+      "target": "nat",
+      "type": "same-category"
     }
   ]
 }</script>
@@ -3739,9 +3835,9 @@
       tls: 'securechannel', ipsec: 'securechannel', ssh: 'securechannel', wireguard: 'securechannel', vpn: 'securechannel', tailscale: 'securechannel', pki: 'securechannel', pqc: 'securechannel', tpm: 'securechannel', vault: 'securechannel',
       tcpip: 'transport', http: 'transport', quic: 'transport', websockets: 'transport', webtransport: 'transport', grpc: 'transport', mqtt: 'transport', cors: 'transport', websec: 'transport', pac: 'transport',
       dns: 'routing', dhcp: 'routing', nat: 'routing', bgp: 'routing', vlan: 'routing',
-      firewall: 'edge', microseg: 'edge', loadbalancer: 'edge', sdwan: 'edge', sase: 'edge', apigateway: 'edge', waf: 'edge', dpu: 'edge', bluefield: 'edge', supernic: 'edge', ovs: 'edge', ovn: 'edge',
+      firewall: 'edge', microseg: 'edge', loadbalancer: 'edge', sdwan: 'edge', sase: 'edge', apigateway: 'edge', waf: 'edge', dpu: 'edge', bluefield: 'edge', supernic: 'edge', ovs: 'edge', ovn: 'edge', sbc: 'edge',
       docker: 'platform', kubernetes: 'platform', django: 'platform', react: 'platform', cilium: 'platform', servicemesh: 'platform', doca: 'platform',
-      siem: 'detection', soar: 'detection', edr: 'detection', idsips: 'detection', dlp: 'detection', casb: 'detection',
+      siem: 'detection', soar: 'detection', edr: 'detection', idsips: 'detection', dlp: 'detection', casb: 'detection', ndlp: 'detection',
       cve: 'governance', owasp: 'governance', sbom: 'governance', sigstore: 'governance',
     };
     const famOf = (id) => FAMILY[id] || 'transport';
@@ -4063,12 +4159,12 @@
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
           '<h2>Zero trust and the modern network — mapped</h2>' +
-          '<p><strong>76 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph — related terms pull toward each other, so families cluster naturally. Each <strong>node</strong> is a term, grouped into <strong>nine functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p><strong>78 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph — related terms pull toward each other, so families cluster naturally. Each <strong>node</strong> is a term, grouped into <strong>nine functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
           '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> settles at the centre, with the identity, secure-channel, transport, routing, network-edge, platform, detection, and governance families clustered around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
-            '<div class="stat"><b>76</b><span>terms</span></div>' +
+            '<div class="stat"><b>78</b><span>terms</span></div>' +
             '<div class="stat"><b>9</b><span>families</span></div>' +
-            '<div class="stat"><b>208</b><span>links</span></div>' +
+            '<div class="stat"><b>215</b><span>links</span></div>' +
           '</div>' +
           '<div class="section-label">How to use it</div>' +
           '<ul class="about-how">' +

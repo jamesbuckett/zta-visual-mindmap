@@ -894,6 +894,37 @@
       }
     },
     {
+      "id": "ndlp",
+      "name": "nDLP",
+      "fullName": "Network Data Loss Prevention",
+      "aliases": [
+        "network DLP",
+        "data in motion",
+        "egress inspection",
+        "content inspection",
+        "SWG",
+        "secure web gateway"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The network arm of DLP — inspects data in motion at egress and blocks sensitive content before it leaves.",
+      "explainer": "The network-enforced arm of DLP: an inline inspection point — a forward proxy, secure web gateway, or cloud SSE service — that examines data in motion leaving via web uploads, email, and cloud sync, matching content against patterns and classifications, then warning, blocking, or quarantining on a policy breach. Because most egress traffic is encrypted it depends on TLS interception to see payloads, and in SASE architectures it shares the cloud enforcement point with CASB and ZTNA. It covers what endpoint agents cannot — unmanaged devices and server egress — while endpoint DLP handles USB, clipboard, and print.",
+      "related": [
+        "dlp",
+        "casb",
+        "sase",
+        "idsips"
+      ],
+      "source": {
+        "label": "IBM — What is data loss prevention (DLP)?",
+        "url": "https://www.ibm.com/think/topics/data-loss-prevention"
+      }
+    },
+    {
       "id": "nist207",
       "name": "NIST SP 800-207",
       "fullName": "Zero Trust Architecture (NIST)",
@@ -1463,6 +1494,36 @@
       "source": {
         "label": "NIST glossary — Secure Access Service Edge",
         "url": "https://csrc.nist.gov/glossary/term/secure_access_service_edge"
+      }
+    },
+    {
+      "id": "sbc",
+      "name": "SBC",
+      "fullName": "Session Border Controller",
+      "aliases": [
+        "SIP",
+        "VoIP",
+        "SIP trunking",
+        "RTP",
+        "voice firewall",
+        "Direct Routing"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The firewall for voice: polices, encrypts, and repairs SIP calls at the border between a phone system and the outside world.",
+      "explainer": "The border element for real-time voice and video: a back-to-back user agent that terminates each SIP session and re-originates it, hiding internal topology, policing signalling against toll fraud and DoS, encrypting calls with TLS and SRTP, fixing SIP's notorious NAT-traversal problems, and translating between vendor dialects and codecs. It does for telephony what an API gateway does for APIs — one controlled front door — sitting wherever an enterprise phone system meets a SIP trunk or Microsoft Teams Direct Routing. As a deliberate man-in-the-middle for every call it is a prime target itself, and modern deployments harden and monitor it like any other policy enforcement point.",
+      "related": [
+        "firewall",
+        "apigateway",
+        "nat"
+      ],
+      "source": {
+        "label": "RFC 5853 — SIP Session Border Control",
+        "url": "https://www.rfc-editor.org/info/rfc5853"
       }
     },
     {
@@ -3174,6 +3235,41 @@
     {
       "source": "bola",
       "target": "websec",
+      "type": "same-category"
+    },
+    {
+      "source": "ndlp",
+      "target": "dlp",
+      "type": "part-of"
+    },
+    {
+      "source": "ndlp",
+      "target": "sase",
+      "type": "part-of"
+    },
+    {
+      "source": "ndlp",
+      "target": "casb",
+      "type": "same-category"
+    },
+    {
+      "source": "ndlp",
+      "target": "idsips",
+      "type": "same-category"
+    },
+    {
+      "source": "sbc",
+      "target": "firewall",
+      "type": "same-category"
+    },
+    {
+      "source": "sbc",
+      "target": "apigateway",
+      "type": "same-category"
+    },
+    {
+      "source": "sbc",
+      "target": "nat",
       "type": "same-category"
     }
   ]
