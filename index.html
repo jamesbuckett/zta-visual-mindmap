@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ZTA Visual Mindmap — Zero-Trust, Networking &amp; IT Terms, Mapped</title>
-  <meta name="description" content="An interactive mindmap of 78 zero-trust, networking, and IT terms — colour-coded into nine functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
+  <meta name="description" content="An interactive mindmap of 79 zero-trust, networking, and IT terms — colour-coded into nine functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'/%3E%3Ccircle cx='6' cy='12' r='3'/%3E%3Ccircle cx='18' cy='19' r='3'/%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'/%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -405,7 +405,7 @@
       <div class="search" id="search">
         <!-- Lucide: search -->
         <svg class="search-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="search-input" type="search" placeholder="Search 78 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
+        <input id="search-input" type="search" placeholder="Search 79 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
         <span id="search-hint" class="visually-hidden">Type to filter and locate terms in the map.</span>
         <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
           <!-- Lucide: x -->
@@ -513,7 +513,7 @@
 
   <footer class="appfoot">
     <span class="credit">
-      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 78 terms, 215 typed relationships.
+      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 79 terms, 218 typed relationships.
     </span>
     <span>Interactive mindmap built with <code>skill-style-guide</code> + <code>skill-build-educational-site</code>.</span>
   </footer>
@@ -1499,6 +1499,36 @@
       "source": {
         "label": "RFC 6749 — OAuth 2.0 Framework",
         "url": "https://www.rfc-editor.org/info/rfc6749"
+      }
+    },
+    {
+      "id": "obo",
+      "name": "OBO / Token Exchange",
+      "fullName": "On-Behalf-Of Token Exchange",
+      "aliases": [
+        "delegation",
+        "impersonation",
+        "confused deputy",
+        "STS",
+        "RFC 8693",
+        "Entra ID"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Lets a middle service call the next API as the user who called it, by swapping tokens — identity flows through the chain, not service accounts.",
+      "explainer": "Keeps identity intact across service chains: instead of calling downstream APIs with its own all-powerful service account, a middle tier hands the caller's token back to the identity provider and exchanges it for a new one — audience-scoped to the next hop, naming the original user as subject and the service as actor. Standardised as OAuth 2.0 Token Exchange (RFC 8693) and shipped as Microsoft Entra's On-Behalf-Of flow, it distinguishes delegation from impersonation and defeats the confused deputy: a privileged intermediary tricked into misusing its authority. Each hop can then authorize the person actually asking — least privilege past the front door.",
+      "related": [
+        "oauth",
+        "jwt",
+        "idp"
+      ],
+      "source": {
+        "label": "RFC 8693 — OAuth 2.0 Token Exchange",
+        "url": "https://www.rfc-editor.org/info/rfc8693"
       }
     },
     {
@@ -3791,6 +3821,21 @@
       "source": "sbc",
       "target": "nat",
       "type": "same-category"
+    },
+    {
+      "source": "obo",
+      "target": "oauth",
+      "type": "part-of"
+    },
+    {
+      "source": "obo",
+      "target": "jwt",
+      "type": "requires"
+    },
+    {
+      "source": "obo",
+      "target": "idp",
+      "type": "requires"
     }
   ]
 }</script>
@@ -3831,7 +3876,7 @@
     ];
     const FAMILY = {
       zerotrust: 'ztcore', peppdp: 'ztcore', spiffe: 'ztcore', openziti: 'ztcore', mtls: 'ztcore', nist207: 'ztcore', ztna: 'ztcore', opa: 'ztcore',
-      idp: 'iam', oauth: 'iam', oidc: 'iam', saml: 'iam', jwt: 'iam', pkce: 'iam', scim: 'iam', radius: 'iam', kerberos: 'iam', ldap: 'iam', mfa: 'iam', pam: 'iam', rbac: 'iam', bola: 'iam',
+      idp: 'iam', oauth: 'iam', oidc: 'iam', saml: 'iam', jwt: 'iam', pkce: 'iam', scim: 'iam', radius: 'iam', kerberos: 'iam', ldap: 'iam', mfa: 'iam', pam: 'iam', rbac: 'iam', bola: 'iam', obo: 'iam',
       tls: 'securechannel', ipsec: 'securechannel', ssh: 'securechannel', wireguard: 'securechannel', vpn: 'securechannel', tailscale: 'securechannel', pki: 'securechannel', pqc: 'securechannel', tpm: 'securechannel', vault: 'securechannel',
       tcpip: 'transport', http: 'transport', quic: 'transport', websockets: 'transport', webtransport: 'transport', grpc: 'transport', mqtt: 'transport', cors: 'transport', websec: 'transport', pac: 'transport',
       dns: 'routing', dhcp: 'routing', nat: 'routing', bgp: 'routing', vlan: 'routing',
@@ -3860,7 +3905,7 @@
     });
 
     // short labels for the few long names (full name stays in tooltip + panel)
-    const SHORT = { idp: 'IdP', microseg: 'Microseg.', loadbalancer: 'Load Bal.', spiffe: 'SPIFFE', http: 'HTTP(S)', webtransport: 'WebTransp.', ovs: 'OVS', ovn: 'OVN' };
+    const SHORT = { idp: 'IdP', microseg: 'Microseg.', loadbalancer: 'Load Bal.', spiffe: 'SPIFFE', http: 'HTTP(S)', webtransport: 'WebTransp.', ovs: 'OVS', ovn: 'OVN', obo: 'OBO' };
 
     const EDGE_META = {
       'part-of':       { cls: 't-partof',       dir: true,  marker: 'ah-accent', label: 'building block of', key: 'Building block / part-of' },
@@ -4159,12 +4204,12 @@
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
           '<h2>Zero trust and the modern network — mapped</h2>' +
-          '<p><strong>78 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph — related terms pull toward each other, so families cluster naturally. Each <strong>node</strong> is a term, grouped into <strong>nine functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p><strong>79 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph — related terms pull toward each other, so families cluster naturally. Each <strong>node</strong> is a term, grouped into <strong>nine functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
           '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> settles at the centre, with the identity, secure-channel, transport, routing, network-edge, platform, detection, and governance families clustered around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
-            '<div class="stat"><b>78</b><span>terms</span></div>' +
+            '<div class="stat"><b>79</b><span>terms</span></div>' +
             '<div class="stat"><b>9</b><span>families</span></div>' +
-            '<div class="stat"><b>215</b><span>links</span></div>' +
+            '<div class="stat"><b>218</b><span>links</span></div>' +
           '</div>' +
           '<div class="section-label">How to use it</div>' +
           '<ul class="about-how">' +

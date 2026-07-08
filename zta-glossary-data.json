@@ -982,6 +982,36 @@
       }
     },
     {
+      "id": "obo",
+      "name": "OBO / Token Exchange",
+      "fullName": "On-Behalf-Of Token Exchange",
+      "aliases": [
+        "delegation",
+        "impersonation",
+        "confused deputy",
+        "STS",
+        "RFC 8693",
+        "Entra ID"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "Lets a middle service call the next API as the user who called it, by swapping tokens — identity flows through the chain, not service accounts.",
+      "explainer": "Keeps identity intact across service chains: instead of calling downstream APIs with its own all-powerful service account, a middle tier hands the caller's token back to the identity provider and exchanges it for a new one — audience-scoped to the next hop, naming the original user as subject and the service as actor. Standardised as OAuth 2.0 Token Exchange (RFC 8693) and shipped as Microsoft Entra's On-Behalf-Of flow, it distinguishes delegation from impersonation and defeats the confused deputy: a privileged intermediary tricked into misusing its authority. Each hop can then authorize the person actually asking — least privilege past the front door.",
+      "related": [
+        "oauth",
+        "jwt",
+        "idp"
+      ],
+      "source": {
+        "label": "RFC 8693 — OAuth 2.0 Token Exchange",
+        "url": "https://www.rfc-editor.org/info/rfc8693"
+      }
+    },
+    {
       "id": "oidc",
       "name": "OIDC",
       "fullName": "OpenID Connect",
@@ -3271,6 +3301,21 @@
       "source": "sbc",
       "target": "nat",
       "type": "same-category"
+    },
+    {
+      "source": "obo",
+      "target": "oauth",
+      "type": "part-of"
+    },
+    {
+      "source": "obo",
+      "target": "jwt",
+      "type": "requires"
+    },
+    {
+      "source": "obo",
+      "target": "idp",
+      "type": "requires"
     }
   ]
 }
