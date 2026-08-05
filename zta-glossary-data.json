@@ -299,6 +299,7 @@
       "tldr": "Controls that detect and stop sensitive data from leaving where it should not.",
       "explainer": "The set of controls that keep sensitive information — card numbers, health records, source code, secrets — from leaving via email, uploads, USB, or chat, inspecting content against patterns and classifications then warning, blocking, or encrypting on a policy breach. Operating at endpoints, on the network, and in the cloud via CASB, it addresses the Data pillar of zero trust, and is only as good as the data classification beneath it.",
       "related": [
+        "ndlp",
         "casb",
         "sase",
         "siem"
@@ -390,6 +391,37 @@
       }
     },
     {
+      "id": "dpo",
+      "name": "DPO",
+      "fullName": "Direct Preference Optimization",
+      "aliases": [
+        "direct preference optimization",
+        "preference pairs",
+        "reference model",
+        "offline alignment",
+        "chosen rejected",
+        "IPO",
+        "KTO"
+      ],
+      "category": "Method",
+      "types": [
+        "Method"
+      ],
+      "provenance": "Research method",
+      "tldr": "RLHF's outcome without RLHF's machinery — train straight on preferred/rejected answer pairs, with no reward model and no reinforcement-learning loop.",
+      "explainer": "Reaches RLHF's objective by a much shorter route. Rafailov et al. showed the KL-constrained reward maximisation RLHF solves has a closed-form optimum, which lets the reward be rewritten in terms of the policy itself — so the separate reward model and the PPO loop both drop out. Training runs directly on the same preference data, triples of prompt, chosen answer, and rejected answer, with an ordinary classification loss that raises the log-probability of the chosen answer and lowers the rejected one, each measured against a frozen reference copy. One loop and nothing sampled mid-run, which is why it became the default for open-weight instruction tuning. The trade-off is that it is offline: it cannot explore responses its dataset never contained.",
+      "related": [
+        "rlhf",
+        "peppdp",
+        "sbom",
+        "sigstore"
+      ],
+      "source": {
+        "label": "Rafailov et al. — Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+        "url": "https://arxiv.org/abs/2305.18290"
+      }
+    },
+    {
       "id": "dpu",
       "name": "DPU",
       "fullName": "Data Processing Unit",
@@ -471,7 +503,8 @@
         "microseg",
         "nat",
         "vlan",
-        "siem"
+        "siem",
+        "sbc"
       ],
       "source": {
         "label": "NIST SP 800-41 Rev. 1 — Firewall Guidelines",
@@ -635,7 +668,8 @@
       "related": [
         "oauth",
         "saml",
-        "spiffe"
+        "spiffe",
+        "paseto"
       ],
       "source": {
         "label": "RFC 7519 — JSON Web Token",
@@ -901,27 +935,26 @@
         "network DLP",
         "data in motion",
         "egress inspection",
-        "content inspection",
-        "SWG",
-        "secure web gateway"
+        "TLS inspection",
+        "inline DLP"
       ],
       "category": "Security Technology",
       "types": [
-        "Security Technology",
-        "Network Technology"
+        "Security Technology"
       ],
       "provenance": "Open standard",
-      "tldr": "The network arm of DLP — inspects data in motion at egress and blocks sensitive content before it leaves.",
+      "tldr": "DLP for data in motion — traffic is inspected inline at the network edge and sensitive content is stopped before it leaves.",
       "explainer": "The network-enforced arm of DLP: an inline inspection point — a forward proxy, secure web gateway, or cloud SSE service — that examines data in motion leaving via web uploads, email, and cloud sync, matching content against patterns and classifications, then warning, blocking, or quarantining on a policy breach. Because most egress traffic is encrypted it depends on TLS interception to see payloads, and in SASE architectures it shares the cloud enforcement point with CASB and ZTNA. It covers what endpoint agents cannot — unmanaged devices and server egress — while endpoint DLP handles USB, clipboard, and print.",
       "related": [
         "dlp",
-        "casb",
         "sase",
-        "idsips"
+        "casb",
+        "tls",
+        "firewall"
       ],
       "source": {
-        "label": "IBM — What is data loss prevention (DLP)?",
-        "url": "https://www.ibm.com/think/topics/data-loss-prevention"
+        "label": "Fortinet cyberglossary — Network Data Loss Prevention (nDLP)",
+        "url": "https://www.fortinet.com/resources/cyberglossary/network-dlp"
       }
     },
     {
@@ -974,7 +1007,8 @@
       "related": [
         "jwt",
         "saml",
-        "idp"
+        "idp",
+        "obo"
       ],
       "source": {
         "label": "RFC 6749 — OAuth 2.0 Framework",
@@ -984,27 +1018,28 @@
     {
       "id": "obo",
       "name": "OBO / Token Exchange",
-      "fullName": "On-Behalf-Of Token Exchange",
+      "fullName": "On-Behalf-Of (OAuth 2.0 Token Exchange)",
       "aliases": [
+        "on-behalf-of",
+        "RFC 8693",
         "delegation",
         "impersonation",
-        "confused deputy",
-        "STS",
-        "RFC 8693",
-        "Entra ID"
+        "act claim",
+        "middle tier"
       ],
-      "category": "Security Technology",
+      "category": "Protocol",
       "types": [
-        "Security Technology",
-        "Protocol"
+        "Protocol",
+        "Security Technology"
       ],
       "provenance": "Open standard",
-      "tldr": "Lets a middle service call the next API as the user who called it, by swapping tokens — identity flows through the chain, not service accounts.",
+      "tldr": "Lets a middle-tier service swap the user's token for a downstream-scoped one, so identity and least privilege survive the whole call chain.",
       "explainer": "Keeps identity intact across service chains: instead of calling downstream APIs with its own all-powerful service account, a middle tier hands the caller's token back to the identity provider and exchanges it for a new one — audience-scoped to the next hop, naming the original user as subject and the service as actor. Standardised as OAuth 2.0 Token Exchange (RFC 8693) and shipped as Microsoft Entra's On-Behalf-Of flow, it distinguishes delegation from impersonation and defeats the confused deputy: a privileged intermediary tricked into misusing its authority. Each hop can then authorize the person actually asking — least privilege past the front door.",
       "related": [
         "oauth",
         "jwt",
-        "idp"
+        "oidc",
+        "apigateway"
       ],
       "source": {
         "label": "RFC 8693 — OAuth 2.0 Token Exchange",
@@ -1061,7 +1096,8 @@
         "peppdp",
         "rbac",
         "kubernetes",
-        "zerotrust"
+        "zerotrust",
+        "rlhf"
       ],
       "source": {
         "label": "Open Policy Agent documentation",
@@ -1251,6 +1287,39 @@
       }
     },
     {
+      "id": "paseto",
+      "name": "PASETO",
+      "fullName": "Platform-Agnostic Security Tokens",
+      "aliases": [
+        "v4.local",
+        "v4.public",
+        "PASERK",
+        "JWT alternative",
+        "versioned protocols",
+        "algorithm confusion",
+        "implicit assertion",
+        "footer"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology",
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A JWT alternative with no algorithm field — the version prefix pins the cryptography, so there is nothing for an attacker to downgrade.",
+      "explainer": "A token format built as a direct answer to the ways JWT goes wrong in practice. A token reads version.purpose.payload, plus an optional footer that is authenticated but left in the clear: the version pins the entire cipher suite before parsing begins, so there is no alg header to tamper with — no swapping RS256 for HS256, and no alg of none to skip verification altogether. Purpose is either local, encrypted under a shared symmetric key, or public, signed and readable by anyone holding the public key. v4 is the modern default (XChaCha20, Ed25519) and v3 the NIST-constrained option. The caveat is adoption: the IETF draft expired, PASETO never became an RFC, and a JWT library pinned to exactly one algorithm closes the same holes.",
+      "related": [
+        "jwt",
+        "oauth",
+        "oidc",
+        "pki"
+      ],
+      "source": {
+        "label": "PASETO specification — paseto-standard",
+        "url": "https://github.com/paseto-standard/paseto-spec"
+      }
+    },
+    {
       "id": "peppdp",
       "name": "PEP / PDP",
       "fullName": "Policy Enforcement Point / Policy Decision Point",
@@ -1268,7 +1337,9 @@
       "explainer": "The access-control pattern that splits enforcement from decision: the Policy Enforcement Point intercepts each request in-path while the Policy Decision Point evaluates the rules and returns allow or deny. Centralising the decision lets one policy brain govern many enforcement points — the control core of zero trust.",
       "related": [
         "zerotrust",
-        "idp"
+        "idp",
+        "rlhf",
+        "dpo"
       ],
       "source": {
         "label": "NIST SP 800-207 — Zero Trust Architecture",
@@ -1472,6 +1543,37 @@
       }
     },
     {
+      "id": "rlhf",
+      "name": "RLHF",
+      "fullName": "Reinforcement Learning from Human Feedback",
+      "aliases": [
+        "human feedback",
+        "reward model",
+        "PPO",
+        "preference tuning",
+        "alignment",
+        "InstructGPT",
+        "RLAIF"
+      ],
+      "category": "Method",
+      "types": [
+        "Method"
+      ],
+      "provenance": "Research method",
+      "tldr": "Trains a model on what people actually prefer — humans rank its answers, a reward model learns that taste, and reinforcement learning tunes the model against it.",
+      "explainer": "How a raw language model becomes one that follows instructions usefully and declines what it should. Three stages: supervised fine-tuning on human-written demonstrations, then a reward model trained on labellers' rankings of competing answers, then reinforcement learning — classically PPO — optimising against that learned reward with a KL penalty pinning the policy to its reference so it cannot drift into degenerate text. InstructGPT's 1.3B RLHF model was preferred by human raters over 175B-parameter GPT-3. Refusal behaviour and safety policy are installed here, at training time, so they live in the weights rather than in any runtime control downstream can inspect or enforce. Its weakness is reward hacking: the policy optimises a proxy for human judgement.",
+      "related": [
+        "dpo",
+        "peppdp",
+        "opa",
+        "sbom"
+      ],
+      "source": {
+        "label": "Ouyang et al. — Training language models to follow instructions with human feedback",
+        "url": "https://arxiv.org/abs/2203.02155"
+      }
+    },
+    {
       "id": "saml",
       "name": "SAML",
       "fullName": "Security Assertion Markup Language",
@@ -1533,10 +1635,10 @@
       "aliases": [
         "SIP",
         "VoIP",
+        "B2BUA",
         "SIP trunking",
         "RTP",
-        "voice firewall",
-        "Direct Routing"
+        "toll fraud"
       ],
       "category": "Network Technology",
       "types": [
@@ -1544,16 +1646,17 @@
         "Security Technology"
       ],
       "provenance": "Open standard",
-      "tldr": "The firewall for voice: polices, encrypts, and repairs SIP calls at the border between a phone system and the outside world.",
+      "tldr": "The border guard for VoIP — calls terminate on it, are policed and normalised, then re-originated toward the far side.",
       "explainer": "The border element for real-time voice and video: a back-to-back user agent that terminates each SIP session and re-originates it, hiding internal topology, policing signalling against toll fraud and DoS, encrypting calls with TLS and SRTP, fixing SIP's notorious NAT-traversal problems, and translating between vendor dialects and codecs. It does for telephony what an API gateway does for APIs — one controlled front door — sitting wherever an enterprise phone system meets a SIP trunk or Microsoft Teams Direct Routing. As a deliberate man-in-the-middle for every call it is a prime target itself, and modern deployments harden and monitor it like any other policy enforcement point.",
       "related": [
         "firewall",
-        "apigateway",
-        "nat"
+        "nat",
+        "tls",
+        "apigateway"
       ],
       "source": {
-        "label": "RFC 5853 — SIP Session Border Control",
-        "url": "https://www.rfc-editor.org/info/rfc5853"
+        "label": "RFC 5853 — SIP Session Border Control (SBC) Deployments",
+        "url": "https://datatracker.ietf.org/doc/html/rfc5853"
       }
     },
     {
@@ -1579,7 +1682,9 @@
         "sigstore",
         "docker",
         "cve",
-        "opa"
+        "opa",
+        "rlhf",
+        "dpo"
       ],
       "source": {
         "label": "CISA — Software Bill of Materials",
@@ -1719,7 +1824,8 @@
       "related": [
         "sbom",
         "pki",
-        "docker"
+        "docker",
+        "dpo"
       ],
       "source": {
         "label": "sigstore.dev",
@@ -1922,7 +2028,7 @@
     {
       "id": "tpm",
       "name": "TPM & Secure Boot",
-      "fullName": "Trusted Platform Module & Secure Boot",
+      "fullName": "Hardware Root of Trust",
       "aliases": [
         "trusted platform module",
         "secure boot",
@@ -3316,6 +3422,91 @@
       "source": "obo",
       "target": "idp",
       "type": "requires"
+    },
+    {
+      "source": "paseto",
+      "target": "jwt",
+      "type": "alternative"
+    },
+    {
+      "source": "pki",
+      "target": "paseto",
+      "type": "enables"
+    },
+    {
+      "source": "paseto",
+      "target": "oauth",
+      "type": "enables"
+    },
+    {
+      "source": "paseto",
+      "target": "oidc",
+      "type": "same-category"
+    },
+    {
+      "source": "dpo",
+      "target": "rlhf",
+      "type": "alternative"
+    },
+    {
+      "source": "rlhf",
+      "target": "peppdp",
+      "type": "alternative"
+    },
+    {
+      "source": "rlhf",
+      "target": "opa",
+      "type": "alternative"
+    },
+    {
+      "source": "rlhf",
+      "target": "sbom",
+      "type": "same-category"
+    },
+    {
+      "source": "dpo",
+      "target": "peppdp",
+      "type": "alternative"
+    },
+    {
+      "source": "dpo",
+      "target": "sbom",
+      "type": "same-category"
+    },
+    {
+      "source": "dpo",
+      "target": "sigstore",
+      "type": "same-category"
+    },
+    {
+      "source": "bluefield",
+      "target": "ovs",
+      "type": "enables"
+    },
+    {
+      "source": "ndlp",
+      "target": "tls",
+      "type": "requires"
+    },
+    {
+      "source": "ndlp",
+      "target": "firewall",
+      "type": "same-category"
+    },
+    {
+      "source": "tls",
+      "target": "sbc",
+      "type": "enables"
+    },
+    {
+      "source": "obo",
+      "target": "oidc",
+      "type": "same-category"
+    },
+    {
+      "source": "obo",
+      "target": "apigateway",
+      "type": "enables"
     }
   ]
 }
