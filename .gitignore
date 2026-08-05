@@ -4,6 +4,7 @@ screenshot.mjs
 
 # Validation artifacts
 screenshots/
+.playwright-mcp/
 
 # Node / OS noise
 node_modules/
