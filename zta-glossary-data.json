@@ -1,6 +1,47 @@
 {
   "terms": [
     {
+      "id": "alpaca",
+      "name": "Alpaca",
+      "fullName": "Local HTTP Proxy for Command-Line Tools",
+      "aliases": [
+        "samuong/alpaca",
+        "local HTTP proxy",
+        "NTLM proxy",
+        "proxy authentication",
+        "407 Proxy Authentication Required",
+        "Proxy-Authenticate",
+        "Negotiate",
+        "SPNEGO",
+        "http_proxy",
+        "https_proxy",
+        "corporate proxy",
+        "NTLM_CREDENTIALS",
+        "ALPACA_PROXY_AUTH_ALLOWLIST",
+        "localhost:3128"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "A proxy you run on your own machine so curl, git, and npm can get out through the corporate one — it reads the PAC file and answers the NTLM or Kerberos challenge that command-line tools cannot.",
+      "explainer": "A small Go binary running a plain HTTP proxy on loopback, and it exists for a specific gap: browsers can evaluate a PAC file and answer a 407 challenge with NTLM or Kerberos, but curl, git, npm, and pip understand only an http_proxy variable naming one host and port. Alpaca is that host and port — it evaluates the PAC to pick direct or an upstream, opens a CONNECT tunnel for HTTPS, and runs the authentication handshake itself from a Kerberos ticket, a hashed NTLM value, or the keyring. Credential forwarding is permissive by default, so a PAC fetched over plain HTTP is enough to collect a hash, and any local process can borrow your authenticated egress.",
+      "related": [
+        "cntlm",
+        "pac",
+        "kerberos",
+        "ldap",
+        "sase",
+        "http"
+      ],
+      "source": {
+        "label": "Alpaca — local HTTP proxy for command-line tools (GitHub)",
+        "url": "https://github.com/samuong/alpaca"
+      }
+    },
+    {
       "id": "apigateway",
       "name": "API Gateway",
       "fullName": "API Gateway",
@@ -121,6 +162,53 @@
       }
     },
     {
+      "id": "calico",
+      "name": "Calico",
+      "fullName": "Project Calico — Kubernetes Networking & Network Policy",
+      "aliases": [
+        "Project Calico",
+        "CNI",
+        "Container Network Interface",
+        "calico-node",
+        "Felix",
+        "Typha",
+        "BIRD",
+        "confd",
+        "calicoctl",
+        "GlobalNetworkPolicy",
+        "HostEndpoint",
+        "policy tiers",
+        "IPIP",
+        "VXLAN",
+        "IPAM",
+        "BGP peering",
+        "eBPF data plane",
+        "default deny",
+        "Tigera"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The Kubernetes CNI that routes pod traffic with BGP instead of tunnelling it, and layers an ordered, tiered policy engine over what Kubernetes NetworkPolicy can express.",
+      "explainer": "One of the two CNIs you are most likely to meet, and often present purely for its policy engine. Its distinguishing choice is to route rather than tunnel: each node owns a block of pod address space, a BGP daemon advertises it, and a pod's packet crosses the wire with its own source and destination and nothing wrapped around it — so existing routers and flow collectors see real endpoints. An agent on every node programs routes and rules into iptables, nftables, or eBPF. The policy engine is why it appears in zero-trust designs: explicit deny, a deterministic order field, and tiers that let a platform team's rules sit above developers' policies. Its identity is an address, so a policy is only as trustworthy as the labels behind it.",
+      "related": [
+        "cilium",
+        "ebpf",
+        "kubernetes",
+        "microseg",
+        "bgp",
+        "wireguard",
+        "ovn"
+      ],
+      "source": {
+        "label": "About Calico — Calico Open Source documentation",
+        "url": "https://docs.tigera.io/calico/latest/about/"
+      }
+    },
+    {
       "id": "casb",
       "name": "CASB",
       "fullName": "Cloud Access Security Broker",
@@ -149,14 +237,23 @@
     },
     {
       "id": "cilium",
-      "name": "Cilium / eBPF",
-      "fullName": "eBPF-Based Networking & Security",
+      "name": "Cilium",
+      "fullName": "eBPF-Based Kubernetes Networking, Observability & Security",
       "aliases": [
-        "eBPF",
-        "Cilium",
-        "network policy",
+        "CNI",
+        "Container Network Interface",
+        "cilium-agent",
+        "CiliumNetworkPolicy",
+        "CiliumClusterwideNetworkPolicy",
+        "security identity",
+        "kube-proxy replacement",
         "Hubble",
-        "kernel"
+        "Cluster Mesh",
+        "Tetragon",
+        "Gateway API",
+        "Maglev",
+        "direct server return",
+        "Isovalent"
       ],
       "category": "Network Technology",
       "types": [
@@ -164,16 +261,60 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "Programmable, in-kernel networking and security policy for Kubernetes.",
+      "tldr": "The Kubernetes CNI that compiles identity-aware policy into eBPF programs in the kernel, so enforcement, load balancing, and flow visibility happen without a sidecar.",
       "explainer": "Builds on eBPF — sandboxed programs running safely inside the Linux kernel — to provide networking, observability, and security for Kubernetes at kernel speed rather than through userspace proxies. Because it enforces identity-aware network policy in the kernel, it implements microsegmentation efficiently and offers service-mesh-like connectivity without sidecars.",
       "related": [
+        "ebpf",
+        "calico",
         "kubernetes",
         "microseg",
         "servicemesh"
       ],
       "source": {
-        "label": "cilium.io",
-        "url": "https://cilium.io/"
+        "label": "Introduction to Cilium & Hubble — Cilium documentation",
+        "url": "https://docs.cilium.io/en/stable/overview/intro/"
+      }
+    },
+    {
+      "id": "cntlm",
+      "name": "Cntlm",
+      "fullName": "NTLM Authentication Proxy",
+      "aliases": [
+        "CNTLM",
+        "cntlm.conf",
+        "NTLM proxy",
+        "NTLMv2",
+        "NTLM2SR",
+        "LM hash",
+        "PassNTLMv2",
+        "PassNT",
+        "PassLM",
+        "magic dialect detection",
+        "parent proxy",
+        "gateway mode",
+        "NoProxy",
+        "SOCKS5 proxy",
+        "port tunnelling",
+        "ISA Server"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The long-standing C daemon that speaks NTLM to a corporate parent proxy on your behalf — it probes to find the dialect the proxy will accept, and holds a password hash rather than a password.",
+      "explainer": "The older answer to the problem Alpaca solves, and on Linux the one more likely already packaged — a small C daemon listening on loopback, forwarding to a parent proxy, and adding the NTLM handshake the application behind it cannot perform. What distinguishes it is how much of the NTLM problem it puts in front of you: the Auth setting selects the dialect, because a corporate proxy of a certain age accepts exactly one, and a detection pass probes for a working configuration rather than making you guess. Credentials live in the config as hashes, which stops a shoulder-surfer but not an attacker — those hashes are precisely what the exchange consumes, so file permissions are the whole of the protection.",
+      "related": [
+        "alpaca",
+        "pac",
+        "kerberos",
+        "ldap",
+        "sase"
+      ],
+      "source": {
+        "label": "Cntlm — NTLM Authentication Proxy",
+        "url": "https://cntlm.sourceforge.net/"
       }
     },
     {
@@ -229,6 +370,44 @@
       "source": {
         "label": "CVE Program",
         "url": "https://www.cve.org/"
+      }
+    },
+    {
+      "id": "cyberark",
+      "name": "CyberArk PAM",
+      "fullName": "Privileged Access Manager (now Idira, by Palo Alto Networks)",
+      "aliases": [
+        "CyberArk",
+        "Idira",
+        "Idira PAM",
+        "Privileged Access Manager",
+        "Digital Vault",
+        "Enterprise Password Vault",
+        "CPM",
+        "PVWA",
+        "PSM",
+        "Privileged Session Manager",
+        "Privileged Threat Analytics",
+        "Privilege Cloud",
+        "Conjur",
+        "credential injection"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "The commercial PAM deployment most enterprises actually run — a hardened credential vault, scheduled rotation, and a proxy that opens privileged sessions so the administrator never learns the password.",
+      "explainer": "The PAM deployment most enterprises actually run, worth knowing as an architecture rather than a brand. A hardened Digital Vault holds every privileged credential and is reached only over its own protocol, so ordinary administration of the host does not grant access to the contents. A policy manager rotates and reconciles those passwords on a schedule, and the session manager is the architectural core: it opens the RDP or SSH session from a proxy and injects the credential there, so the administrator never learns the password and every keystroke is recorded. The objection is concentration. The subtler failure is coverage — accounts never onboarded, or direct routes to the target, quietly reinstate the risk.",
+      "related": [
+        "pam",
+        "vault",
+        "idp",
+        "ssh"
+      ],
+      "source": {
+        "label": "Palo Alto Networks — Idira Privileged Access Management",
+        "url": "https://www.paloaltonetworks.com/idira/human/privileged-access-management"
       }
     },
     {
@@ -391,6 +570,43 @@
       }
     },
     {
+      "id": "dora",
+      "name": "DORA",
+      "fullName": "Digital Operational Resilience Act",
+      "aliases": [
+        "Digital Operational Resilience Act",
+        "Regulation (EU) 2022/2554",
+        "2022/2554",
+        "operational resilience",
+        "ICT risk management",
+        "TLPT",
+        "threat-led penetration testing",
+        "TIBER-EU",
+        "register of information",
+        "CTPP",
+        "critical ICT third-party provider",
+        "Lead Overseer",
+        "ESAs"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The EU regulation that makes surviving an IT failure a supervisory matter for financial firms — and, for the first time, lets European regulators oversee the cloud providers those firms depend on.",
+      "explainer": "Regulation (EU) 2022/2554, applying since 17 January 2025. Its premise is that a financial firm's ability to keep operating through an ICT failure is a supervisory question rather than an internal IT concern, so it binds around twenty categories of regulated entity and reaches their suppliers as well. Five pillars carry it: ICT risk management accountable to the management body, major incidents classified and reported on a clock, a standing testing programme with threat-led penetration testing for the most significant firms, third-party risk with a register of every ICT dependency, and information sharing. The new mechanism is oversight — regulators may now inspect the hyperscalers directly. It specifies process, not controls.",
+      "related": [
+        "nist207",
+        "sbom",
+        "siem",
+        "soar"
+      ],
+      "source": {
+        "label": "Regulation (EU) 2022/2554 — Digital Operational Resilience Act",
+        "url": "https://eur-lex.europa.eu/eli/reg/2022/2554/oj"
+      }
+    },
+    {
       "id": "dpo",
       "name": "DPO",
       "fullName": "Direct Preference Optimization",
@@ -414,7 +630,8 @@
         "rlhf",
         "peppdp",
         "sbom",
-        "sigstore"
+        "sigstore",
+        "rag"
       ],
       "source": {
         "label": "Rafailov et al. — Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
@@ -454,6 +671,46 @@
       }
     },
     {
+      "id": "ebpf",
+      "name": "eBPF",
+      "fullName": "extended Berkeley Packet Filter",
+      "aliases": [
+        "BPF",
+        "bpf()",
+        "verifier",
+        "JIT",
+        "eBPF maps",
+        "XDP",
+        "kprobe",
+        "uprobe",
+        "tracepoint",
+        "BPF LSM",
+        "libbpf",
+        "CO-RE",
+        "BTF",
+        "bpftrace",
+        "kernel"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Sandboxed programs that run inside the Linux kernel at defined hook points, extending what it does without patching it or loading a module.",
+      "explainer": "Changing kernel behaviour used to mean patching it or shipping a module. eBPF is the third option: compile a small program to bytecode, hand it to the kernel, and it runs at a defined hook — a packet arriving at the driver, a kernel function entry, a tracepoint, a security hook. What makes that safe enough to be interesting is the verifier, which statically proves the program terminates, never reads uninitialised memory, and stays inside bounds before it is JIT-compiled to native speed. Maps are how state crosses into user space. It is why Cilium, Calico's fast data plane, and most modern tracers exist. The verifier proves memory safety, not benignity.",
+      "related": [
+        "cilium",
+        "calico",
+        "kubernetes",
+        "edr"
+      ],
+      "source": {
+        "label": "What is eBPF? — ebpf.io",
+        "url": "https://ebpf.io/what-is-ebpf/"
+      }
+    },
+    {
       "id": "edr",
       "name": "EDR / XDR",
       "fullName": "Endpoint / Extended Detection & Response",
@@ -480,6 +737,134 @@
       "source": {
         "label": "NIST glossary — Endpoint Detection & Response",
         "url": "https://csrc.nist.gov/glossary/term/endpoint_detection_and_response"
+      }
+    },
+    {
+      "id": "envoy",
+      "name": "Envoy",
+      "fullName": "Envoy Proxy — L7 Proxy & Universal Data Plane",
+      "aliases": [
+        "Envoy Proxy",
+        "xDS",
+        "LDS",
+        "RDS",
+        "CDS",
+        "EDS",
+        "SDS",
+        "listener",
+        "cluster",
+        "filter chain",
+        "HTTP connection manager",
+        "ext_authz",
+        "external authorization",
+        "JWT authn filter",
+        "RBAC filter",
+        "WASM filter",
+        "Envoy Gateway",
+        "sidecar proxy",
+        "upstream",
+        "downstream",
+        "circuit breaking",
+        "outlier detection"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The C++ L7 proxy underneath most modern meshes and gateways — a filter chain whose entire configuration arrives over a live gRPC stream rather than a file, which is what makes a control plane above it possible.",
+      "explainer": "The L7 proxy underneath most modern meshes and gateways; you rarely choose it directly, you choose something built on it. It runs out of process beside every workload, so one deployment serves services written in any language. The model is small: a listener takes a connection, it passes through a filter chain, and a router picks a cluster of upstream hosts. Nearly everything it does is a filter, which is why the feature list runs so long. The distinguishing part is xDS — configuration streams in over gRPC rather than sitting in a file, so routes, upstreams, and certificates change under live traffic. That also means adopting a control plane, which becomes the most security-critical thing you run.",
+      "related": [
+        "istio",
+        "servicemesh",
+        "apigateway",
+        "peppdp",
+        "loadbalancer",
+        "grpc"
+      ],
+      "source": {
+        "label": "Envoy documentation — What is Envoy",
+        "url": "https://www.envoyproxy.io/docs/envoy/latest/intro/what_is_envoy"
+      }
+    },
+    {
+      "id": "fapi",
+      "name": "FAPI 2.0",
+      "fullName": "Financial-grade API Security Profile",
+      "aliases": [
+        "FAPI",
+        "Financial-grade API",
+        "FAPI 2.0 Security Profile",
+        "PAR",
+        "pushed authorization requests",
+        "DPoP",
+        "sender-constrained tokens",
+        "RFC 9126",
+        "RFC 9449",
+        "RFC 8705",
+        "attacker model",
+        "open banking",
+        "JARM",
+        "private_key_jwt"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The OpenID Foundation's hardening profile for OAuth and OpenID Connect — it pushes the request off the browser and binds every access token to a key, so a stolen token is useless.",
+      "explainer": "The OpenID Foundation's hardening profile for OAuth 2.0 and OpenID Connect — a profile rather than a new protocol, closing the options OAuth deliberately leaves open. Four mandates carry it: pushed authorization requests, so the browser carries only an opaque handle and nothing tamperable sits in the URL; PKCE with S256; the iss parameter from RFC 9207, which closes the mix-up attack; and, most consequentially, sender-constrained access tokens bound to an mTLS certificate or a DPoP key, retiring the bearer token outright. Unusually, it ships an attacker model with a machine-checked proof that the profile meets its goals. The cost is real key management in the client, so adoption clusters where it was mandated.",
+      "related": [
+        "oauth",
+        "oidc",
+        "pkce",
+        "mtls"
+      ],
+      "source": {
+        "label": "FAPI 2.0 Security Profile — OpenID Foundation",
+        "url": "https://openid.net/specs/fapi-security-profile-2_0-final.html"
+      }
+    },
+    {
+      "id": "fido2",
+      "name": "FIDO2",
+      "fullName": "WebAuthn + CTAP",
+      "aliases": [
+        "WebAuthn",
+        "CTAP",
+        "CTAP2",
+        "FIDO",
+        "FIDO Alliance",
+        "passkey",
+        "passwordless",
+        "security key",
+        "relying party ID",
+        "discoverable credential",
+        "resident key",
+        "user verification",
+        "attestation",
+        "YubiKey",
+        "cross-device authentication"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol",
+        "Security Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "WebAuthn plus CTAP — registration mints a key pair scoped to one site's origin, so there is no shared secret to steal and a look-alike domain has no credential to ask for.",
+      "explainer": "WebAuthn and CTAP together replace the shared secret with a key pair: registration mints a key scoped to the site's relying party ID, the private half never leaves the authenticator, and every later sign-in is a signature over a challenge. The scoping is the property that matters — the authenticator will only sign for a credential whose RP ID matches the origin asking, so on a look-alike domain there is simply nothing to offer, and a proxy that happily relays a password and a TOTP code gets nothing, because the signature would have to be over the wrong origin. The honest complication is passkeys: syncing a credential through a cloud account makes the guarantee only as strong as that account.",
+      "related": [
+        "mfa",
+        "pki",
+        "tpm",
+        "idp"
+      ],
+      "source": {
+        "label": "FIDO Alliance — FIDO2",
+        "url": "https://fidoalliance.org/fido2/"
       }
     },
     {
@@ -623,6 +1008,45 @@
       }
     },
     {
+      "id": "immuta",
+      "name": "Immuta",
+      "fullName": "Policy-Based Access Control for Data Platforms",
+      "aliases": [
+        "data access control",
+        "data governance",
+        "attribute-based access control",
+        "ABAC",
+        "dynamic masking",
+        "row-level security",
+        "column masking",
+        "subscription policy",
+        "data policy",
+        "policy pushdown",
+        "k-anonymity",
+        "differential privacy",
+        "Snowflake",
+        "Databricks",
+        "Unity Catalog"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "Author data access policy once against user attributes, and it is compiled down into Snowflake's or Databricks' own row and column controls — one decision point in front of many query engines.",
+      "explainer": "A control plane for who may read what inside a data platform. The problem is role explosion — expressing \"EU analysts may query this table, but salary is masked and out-of-region rows hidden\" through native grants means a role per combination, per table, decaying whenever someone changes team. Immuta separates decision from enforcement: policy is written once against user attributes, then compiled down into Snowflake's or Databricks' own row-access and column-masking primitives, so queries run natively at full speed whether they arrive from a BI tool, a notebook, or a service account. It is a policy decision point for data, and the warehouse is the enforcement point. Fidelity is bounded by what the target platform can express.",
+      "related": [
+        "rbac",
+        "peppdp",
+        "opa",
+        "dlp"
+      ],
+      "source": {
+        "label": "Immuta documentation",
+        "url": "https://documentation.immuta.com/latest/"
+      }
+    },
+    {
       "id": "ipsec",
       "name": "IPsec",
       "fullName": "Internet Protocol Security",
@@ -650,6 +1074,50 @@
       }
     },
     {
+      "id": "istio",
+      "name": "Istio",
+      "fullName": "Istio Service Mesh",
+      "aliases": [
+        "istiod",
+        "ambient mode",
+        "ztunnel",
+        "waypoint proxy",
+        "HBONE",
+        "sidecar injection",
+        "PeerAuthentication",
+        "AuthorizationPolicy",
+        "RequestAuthentication",
+        "VirtualService",
+        "DestinationRule",
+        "ServiceEntry",
+        "trust domain",
+        "STRICT mTLS",
+        "PERMISSIVE",
+        "Gateway API",
+        "east-west"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology",
+        "Security Technology"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The most widely deployed service mesh — istiod issues every workload a SPIFFE identity and drives Envoy so that mTLS and per-request authorisation are the default, with an ambient mode that drops the sidecar entirely.",
+      "explainer": "The reference service mesh. Its control plane collapsed long ago into a single binary, istiod, which does discovery, translates intent into Envoy configuration, and acts as the mesh certificate authority — issuing every workload an X.509 certificate carrying a SPIFFE ID derived from its Kubernetes service account, and rotating it, so policy is written against cryptographic identity rather than an IP any pod might inherit. Its authorization evaluation order is worth memorising: custom policies first, then deny, then allow — and with no allow policy at all the request is permitted, so default-deny is configured, not inherited. Ambient mode drops the sidecar for a per-node proxy, moving the blast radius rather than removing it.",
+      "related": [
+        "envoy",
+        "servicemesh",
+        "spiffe",
+        "mtls",
+        "kubernetes",
+        "peppdp"
+      ],
+      "source": {
+        "label": "Istio documentation — Architecture",
+        "url": "https://istio.io/latest/docs/ops/deployment/architecture/"
+      }
+    },
+    {
       "id": "jwt",
       "name": "JWT",
       "fullName": "JSON Web Token",
@@ -674,6 +1142,40 @@
       "source": {
         "label": "RFC 7519 — JSON Web Token",
         "url": "https://www.rfc-editor.org/info/rfc7519"
+      }
+    },
+    {
+      "id": "keda",
+      "name": "KEDA",
+      "fullName": "Kubernetes Event-driven Autoscaling",
+      "aliases": [
+        "Kubernetes Event-driven Autoscaling",
+        "ScaledObject",
+        "ScaledJob",
+        "TriggerAuthentication",
+        "scale to zero",
+        "scaler",
+        "external metrics",
+        "HPA",
+        "Horizontal Pod Autoscaler",
+        "consumer lag"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "Scales Kubernetes workloads on the event source itself — queue depth, consumer lag, a Prometheus query — and all the way down to zero, which CPU-based autoscaling cannot do.",
+      "explainer": "Kubernetes' own Horizontal Pod Autoscaler scales on CPU and memory, the wrong signal for event-driven work: a worker blocked on a queue read burns almost no CPU while a million messages pile up behind it. KEDA fixes the signal without replacing the mechanism — a ScaledObject names an existing Deployment and declares triggers, Kafka consumer lag or queue depth or a Prometheus query, drawn from eighty-odd scalers. It drives the zero-to-one transition itself, then hands over to an ordinary HPA from one replica upward. Scale-to-zero is what a plain HPA has never done. Credentials are the security question: the operator becomes one controller able to reach every queue the cluster scales on. It scales pods, not machines.",
+      "related": [
+        "kubernetes",
+        "docker",
+        "vault",
+        "spiffe"
+      ],
+      "source": {
+        "label": "KEDA documentation — Concepts",
+        "url": "https://keda.sh/docs/latest/concepts/"
       }
     },
     {
@@ -725,6 +1227,7 @@
       "explainer": "A container orchestrator that runs workloads across a cluster: you declare desired state and its control plane continuously reconciles reality, rescheduling failures and scaling on demand. It turns a fleet of machines into one programmable platform, with the pod as its smallest unit.",
       "related": [
         "docker",
+        "keda",
         "loadbalancer",
         "spiffe"
       ],
@@ -813,6 +1316,7 @@
       "tldr": "Proving identity with more than a password — and passkeys that cannot be phished.",
       "explainer": "Requires two or more independent proofs of identity — something you know, have, or are — so a stolen password alone is not enough; but SMS and TOTP codes can still be phished into a fake site. FIDO2 and WebAuthn close that gap by binding a public-key challenge to the real site's origin so the credential cannot be replayed, and passkeys are the consumer-friendly, password-replacing form — the strongest signal that the human is who they claim to be.",
       "related": [
+        "fido2",
         "oauth",
         "oidc",
         "idp",
@@ -1008,7 +1512,8 @@
         "jwt",
         "saml",
         "idp",
-        "obo"
+        "obo",
+        "fapi"
       ],
       "source": {
         "label": "RFC 6749 — OAuth 2.0 Framework",
@@ -1251,7 +1756,8 @@
         "sase",
         "casb",
         "dns",
-        "http"
+        "http",
+        "alpaca"
       ],
       "source": {
         "label": "MDN — Proxy Auto-Configuration (PAC) file",
@@ -1276,6 +1782,7 @@
       "tldr": "Tight control over the powerful admin accounts attackers most want.",
       "explainer": "Wraps the handful of privileged accounts — domain admins, root, cloud owners — that can do catastrophic damage in extra control: vaulting their credentials, brokering sessions through a gateway that records keystrokes, and increasingly granting access just-in-time so privileges are elevated for one task and a short window, then revoked. A higher-assurance complement to ordinary identity management, it shrinks the standing attack surface and supplies the audit trail regulators expect.",
       "related": [
+        "cyberark",
         "idp",
         "vault",
         "rbac",
@@ -1339,7 +1846,8 @@
         "zerotrust",
         "idp",
         "rlhf",
-        "dpo"
+        "dpo",
+        "rag"
       ],
       "source": {
         "label": "NIST SP 800-207 — Zero Trust Architecture",
@@ -1489,6 +1997,40 @@
       }
     },
     {
+      "id": "rag",
+      "name": "RAG",
+      "fullName": "Retrieval-Augmented Generation",
+      "aliases": [
+        "retrieval-augmented generation",
+        "vector database",
+        "embeddings",
+        "chunking",
+        "semantic search",
+        "hybrid search",
+        "reranking",
+        "grounding",
+        "prompt injection",
+        "context window"
+      ],
+      "category": "Method",
+      "types": [
+        "Method"
+      ],
+      "provenance": "Research method",
+      "tldr": "Look the answer up before answering — retrieve the relevant passages at query time and put them in the prompt, so the model works from sources rather than memory.",
+      "explainer": "Answers by looking things up first. Documents are chunked, embedded as vectors, and indexed ahead of time; the question is embedded the same way, the nearest passages come back, and they go into the prompt — so the model works from text put in front of it rather than from what it absorbed in training. That buys knowledge past the cut-off, private corpora, and citations a reader can check. Retrieval decides quality far more than the model does, which is why serious systems run hybrid keyword-and-vector search and rerank before anything reaches the prompt. The authorisation is what belongs in this map: retrieval must run as the asking user, or an index built by an account that could read everything becomes a confused deputy.",
+      "related": [
+        "rlhf",
+        "dpo",
+        "rbac",
+        "peppdp"
+      ],
+      "source": {
+        "label": "Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+        "url": "https://arxiv.org/abs/2005.11401"
+      }
+    },
+    {
       "id": "rbac",
       "name": "RBAC & ABAC",
       "fullName": "Role- / Attribute-Based Access Control",
@@ -1509,8 +2051,10 @@
       "related": [
         "peppdp",
         "opa",
+        "immuta",
         "zerotrust",
-        "idp"
+        "idp",
+        "rag"
       ],
       "source": {
         "label": "NIST — Role Based Access Control project",
@@ -1566,7 +2110,8 @@
         "dpo",
         "peppdp",
         "opa",
-        "sbom"
+        "sbom",
+        "rag"
       ],
       "source": {
         "label": "Ouyang et al. — Training language models to follow instructions with human feedback",
@@ -1683,6 +2228,7 @@
         "docker",
         "cve",
         "opa",
+        "dora",
         "rlhf",
         "dpo"
       ],
@@ -1767,6 +2313,8 @@
       "tldr": "A networking layer that gives every service identity, mTLS, and traffic control for free.",
       "explainer": "Moves the cross-cutting concerns of service-to-service traffic — mutual TLS, retries, timeouts, load balancing, observability — out of application code and into a dedicated layer: a sidecar proxy (commonly Envoy) beside each workload forms the data plane, configured by a control plane like Istio or Linkerd. Every call becomes a mutually authenticated, policy-checked hop, delivering encrypted east-west traffic and workload identity with no app changes — at the cost of operational complexity and an extra hop.",
       "related": [
+        "istio",
+        "envoy",
         "mtls",
         "spiffe",
         "kubernetes",
@@ -1825,6 +2373,7 @@
         "sbom",
         "pki",
         "docker",
+        "spinnaker",
         "dpo"
       ],
       "source": {
@@ -1884,6 +2433,41 @@
       "source": {
         "label": "spiffe.io",
         "url": "https://spiffe.io/"
+      }
+    },
+    {
+      "id": "spinnaker",
+      "name": "Spinnaker",
+      "fullName": "Multi-Cloud Continuous Delivery",
+      "aliases": [
+        "continuous delivery",
+        "CD",
+        "deployment pipeline",
+        "blue/green",
+        "red/black",
+        "canary deployment",
+        "Kayenta",
+        "Fiat",
+        "Clouddriver",
+        "server group",
+        "immutable infrastructure"
+      ],
+      "category": "Development Framework",
+      "types": [
+        "Development Framework"
+      ],
+      "provenance": "Open Source",
+      "tldr": "The deployment half of the pipeline — takes a built artifact and rolls it out across clouds, with blue/green and canary as configurable strategies rather than hand-written scripts.",
+      "explainer": "Owns the half of the pipeline that begins once CI has produced an artifact. Its model is opinionated — an application holds clusters, a cluster holds server groups, and a server group is the deployable thing plus its configuration — with a pipeline of stages around it. What made it notable is that deployment strategies are configuration rather than scripts each team maintains: blue/green, rolling, and canary, with Spinnaker running the health checks, the cutover, and the rollback, and Kayenta judging a canary on statistics instead of someone watching a dashboard. To deploy anywhere it holds credentials for every cloud account it manages, so whoever controls its pipelines controls production.",
+      "related": [
+        "sigstore",
+        "sbom",
+        "kubernetes",
+        "rbac"
+      ],
+      "source": {
+        "label": "Spinnaker documentation — Concepts",
+        "url": "https://spinnaker.io/docs/concepts/"
       }
     },
     {
@@ -3506,6 +4090,321 @@
     {
       "source": "obo",
       "target": "apigateway",
+      "type": "enables"
+    },
+    {
+      "source": "rag",
+      "target": "rlhf",
+      "type": "same-category"
+    },
+    {
+      "source": "rag",
+      "target": "dpo",
+      "type": "same-category"
+    },
+    {
+      "source": "rag",
+      "target": "rbac",
+      "type": "requires"
+    },
+    {
+      "source": "rag",
+      "target": "peppdp",
+      "type": "requires"
+    },
+    {
+      "source": "keda",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "keda",
+      "target": "docker",
+      "type": "requires"
+    },
+    {
+      "source": "keda",
+      "target": "vault",
+      "type": "requires"
+    },
+    {
+      "source": "keda",
+      "target": "spiffe",
+      "type": "requires"
+    },
+    {
+      "source": "spinnaker",
+      "target": "sigstore",
+      "type": "requires"
+    },
+    {
+      "source": "spinnaker",
+      "target": "sbom",
+      "type": "same-category"
+    },
+    {
+      "source": "spinnaker",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "spinnaker",
+      "target": "rbac",
+      "type": "requires"
+    },
+    {
+      "source": "cyberark",
+      "target": "pam",
+      "type": "part-of"
+    },
+    {
+      "source": "cyberark",
+      "target": "vault",
+      "type": "alternative"
+    },
+    {
+      "source": "cyberark",
+      "target": "idp",
+      "type": "requires"
+    },
+    {
+      "source": "cyberark",
+      "target": "ssh",
+      "type": "requires"
+    },
+    {
+      "source": "dora",
+      "target": "nist207",
+      "type": "same-category"
+    },
+    {
+      "source": "dora",
+      "target": "sbom",
+      "type": "requires"
+    },
+    {
+      "source": "dora",
+      "target": "siem",
+      "type": "requires"
+    },
+    {
+      "source": "dora",
+      "target": "soar",
+      "type": "requires"
+    },
+    {
+      "source": "fapi",
+      "target": "oauth",
+      "type": "part-of"
+    },
+    {
+      "source": "fapi",
+      "target": "oidc",
+      "type": "part-of"
+    },
+    {
+      "source": "fapi",
+      "target": "pkce",
+      "type": "requires"
+    },
+    {
+      "source": "fapi",
+      "target": "mtls",
+      "type": "requires"
+    },
+    {
+      "source": "fido2",
+      "target": "mfa",
+      "type": "part-of"
+    },
+    {
+      "source": "fido2",
+      "target": "pki",
+      "type": "requires"
+    },
+    {
+      "source": "fido2",
+      "target": "tpm",
+      "type": "requires"
+    },
+    {
+      "source": "fido2",
+      "target": "idp",
+      "type": "enables"
+    },
+    {
+      "source": "immuta",
+      "target": "rbac",
+      "type": "alternative"
+    },
+    {
+      "source": "immuta",
+      "target": "peppdp",
+      "type": "part-of"
+    },
+    {
+      "source": "immuta",
+      "target": "opa",
+      "type": "alternative"
+    },
+    {
+      "source": "immuta",
+      "target": "dlp",
+      "type": "same-category"
+    },
+    {
+      "source": "alpaca",
+      "target": "cntlm",
+      "type": "alternative"
+    },
+    {
+      "source": "alpaca",
+      "target": "pac",
+      "type": "requires"
+    },
+    {
+      "source": "alpaca",
+      "target": "kerberos",
+      "type": "requires"
+    },
+    {
+      "source": "alpaca",
+      "target": "ldap",
+      "type": "requires"
+    },
+    {
+      "source": "alpaca",
+      "target": "sase",
+      "type": "alternative"
+    },
+    {
+      "source": "alpaca",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "cntlm",
+      "target": "pac",
+      "type": "requires"
+    },
+    {
+      "source": "cntlm",
+      "target": "kerberos",
+      "type": "requires"
+    },
+    {
+      "source": "cntlm",
+      "target": "ldap",
+      "type": "requires"
+    },
+    {
+      "source": "cntlm",
+      "target": "sase",
+      "type": "alternative"
+    },
+    {
+      "source": "calico",
+      "target": "cilium",
+      "type": "alternative"
+    },
+    {
+      "source": "calico",
+      "target": "ebpf",
+      "type": "requires"
+    },
+    {
+      "source": "calico",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "calico",
+      "target": "microseg",
+      "type": "enables"
+    },
+    {
+      "source": "calico",
+      "target": "bgp",
+      "type": "requires"
+    },
+    {
+      "source": "calico",
+      "target": "wireguard",
+      "type": "requires"
+    },
+    {
+      "source": "calico",
+      "target": "ovn",
+      "type": "alternative"
+    },
+    {
+      "source": "envoy",
+      "target": "istio",
+      "type": "part-of"
+    },
+    {
+      "source": "envoy",
+      "target": "servicemesh",
+      "type": "part-of"
+    },
+    {
+      "source": "envoy",
+      "target": "apigateway",
+      "type": "same-category"
+    },
+    {
+      "source": "envoy",
+      "target": "peppdp",
+      "type": "part-of"
+    },
+    {
+      "source": "envoy",
+      "target": "loadbalancer",
+      "type": "same-category"
+    },
+    {
+      "source": "envoy",
+      "target": "grpc",
+      "type": "requires"
+    },
+    {
+      "source": "istio",
+      "target": "servicemesh",
+      "type": "part-of"
+    },
+    {
+      "source": "istio",
+      "target": "spiffe",
+      "type": "requires"
+    },
+    {
+      "source": "istio",
+      "target": "mtls",
+      "type": "requires"
+    },
+    {
+      "source": "istio",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "istio",
+      "target": "peppdp",
+      "type": "part-of"
+    },
+    {
+      "source": "ebpf",
+      "target": "cilium",
+      "type": "enables"
+    },
+    {
+      "source": "ebpf",
+      "target": "kubernetes",
+      "type": "enables"
+    },
+    {
+      "source": "ebpf",
+      "target": "edr",
       "type": "enables"
     }
   ]
