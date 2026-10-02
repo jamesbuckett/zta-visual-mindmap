@@ -47,6 +47,9 @@ labels matching domain names exactly.
 - **`--cat-6` is permanently unavailable to families.** It *is* `--accent`, which already
   paints part-of edges, hover halos and selection strokes, so a family wearing it would be
   unreadable. The tenth family took a new `--cat-10`; an eleventh needs a `--cat-11`.
+- **`FAMILIES` order is the ring order.** The Zero-Trust core is listed first and sits at the
+  centre; the others are placed clockwise around it in array order, so a new family lands
+  between its array neighbours and should be listed next to the families it links to most.
 - **Adopt glossary values rather than forcing them into existing sets.** When the glossary
   carries a value the mindmap's sets don't cover, extend the mindmap. `provenance:
   "Research method"` earned a matching `PROV_ICON` entry because the empty-array default

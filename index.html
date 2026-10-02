@@ -160,10 +160,21 @@
       transition: border-color var(--transition), box-shadow var(--transition);
     }
     .search input::placeholder { color: var(--text-muted); }
+    .search input::-webkit-search-cancel-button { display: none; }
     .search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
     .search-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: none; place-items: center; width: 24px; height: 24px; border: 0; background: transparent; color: var(--text-muted); border-radius: 50%; cursor: pointer; }
     .search-clear svg { width: 15px; height: 15px; }
     .search.has-value .search-clear { display: grid; }
+    .search-pop { position: absolute; top: calc(100% + var(--space-2)); left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+    .search-pop[hidden] { display: none; }
+    .search-count { padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); font-size: var(--fs-tiny); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+    #search-results { list-style: none; margin: 0; padding: var(--space-1); max-height: min(50vh, 340px); overflow-y: auto; }
+    #search-results:empty { display: none; }
+    .search-opt { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius); font-size: var(--fs-small); cursor: pointer; }
+    .search-opt .swatch { width: 9px; height: 9px; border-radius: 50%; background: var(--node); flex: 0 0 auto; }
+    .search-opt .opt-name { font-weight: 700; white-space: nowrap; }
+    .search-opt .opt-full { color: var(--text-muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .search-opt:hover, .search-opt[aria-selected="true"] { background: var(--accent-soft); }
 
     .appbar-actions { display: flex; align-items: center; gap: var(--space-2); flex: 0 0 auto; }
     .btn {
@@ -191,8 +202,7 @@
 
     /* ============================== toolbar ============================ */
     .toolbar { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-4); border-top: 1px solid var(--border); overflow-x: auto; }
-    .filters { display: flex; align-items: center; gap: var(--space-2); }
-    .filters-label { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 700; margin-right: var(--space-1); }
+    .filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
     .chip {
       display: inline-flex; align-items: center; gap: var(--space-2);
       height: 30px; padding: 0 var(--space-3);
@@ -201,10 +211,9 @@
       cursor: pointer; white-space: nowrap; transition: border-color var(--transition), background-color var(--transition), opacity var(--transition);
     }
     .chip .swatch { width: 10px; height: 10px; border-radius: 50%; background: var(--node); flex: 0 0 auto; }
-    .chip[aria-pressed="false"] { opacity: 0.45; }
     .chip:hover { border-color: var(--border-strong); }
-    .toolbar-spacer { flex: 1 1 auto; min-width: var(--space-2); }
-    .view-actions { display: flex; align-items: center; gap: var(--space-2); }
+    .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+    .filters.is-filtered .chip[aria-pressed="false"]:not([data-fam="all"]) { opacity: 0.45; }
 
     /* ============================== main =============================== */
     .app { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 384px; min-height: 0; }
@@ -220,9 +229,15 @@
     .edge.t-enables  { stroke: var(--text-muted); stroke-width: 1.6; opacity: 0.6; stroke-dasharray: 5 4; }
     .edge.t-alternative { stroke: var(--border-strong); stroke-width: 1.5; opacity: 0.7; stroke-dasharray: 8 5; }
     .edge.t-samecategory { stroke: var(--border-strong); stroke-width: 1.3; opacity: 0.5; stroke-dasharray: 1 5; stroke-linecap: round; }
+    .edge.x-fam { opacity: 0.3; } /* links between families stay quiet until a term is in focus */
     .graph-focus .edge { opacity: 0.06; }
-    .graph-focus .edge.is-hot { opacity: 0.95; stroke: var(--accent); }
-    .edge.t-samecategory.is-hot, .edge.t-alternative.is-hot { stroke: var(--accent); }
+    .graph-focus .edge.is-hot { opacity: 0.95; }
+    /* in focus each link keeps its type's line style, so the relationship key still applies */
+    .edge.t-requires.is-hot, .edge.t-enables.is-hot { stroke: var(--text); marker-end: url(#ah-ink); }
+    .edge.t-alternative.is-hot, .edge.t-samecategory.is-hot { stroke: var(--text-muted); }
+    #ah-muted path { fill: var(--text-muted); }
+    #ah-accent path { fill: var(--accent); }
+    #ah-ink path { fill: var(--text); }
 
     /* nodes */
     .node { cursor: pointer; }
@@ -244,23 +259,40 @@
     .graph-dim-unmatched .node.is-match .dot { stroke: var(--accent); }
     .node.is-hidden, .edge.is-hidden { display: none; }
 
+    /* family regions: a padded hull behind each family, named on its outer rim */
+    .hull { fill: var(--node); stroke: var(--node); stroke-width: 30; stroke-linejoin: round; opacity: 0.08; pointer-events: none; }
+    .hull-label {
+      font-family: var(--font-sans); font-size: 13px; font-weight: 700; letter-spacing: var(--tracking-tight);
+      fill: color-mix(in srgb, var(--node) 62%, var(--text));
+      text-anchor: middle; paint-order: stroke; stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round;
+      cursor: pointer;
+    }
+    .hull-label:hover { fill: var(--text); }
+    .hull.is-hidden, .hull-label.is-hidden { display: none; }
+    [data-theme="dark"] .hull { opacity: 0.12; }
+
+    /* zoomed far out, term labels are too small to read: the family names carry the map */
+    .zoom-far .node .label { opacity: 0; }
+    .zoom-far .node.is-hot .label, .zoom-far .node.is-selected .label, .zoom-far .node.is-match .label { opacity: 1; }
+
     /* legend */
+    /* relationship key: a strip along the bottom edge, clear of the zoom controls */
     .legend {
       position: absolute; left: var(--space-3); bottom: var(--space-3);
+      max-width: calc(100% - var(--space-3) - var(--space-8));
+      display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4);
       background: color-mix(in srgb, var(--surface) 88%, transparent);
       backdrop-filter: blur(8px);
       border: 1px solid var(--border); border-radius: var(--radius-lg);
-      box-shadow: var(--shadow); padding: var(--space-3);
-      max-width: 250px; font-size: var(--fs-tiny); z-index: 10;
+      box-shadow: var(--shadow); padding: var(--space-2) var(--space-3);
+      font-size: var(--fs-tiny); z-index: 10;
     }
-    .legend h4 { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: var(--space-2); }
-    .legend-row { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1); color: var(--text); }
-    .legend-row .swatch { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
-    .legend-edges { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--border); display: none; }
-    .legend.show-edges .legend-edges { display: block; }
-    .legend-edge { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1); }
+    .legend-edges { display: none; }
+    .legend.show-edges .legend-edges { display: contents; } /* its rows wrap together with the toggle */
+    .legend-edge, .legend-note { display: flex; align-items: center; gap: var(--space-2); white-space: nowrap; }
     .legend-edge svg { width: 34px; height: 10px; flex: 0 0 auto; }
-    .legend-toggle { margin-top: var(--space-2); background: none; border: 0; color: var(--accent); font-size: var(--fs-tiny); font-weight: 700; cursor: pointer; padding: 0; }
+    .legend-note svg { width: 26px; height: 12px; flex: 0 0 auto; fill: var(--text-muted); }
+    .legend-toggle { background: none; border: 0; color: var(--accent); font-size: var(--fs-tiny); font-weight: 700; cursor: pointer; padding: 0; white-space: nowrap; }
 
     /* zoom controls */
     .zoom-controls { position: absolute; right: var(--space-3); bottom: var(--space-3); display: flex; flex-direction: column; z-index: 10; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
@@ -280,6 +312,7 @@
     }
     .tooltip strong { display: block; font-size: var(--fs-small); margin-bottom: var(--space-1); }
     .tooltip .tt-cat { color: color-mix(in srgb, var(--bg) 70%, var(--text-muted)); font-weight: 500; }
+    .tooltip .tt-rel { display: block; font-weight: 700; margin-bottom: var(--space-1); }
     .tooltip.show { opacity: 1; }
 
     /* tour bar */
@@ -310,8 +343,8 @@
     .about p { color: var(--text-muted); font-size: var(--fs-small); margin-bottom: var(--space-3); }
     .about p strong { color: var(--text); font-weight: 700; }
     .about-how { list-style: none; padding: 0; margin: var(--space-3) 0; display: grid; gap: var(--space-2); }
-    .about-how li { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-small); color: var(--text); }
-    .about-how svg { width: 16px; height: 16px; color: var(--accent); flex: 0 0 auto; }
+    .about-how li { display: flex; align-items: flex-start; gap: var(--space-2); font-size: var(--fs-small); color: var(--text); }
+    .about-how svg { width: 16px; height: 16px; margin-top: var(--space-1); color: var(--accent); flex: 0 0 auto; }
     .about-cta { width: 100%; justify-content: center; margin-top: var(--space-2); }
     .stat-row { display: flex; gap: var(--space-2); margin: var(--space-4) 0; }
     .stat { flex: 1 1 0; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-3); text-align: center; }
@@ -380,6 +413,7 @@
       .panel-close svg { width: 16px; height: 16px; }
       .panel-inner { padding: var(--space-5) var(--space-4) var(--space-6); }
       body.panel-open .scrim { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 45; }
+      .filters { flex-wrap: nowrap; }
       .brand-name .sub { display: none; }
       .branding { display: none; }
       .search { max-width: none; }
@@ -388,7 +422,6 @@
       .appbar-row { flex-wrap: wrap; }
       .search { order: 3; flex-basis: 100%; max-width: none; }
       .brand-name { font-size: 14px; }
-      .legend { max-width: 190px; padding: var(--space-2); }
       .about-text-extra { display: none; }
     }
 
@@ -411,12 +444,16 @@
       <div class="search" id="search">
         <!-- Lucide: search -->
         <svg class="search-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="search-input" type="search" placeholder="Search 96 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint">
-        <span id="search-hint" class="visually-hidden">Type to filter and locate terms in the map.</span>
+        <input id="search-input" type="search" placeholder="Search 96 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint" role="combobox" aria-expanded="false" aria-controls="search-results" aria-autocomplete="list">
+        <span id="search-hint" class="visually-hidden">Type to filter and locate terms in the map. Use the up and down arrows to pick a result, Enter to open it.</span>
         <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
           <!-- Lucide: x -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
+        <div class="search-pop" id="search-pop" hidden>
+          <div class="search-count" id="search-count" aria-live="polite"></div>
+          <ul id="search-results" role="listbox" aria-label="Matching terms"></ul>
+        </div>
       </div>
 
       <div class="appbar-actions">
@@ -448,40 +485,32 @@
       </div>
     </div>
 
-    <div class="toolbar" role="group" aria-label="Family filters and view controls">
+    <div class="toolbar" role="group" aria-label="Family filters">
       <div class="filters" id="filters">
-        <span class="filters-label">Families</span>
         <!-- chips injected -->
-      </div>
-      <div class="toolbar-spacer"></div>
-      <div class="view-actions">
-        <button class="btn" id="fit-btn" type="button" title="Fit the whole map to view">
-          <!-- Lucide: maximize -->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
-          <span class="btn-label">Fit</span>
-        </button>
       </div>
     </div>
   </header>
 
   <main class="app">
     <div class="graph-wrap">
-      <svg id="graph" role="application" aria-label="Force-directed mindmap of zero-trust and networking terms. Use Tab to move between terms, Enter to open details.">
+      <svg id="graph" role="application" aria-label="Force-directed mindmap of zero-trust and networking terms. Use Tab or the arrow keys to move between terms, Enter to open details, Escape to clear the selection.">
         <defs>
-          <marker id="ah-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
-          <marker id="ah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="ah-muted" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="ah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
         </defs>
         <g id="viewport">
+          <g id="hulls-layer"></g>
           <g id="edges-layer"></g>
           <g id="nodes-layer"></g>
+          <g id="names-layer"></g>
         </g>
       </svg>
 
       <div class="legend" id="legend">
-        <h4>Families</h4>
-        <div id="legend-cats"></div>
-        <button class="legend-toggle" id="legend-toggle" type="button" aria-expanded="false">Show relationship key</button>
         <div class="legend-edges" id="legend-edges"></div>
+        <button class="legend-toggle" id="legend-toggle" type="button" aria-expanded="false" aria-controls="legend-edges">Show relationship key</button>
       </div>
 
       <div class="zoom-controls" role="group" aria-label="Zoom controls">
@@ -4996,7 +5025,7 @@
       return n;
     });
     const edges = DATA.edges.map((e) => ({ type: e.type, s: byId.get(e.source), t: byId.get(e.target) }));
-    edges.forEach((e) => { e.s.deg++; e.t.deg++; });
+    edges.forEach((e) => { e.s.deg++; e.t.deg++; e.cross = e.s.family !== e.t.family; });
 
     // adjacency for highlight / connections / keyboard nav
     const adj = new Map(nodes.map((n) => [n.id, []]));
@@ -5042,12 +5071,17 @@
     /* --------------------------- svg refs ---------------------------- */
     const svg = document.getElementById('graph');
     const viewport = document.getElementById('viewport');
+    const hullsLayer = document.getElementById('hulls-layer');
     const edgesLayer = document.getElementById('edges-layer');
+    const namesLayer = document.getElementById('names-layer');
     const nodesLayer = document.getElementById('nodes-layer');
     const SVGNS = 'http://www.w3.org/2000/svg';
 
     let W = svg.clientWidth || 900;
     let H = svg.clientHeight || 600;
+    // the relationship key lies along the bottom edge, so the map is laid out and fitted above it
+    const legend = document.getElementById('legend');
+    const usableH = () => Math.max(H / 2, H - legend.offsetHeight - 16);
 
     // radius by degree
     const rOf = (n) => 7 + Math.sqrt(n.deg) * 2.3;
@@ -5055,22 +5089,41 @@
     /* -------------------- seeded initial layout ---------------------- */
     function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
     const rand = mulberry32(20260606);
-    const ring = FAMILIES.filter((f) => f.key !== 'ztcore'); // 8 families around the core
+
+    // Each family owns a region: the Zero-Trust core at the centre, the others on
+    // an ellipse around it in FAMILIES order, with arc share weighted by family size.
+    // The ellipse is stretched past the canvas aspect ratio because labels run
+    // horizontally, and turned slightly so no large family sits straight above or below the core.
+    const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.1;
+    const ring = FAMILIES.filter((f) => f.key !== 'ztcore');
+    const famSize = {};
+    nodes.forEach((n) => { famSize[n.family] = (famSize[n.family] || 0) + 1; });
+    const anchors = {};
+    function placeAnchors() {
+      const aspect = Math.max(0.7, Math.min(1.7, W / usableH()));
+      const rx = RING_R * Math.pow(aspect, RING_STRETCH), ry = RING_R / Math.pow(aspect, RING_STRETCH);
+      const wts = ring.map((f) => Math.sqrt(famSize[f.key] || 1) + 1.2);
+      const total = wts.reduce((a, b) => a + b, 0);
+      anchors.ztcore = { x: W / 2, y: H / 2 };
+      FAMILIES[0].nameAbove = true;
+      let acc = 0;
+      ring.forEach((f, i) => {
+        const ang = ((acc + wts[i] / 2) / total + RING_TURN) * Math.PI * 2 - Math.PI / 2;
+        acc += wts[i];
+        f.nameAbove = Math.sin(ang) < 0.25; // a heading above the family, except along the bottom of the ring
+        anchors[f.key] = { x: W / 2 + Math.cos(ang) * rx, y: H / 2 + Math.sin(ang) * ry };
+      });
+    }
+    placeAnchors();
     nodes.forEach((n) => {
-      if (n.family === 'ztcore') { n.x = W / 2 + (rand() - 0.5) * 120; n.y = H / 2 + (rand() - 0.5) * 120; return; }
-      const fi = ring.findIndex((f) => f.key === n.family);
-      const ang = (fi / ring.length) * Math.PI * 2 + (rand() - 0.5) * 0.55;
-      const rad = 190 + rand() * 150;
-      n.x = W / 2 + Math.cos(ang) * rad;
-      n.y = H / 2 + Math.sin(ang) * rad;
+      const a = anchors[n.family];
+      n.x = a.x + (rand() - 0.5) * 120; n.y = a.y + (rand() - 0.5) * 120;
     });
-    // seed the anchor at centre
-    const hub = byId.get('zerotrust'); if (hub) { hub.x = W / 2; hub.y = H / 2; }
 
     /* ------------------------ force simulation ----------------------- */
-    const LINK_LEN = { 'part-of': 104, 'requires': 112, 'enables': 122, 'alternative': 158, 'same-category': 180 };
+    const LINK_LEN = { 'part-of': 80, 'requires': 86, 'enables': 92, 'alternative': 110, 'same-category': 120 };
     const LINK_K = { 'part-of': 0.085, 'requires': 0.055, 'enables': 0.05, 'alternative': 0.02, 'same-category': 0.012 };
-    const CHARGE = 3000, GRAVITY = 0.012, CLUSTER = 0.04, DAMP = 0.85, MAXV = 24;
+    const CHARGE = 1400, ANCHOR = 0.05, CROSS = 0.25, DAMP = 0.85, MAXV = 24;
 
     function visibleNodes() { return nodes.filter((n) => !n.hidden); }
     function visibleEdges() { return edges.filter((e) => !e.s.hidden && !e.t.hidden); }
@@ -5084,38 +5137,99 @@
           let dx = a.x - b.x, dy = a.y - b.y;
           let d2 = dx * dx + dy * dy;
           if (d2 < 0.01) { d2 = 0.01; dx = (rand() - 0.5) * 0.1; dy = (rand() - 0.5) * 0.1; }
-          const minD = rOf(a) + rOf(b) + 14;
-          const f = (CHARGE / d2 + (d2 < minD * minD ? 1.2 : 0)) * alpha;
+          const f = (CHARGE / d2) * alpha;
           const invd = 1 / Math.sqrt(d2);
           const fx = dx * invd * f, fy = dy * invd * f;
           a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
         }
       }
       visibleEdges().forEach((e) => {
-        const len = LINK_LEN[e.type], k = LINK_K[e.type];
         let dx = e.t.x - e.s.x, dy = e.t.y - e.s.y;
         let d = Math.sqrt(dx * dx + dy * dy) || 0.01;
-        const diff = ((d - len) / d) * k * alpha;
-        const mx = dx * diff, my = dy * diff;
+        // same-family links are springs; a cross-family link only leans each end toward
+        // the side of its region that faces its partner, so the regions stay apart
+        const pull = (e.cross ? CROSS / d : ((d - LINK_LEN[e.type]) / d) * LINK_K[e.type]) * alpha;
+        const mx = dx * pull, my = dy * pull;
         e.s.vx += mx; e.s.vy += my; e.t.vx -= mx; e.t.vy -= my;
       });
-      // family cohesion: pull each node gently toward its family's centroid
-      const fcx = {}, fcy = {}, fct = {};
-      for (const n of vn) { fcx[n.family] = (fcx[n.family] || 0) + n.x; fcy[n.family] = (fcy[n.family] || 0) + n.y; fct[n.family] = (fct[n.family] || 0) + 1; }
-      for (const k in fct) { fcx[k] /= fct[k]; fcy[k] /= fct[k]; }
-      const cx = W / 2, cy = H / 2;
       vn.forEach((n) => {
-        n.vx += (cx - n.x) * GRAVITY * alpha;
-        n.vy += (cy - n.y) * GRAVITY * alpha;
-        n.vx += (fcx[n.family] - n.x) * CLUSTER * alpha;
-        n.vy += (fcy[n.family] - n.y) * CLUSTER * alpha;
-        if (n.family === 'ztcore') { n.vx += (cx - n.x) * 0.022 * alpha; n.vy += (cy - n.y) * 0.022 * alpha; }
+        const a = anchors[n.family];
+        n.vx += (a.x - n.x) * ANCHOR * alpha;
+        n.vy += (a.y - n.y) * ANCHOR * alpha;
         if (n.fx != null) { n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; return; }
         n.vx *= DAMP; n.vy *= DAMP;
         n.vx = Math.max(-MAXV, Math.min(MAXV, n.vx));
         n.vy = Math.max(-MAXV, Math.min(MAXV, n.vy));
         n.x += n.vx; n.y += n.vy;
       });
+      for (let pass = 0; pass < 3; pass++) collide(vn);
+    }
+    // once the forces have cooled, finish separating anything they were still pressing together
+    function settle() { const vn = visibleNodes(); for (let pass = 0; pass < 300 && collide(vn); pass++); }
+
+    // Each node is a shape of two boxes, its dot and its label (see measureNodes), so no
+    // label is left sitting on another label or under a neighbour's dot. Terms of different
+    // families keep FAMILY_GAP between them, and stay clear of other families' names.
+    const FAMILY_GAP = 24, EPS = 0.001;
+    function collide(vn) {
+      let moved = false;
+      for (let i = 0; i < vn.length; i++) {
+        const a = vn[i];
+        for (let j = i + 1; j < vn.length; j++) {
+          const b = vn[j];
+          const gap = a.family === b.family ? 0 : FAMILY_GAP;
+          if (Math.abs(a.x - b.x) >= a.hw + b.hw + gap || Math.abs(a.y - b.y) >= a.vh + b.vh + gap) continue;
+          const c = clearance(a.boxes, a.x, a.y, b.boxes, b.x, b.y, gap);
+          if (!c) continue;
+          a.x -= c.x / 2; a.y -= c.y / 2; b.x += c.x / 2; b.y += c.y / 2;
+          moved = true;
+        }
+      }
+      FAMILIES.forEach((f) => {
+        const m = nameBox(f, vn);
+        if (!m) return;
+        vn.forEach((n) => {
+          if (n.family === f.key) return;
+          const c = clearance(m.boxes, m.x, 0, n.boxes, n.x, n.y, 0);
+          if (!c) return;
+          n.x += c.x; n.y += c.y;
+          moved = true;
+        });
+      });
+      return moved;
+    }
+    // The smallest shift of shape B, along one axis, that clears shape A. Clearing whole
+    // shapes rather than box pairs keeps a dot from being trapped between another term's
+    // dot and its label.
+    function clearance(A, ax, ay, B, bx, by, gap) {
+      const dx = bx - ax, dy = by - ay, adx = Math.abs(dx);
+      let needX = 0, needDown = -Infinity, needUp = -Infinity, hit = false;
+      for (const p of A) for (const q of B) {
+        const reach = p.hw + q.hw + gap;
+        const overY = Math.min(p.b, dy + q.b) - Math.max(p.t, dy + q.t) + gap > EPS;
+        if (overY) needX = Math.max(needX, reach);
+        if (reach - adx > EPS) {
+          needDown = Math.max(needDown, p.b - q.t + gap);
+          needUp = Math.max(needUp, q.b - p.t + gap);
+          if (overY) hit = true;
+        }
+      }
+      if (!hit) return null;
+      const across = needX - adx, down = needDown - dy, up = needUp + dy;
+      if (across <= down && across <= up) return { x: dx < 0 ? -across : across, y: 0 };
+      return { x: 0, y: down <= up ? down : -up };
+    }
+    // where a family's name sits: centred on the family, on the rim of its hull
+    function nameBox(f, vn) {
+      let sx = 0, c = 0, top = Infinity, bot = -Infinity;
+      vn.forEach((n) => {
+        if (n.family !== f.key) return;
+        sx += n.x; c++; top = Math.min(top, n.y + n.boxes[0].t); bot = Math.max(bot, n.y + n.vh);
+      });
+      if (!c) return (f.name = null);
+      const above = f.nameAbove;
+      const rim = above ? top - HULL_PAD : bot + HULL_PAD;
+      return (f.name = { x: sx / c, above, rim, mid: (top + bot) / 2, boxes: [{ hw: f.nameW / 2 + 4, t: above ? rim - NAME_PX * 1.5 : rim - 3, b: above ? rim + 3 : rim + NAME_PX * 1.5 }] });
     }
 
     /* ---------------------------- render ----------------------------- */
@@ -5124,7 +5238,7 @@
       edges.forEach((e, i) => {
         const m = EDGE_META[e.type];
         const line = document.createElementNS(SVGNS, 'line');
-        line.setAttribute('class', 'edge ' + m.cls);
+        line.setAttribute('class', 'edge ' + m.cls + (e.cross ? ' x-fam' : ''));
         if (m.dir) line.setAttribute('marker-end', 'url(#' + m.marker + ')');
         e.el = line; edgeEls.set(i, line); edgesLayer.appendChild(line);
       });
@@ -5144,11 +5258,97 @@
         label.setAttribute('class', 'label'); label.setAttribute('y', r + 13);
         label.textContent = SHORT[n.id] || n.name;
         g.appendChild(halo); g.appendChild(dot); g.appendChild(label);
-        n.el = g; nodeEls.set(n.id, g); nodesLayer.appendChild(g);
+        n.el = g; n.labelEl = label; nodeEls.set(n.id, g); nodesLayer.appendChild(g);
+      });
+      FAMILIES.forEach((f) => {
+        f.hullEl = document.createElementNS(SVGNS, 'path');
+        f.hullEl.setAttribute('class', 'hull fam-' + f.key);
+        hullsLayer.appendChild(f.hullEl);
+        // the family chips carry the same action for keyboard and screen-reader users
+        f.nameEl = document.createElementNS(SVGNS, 'text');
+        f.nameEl.setAttribute('class', 'hull-label fam-' + f.key);
+        f.nameEl.setAttribute('aria-hidden', 'true');
+        f.nameEl.dataset.fam = f.key;
+        f.nameEl.textContent = f.label;
+        namesLayer.appendChild(f.nameEl);
+      });
+      measureNodes();
+    }
+
+    // collision boxes relative to the node centre: the dot, and the label beneath it
+    const BOX_PAD = 3, HULL_PAD = 15, NAME_PX = 13;
+    function measureNodes() {
+      let changed = false;
+      nodes.forEach((n) => {
+        const r = rOf(n), lw = n.labelEl.getComputedTextLength() / 2 + BOX_PAD;
+        if (!n.boxes || Math.abs(n.boxes[1].hw - lw) > 0.5) changed = true;
+        n.boxes = [{ hw: r + BOX_PAD, t: -r - BOX_PAD, b: r + BOX_PAD }, { hw: lw, t: r + 3, b: r + 17 + BOX_PAD }];
+        n.hw = Math.max(r + BOX_PAD, lw); n.vh = r + 17 + BOX_PAD;
+      });
+      // family names are measured at their full text and base size, then put back as they were
+      FAMILIES.forEach((f) => {
+        f.nameEl.style.fontSize = NAME_PX + 'px';
+        f.nameEl.textContent = f.short; f.shortW = f.nameEl.getComputedTextLength();
+        f.nameEl.textContent = f.label; f.nameW = f.nameEl.getComputedTextLength();
+      });
+      placeNames();
+      return changed;
+    }
+
+    function convexHull(pts) {
+      pts.sort((a, b) => a.x - b.x || a.y - b.y);
+      const cross = (o, a, b) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+      const lower = [], upper = [];
+      for (const p of pts) { while (lower.length > 1 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop(); lower.push(p); }
+      for (let i = pts.length - 1; i >= 0; i--) { const p = pts[i]; while (upper.length > 1 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop(); upper.push(p); }
+      lower.pop(); upper.pop();
+      return lower.concat(upper);
+    }
+    function renderHulls() {
+      const vn = visibleNodes();
+      FAMILIES.forEach((f) => {
+        const pts = [];
+        vn.forEach((n) => {
+          if (n.family !== f.key) return;
+          const d = n.boxes[0], l = n.boxes[1];
+          pts.push({ x: n.x - d.hw, y: n.y + d.t }, { x: n.x + d.hw, y: n.y + d.t }, { x: n.x - l.hw, y: n.y + l.b }, { x: n.x + l.hw, y: n.y + l.b });
+        });
+        f.hullEl.classList.toggle('is-hidden', !pts.length);
+        f.nameEl.classList.toggle('is-hidden', !pts.length);
+        nameBox(f, vn);
+        if (pts.length) f.hullEl.setAttribute('d', 'M' + convexHull(pts).map((p) => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join('L') + 'Z');
+      });
+      placeNames();
+    }
+    // Far out, where term labels are hidden, each family name shortens, holds a readable
+    // size on screen and moves onto its region like a map label.
+    function placeNames() {
+      const far = view.k < FAR_K, fs = far ? NAME_PX / view.k : NAME_PX;
+      const shown = FAMILIES.filter((f) => f.name);
+      shown.forEach((f) => { f.nameY = far ? f.name.mid : f.name.above ? f.name.rim - fs * 0.85 : f.name.rim + fs * 0.75; });
+      if (far) {
+        // on-region names can meet where two small families sit side by side: ease them apart
+        const hw = (f) => (f.shortW * fs) / NAME_PX / 2;
+        for (let pass = 0; pass < 4; pass++) shown.forEach((a, i) => shown.slice(i + 1).forEach((b) => {
+          if (Math.abs(a.name.x - b.name.x) >= hw(a) + hw(b)) return;
+          const over = fs * 1.2 - Math.abs(a.nameY - b.nameY);
+          if (over <= 0) return;
+          const s = (a.nameY <= b.nameY ? -over : over) / 2;
+          a.nameY += s; b.nameY -= s;
+        }));
+      }
+      FAMILIES.forEach((f) => {
+        const text = far ? f.short : f.label;
+        if (f.nameEl.textContent !== text) f.nameEl.textContent = text;
+        if (!f.name) return;
+        f.nameEl.style.fontSize = fs + 'px';
+        f.nameEl.setAttribute('x', f.name.x);
+        f.nameEl.setAttribute('y', f.nameY + fs * 0.35);
       });
     }
 
     function render() {
+      renderHulls();
       visibleEdges().forEach((e) => {
         const sx = e.s.x, sy = e.s.y, tx = e.t.x, ty = e.t.y;
         let dx = tx - sx, dy = ty - sy; const d = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -5161,43 +5361,69 @@
     }
 
     /* ----------------------- animation control ----------------------- */
-    let animAlpha = 0, rafId = null;
+    let animAlpha = 0, rafId = null, fitPending = false;
     function loop() {
       tick(animAlpha);
-      render();
       animAlpha *= 0.94;
       if (animAlpha > 0.012) { rafId = requestAnimationFrame(loop); }
-      else { animAlpha = 0; rafId = null; }
+      else { animAlpha = 0; rafId = null; settle(); }
+      render();
+      if (!rafId && fitPending) { fitPending = false; fitView(); }
     }
     function reheat(a) {
       animAlpha = Math.max(animAlpha, a == null ? 0.32 : a);
       if (!rafId && !reduceMotion) rafId = requestAnimationFrame(loop);
-      else if (reduceMotion) { for (let i = 0; i < 60; i++) tick(animAlpha); animAlpha = 0; render(); }
+      else if (reduceMotion) { for (let i = 0; i < 60; i++) tick(animAlpha); animAlpha = 0; settle(); render(); }
     }
     function warmup() {
       let a = 0.6;
       for (let i = 0; i < 320; i++) { tick(a); a *= 0.992; }
+      settle();
       render();
     }
 
     /* --------------------------- transform --------------------------- */
     const view = { x: 0, y: 0, k: 1 };
-    function applyTransform() { viewport.setAttribute('transform', 'translate(' + view.x + ',' + view.y + ') scale(' + view.k + ')'); }
-    function fitView(pad) {
+    const FAR_K = 0.62; // below this scale an 11px term label is under 7px on screen
+    function applyTransform() {
+      viewport.setAttribute('transform', 'translate(' + view.x + ',' + view.y + ') scale(' + view.k + ')');
+      svg.classList.toggle('zoom-far', view.k < FAR_K);
+      placeNames();
+    }
+    // view changes glide so the eye can follow where the map went; instant under reduced motion
+    let viewAnim = null, lastFit = null;
+    function moveView(x, y, k, instant) {
+      cancelAnimationFrame(viewAnim);
+      if (instant || reduceMotion) { view.x = x; view.y = y; view.k = k; applyTransform(); return; }
+      const from = { x: view.x, y: view.y, k: view.k }, t0 = performance.now();
+      const step = (now) => {
+        const t = Math.min(1, (now - t0) / 220), e = t * (2 - t);
+        view.x = from.x + (x - from.x) * e; view.y = from.y + (y - from.y) * e; view.k = from.k + (k - from.k) * e;
+        applyTransform();
+        if (t < 1) viewAnim = requestAnimationFrame(step);
+      };
+      viewAnim = requestAnimationFrame(step);
+    }
+    function fitView(instant) {
       const vn = visibleNodes(); if (!vn.length) return;
+      const Hu = usableH();
       let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      vn.forEach((n) => { const r = rOf(n) + 16; minX = Math.min(minX, n.x - r); minY = Math.min(minY, n.y - r); maxX = Math.max(maxX, n.x + r); maxY = Math.max(maxY, n.y + r); });
-      const bw = maxX - minX, bh = maxY - minY;
-      const p = pad == null ? 40 : pad;
-      const k = Math.min((W - p * 2) / bw, (H - p * 2) / bh, 2.2);
-      view.k = Math.max(0.25, k);
-      view.x = W / 2 - ((minX + maxX) / 2) * view.k;
-      view.y = H / 2 - ((minY + maxY) / 2) * view.k;
-      applyTransform();
+      // bounds cover each term's label, its family hull and the family name on the rim
+      const pad = HULL_PAD + 4;
+      vn.forEach((n) => { minX = Math.min(minX, n.x - n.hw - pad); minY = Math.min(minY, n.y + n.boxes[0].t - pad); maxX = Math.max(maxX, n.x + n.hw + pad); maxY = Math.max(maxY, n.y + n.vh + pad); });
+      FAMILIES.forEach((f) => {
+        const m = nameBox(f, vn);
+        if (!m) return;
+        minX = Math.min(minX, m.x - m.boxes[0].hw); maxX = Math.max(maxX, m.x + m.boxes[0].hw);
+        minY = Math.min(minY, m.boxes[0].t); maxY = Math.max(maxY, m.boxes[0].b);
+      });
+      const k = Math.max(0.25, Math.min((W - 16) / (maxX - minX), (Hu - 16) / (maxY - minY), 2.2));
+      lastFit = { x: W / 2 - ((minX + maxX) / 2) * k, y: Hu / 2 - ((minY + maxY) / 2) * k, k };
+      moveView(lastFit.x, lastFit.y, k, instant);
     }
     function centerOn(n, targetK) {
       const k = targetK == null ? Math.max(view.k, 1.15) : targetK;
-      view.k = k; view.x = W / 2 - n.x * k; view.y = H / 2 - n.y * k; applyTransform();
+      moveView(W / 2 - n.x * k, H / 2 - n.y * k, k);
     }
 
     /* -------------------------- highlighting ------------------------- */
@@ -5242,9 +5468,11 @@
 
     function relMiniLine(type) {
       const hot = 'var(--accent)';
-      if (type === 'part-of') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="' + hot + '" stroke-width="2.1"/></svg>';
-      if (type === 'requires') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--text-muted)" stroke-width="1.7"/></svg>';
-      if (type === 'enables') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--text-muted)" stroke-width="1.6" stroke-dasharray="5 4"/></svg>';
+      // directed types end in an arrowhead, as they do on the map
+      const head = (c) => '<path d="M18,1.5 L25,5 L18,8.5 z" fill="' + c + '"/>';
+      if (type === 'part-of') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="19" y2="5" stroke="' + hot + '" stroke-width="2.1"/>' + head(hot) + '</svg>';
+      if (type === 'requires') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="19" y2="5" stroke="var(--text-muted)" stroke-width="1.7"/>' + head('var(--text-muted)') + '</svg>';
+      if (type === 'enables') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="19" y2="5" stroke="var(--text-muted)" stroke-width="1.6" stroke-dasharray="5 4"/>' + head('var(--text-muted)') + '</svg>';
       if (type === 'alternative') return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--border-strong)" stroke-width="1.6" stroke-dasharray="7 5"/></svg>';
       return '<svg class="rel-line" viewBox="0 0 26 10"><line x1="1" y1="5" x2="25" y2="5" stroke="var(--border-strong)" stroke-width="1.4" stroke-dasharray="1 5" stroke-linecap="round"/></svg>';
     }
@@ -5306,8 +5534,8 @@
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
           '<h2>Zero trust and the modern network — mapped</h2>' +
-          '<p><strong>96 terms</strong> from the ZTA Visual Glossary, drawn as a force-directed graph — related terms pull toward each other, so families cluster naturally. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> by colour; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
-          '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> settles at the centre, with the identity, secure-channel, transport, routing, network-edge, platform, Kubernetes, detection, governance, and AI families clustered around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
+          '<p><strong>96 terms</strong> from the ZTA Visual Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> sits at the centre, with the other ten families ringed around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
             '<div class="stat"><b>96</b><span>terms</span></div>' +
             '<div class="stat"><b>11</b><span>families</span></div>' +
@@ -5315,11 +5543,12 @@
           '</div>' +
           '<div class="section-label">How to use it</div>' +
           '<ul class="about-how">' +
-            '<li>' + ICON('mouse-pointer') + '<span><strong>Click</strong> any node for its definition and connections.</span></li>' +
-            '<li>' + ICON('spotlight') + '<span><strong>Hover</strong> to spotlight a term and its direct neighbours.</span></li>' +
-            '<li>' + ICON('search') + '<span><strong>Search</strong> (press <kbd>/</kbd>) to locate and filter terms live.</span></li>' +
-            '<li>' + ICON('filter') + '<span><strong>Toggle families</strong> in the toolbar to focus a group.</span></li>' +
+            '<li>' + ICON('mouse-pointer') + '<span><strong>Click</strong> any node for its definition and connections; <kbd>Esc</kbd> or empty space clears.</span></li>' +
+            '<li>' + ICON('spotlight') + '<span><strong>Hover</strong> to spotlight a term\'s neighbours and, with a term selected, read how the two relate.</span></li>' +
+            '<li>' + ICON('search') + '<span><strong>Search</strong> (press <kbd>/</kbd>) and pick from the list of matches.</span></li>' +
+            '<li>' + ICON('filter') + '<span><strong>Pick a family</strong> chip, or its name on the map, to see it alone; <strong>All</strong> brings the rest back.</span></li>' +
             '<li>' + ICON('drag') + '<span><strong>Drag</strong> the canvas to pan, scroll to zoom, drag a node to reposition.</span></li>' +
+            '<li>' + ICON('link') + '<span><strong>Share</strong> a term by copying the address bar.</span></li>' +
           '</ul>' +
           '<button class="btn btn-accent about-cta" id="about-tour" type="button">' + ICON('route') + 'Take the guided tour</button>' +
         '</div>';
@@ -5335,6 +5564,7 @@
         'filter': '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
         'drag': '<polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/>',
         'route': '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+        'link': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
         'external': '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
       };
       return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (I[name] || '') + '</svg>';
@@ -5352,28 +5582,85 @@
         if (!opts.noCenter) centerOn(byId.get(id), Math.max(view.k, 1.15));
         if (!opts.silentPanel) openPanelMobile();
       } else {
+        id = null;
         selectedId = null;
         nodes.forEach((n) => n.el.classList.remove('is-selected'));
         clearHot();
       }
+      if (!opts.fromHistory) syncHash(id, opts.fromTour);
     }
+
+    // The selected term lives in the URL hash, so a view can be shared and the browser's
+    // Back and Forward retrace the terms visited. Tour steps replace rather than add entries.
+    function syncHash(id, replace) {
+      if (location.hash.slice(1) === (id || '')) return;
+      history[replace ? 'replaceState' : 'pushState'](null, '', id ? '#' + id : location.pathname + location.search);
+    }
+    function openFromHash() {
+      const id = location.hash.slice(1);
+      if (byId.get(id)) { if (byId.get(id).hidden) showAllFamilies(); select(id, { fromHistory: true }); }
+      else if (selectedId) { if (tourActive) exitTour(); select(null, { fromHistory: true }); renderAbout(); }
+    }
+    window.addEventListener('popstate', openFromHash);
 
     /* ---------------------------- search ----------------------------- */
     const searchWrap = document.getElementById('search');
     const searchInput = document.getElementById('search-input');
     const searchClear = document.getElementById('search-clear');
+    const searchPop = document.getElementById('search-pop');
+    const searchCount = document.getElementById('search-count');
+    const searchList = document.getElementById('search-results');
+    let results = [], activeIdx = 0;
+    // best matches first: the name itself, then names starting with or containing the
+    // query, then full names and aliases, then anything matched in the description
+    function rankOf(n, q) {
+      const name = n.name.toLowerCase();
+      if (name === q) return 0;
+      if (name.startsWith(q)) return 1;
+      if (name.indexOf(q) >= 0) return 2;
+      if ((n.fullName + ' ' + (n.aliases || []).join(' ')).toLowerCase().indexOf(q) >= 0) return 3;
+      return 4;
+    }
+    function showResults(open) {
+      searchPop.hidden = !open;
+      searchInput.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    function markActive() {
+      searchList.querySelectorAll('.search-opt').forEach((li, i) => {
+        li.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false');
+        if (i === activeIdx) li.scrollIntoView({ block: 'nearest' });
+      });
+      if (results[activeIdx]) searchInput.setAttribute('aria-activedescendant', 'opt-' + results[activeIdx].id);
+      else searchInput.removeAttribute('aria-activedescendant');
+    }
+    function openResult(n) {
+      if (!n) return;
+      if (n.hidden) showAllFamilies(); // a result outside the current family filter lifts the filter
+      select(n.id);
+      showResults(false);
+    }
     function doSearch(q) {
       q = (q || '').trim().toLowerCase();
       searchWrap.classList.toggle('has-value', q.length > 0);
-      if (!q) { svg.classList.remove('graph-dim-unmatched'); nodes.forEach((n) => n.el.classList.remove('is-match')); return; }
+      if (!q) { svg.classList.remove('graph-dim-unmatched'); nodes.forEach((n) => n.el.classList.remove('is-match')); results = []; showResults(false); return; }
       svg.classList.add('graph-dim-unmatched');
       let matches = [];
+      results = [];
       nodes.forEach((n) => {
         const hay = (n.name + ' ' + n.fullName + ' ' + (n.aliases || []).join(' ') + ' ' + n.tldr + ' ' + n.category + ' ' + famMeta(n.family).label).toLowerCase();
-        const hit = !n.hidden && hay.indexOf(q) >= 0;
+        const found = hay.indexOf(q) >= 0, hit = !n.hidden && found;
         n.el.classList.toggle('is-match', hit);
         if (hit) matches.push(n);
+        if (found) results.push(n);
       });
+      results.sort((a, b) => rankOf(a, q) - rankOf(b, q) || a.name.localeCompare(b.name));
+      activeIdx = 0;
+      searchCount.textContent = results.length ? results.length + (results.length === 1 ? ' term' : ' terms') : 'No terms match';
+      searchList.innerHTML = results.map((n) =>
+        '<li class="search-opt fam-' + n.family + '" role="option" id="opt-' + n.id + '" data-id="' + n.id + '">' +
+        '<span class="swatch"></span><span class="opt-name">' + esc(n.name) + '</span><span class="opt-full">' + esc(n.fullName) + '</span></li>').join('');
+      markActive();
+      showResults(document.activeElement === searchInput);
       if (matches.length === 1) centerOn(matches[0], Math.max(view.k, 1.2));
       else if (matches.length > 1) fitMatches(matches);
     }
@@ -5381,50 +5668,84 @@
       let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
       ms.forEach((n) => { minX = Math.min(minX, n.x); minY = Math.min(minY, n.y); maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y); });
       const bw = Math.max(maxX - minX, 1), bh = Math.max(maxY - minY, 1);
-      const k = Math.min((W - 160) / bw, (H - 160) / bh, 1.8);
-      view.k = Math.max(0.4, k); view.x = W / 2 - ((minX + maxX) / 2) * view.k; view.y = H / 2 - ((minY + maxY) / 2) * view.k; applyTransform();
+      const k = Math.max(0.4, Math.min((W - 160) / bw, (H - 160) / bh, 1.8));
+      moveView(W / 2 - ((minX + maxX) / 2) * k, H / 2 - ((minY + maxY) / 2) * k, k);
     }
     searchInput.addEventListener('input', (e) => doSearch(e.target.value));
     searchClear.addEventListener('click', () => { searchInput.value = ''; doSearch(''); searchInput.focus(); });
     searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { const m = nodes.find((n) => n.el.classList.contains('is-match')); if (m) select(m.id); }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (!results.length) return;
+        e.preventDefault();
+        showResults(true);
+        activeIdx = (activeIdx + (e.key === 'ArrowDown' ? 1 : results.length - 1)) % results.length;
+        markActive();
+      }
+      if (e.key === 'Enter') openResult(results[activeIdx]);
       if (e.key === 'Escape') { searchInput.value = ''; doSearch(''); }
     });
+    searchInput.addEventListener('focus', () => { if (results.length) showResults(true); });
+    searchInput.addEventListener('blur', () => showResults(false));
+    searchList.addEventListener('mousedown', (e) => e.preventDefault()); // keep focus in the input while picking
+    searchList.addEventListener('click', (e) => { const li = e.target.closest('.search-opt'); if (li) openResult(byId.get(li.dataset.id)); });
 
     /* ---------------------------- filters ---------------------------- */
-    const active = new Set(FAMILIES.map((f) => f.key));
+    // `picked` holds the families in focus; empty means every family is shown.
+    // From there one click isolates a family, and further clicks add or remove families.
+    const picked = new Set();
     const filtersEl = document.getElementById('filters');
+    const allChip = document.createElement('button');
+    allChip.className = 'chip'; allChip.type = 'button'; allChip.dataset.fam = 'all';
+    allChip.textContent = 'All';
+    allChip.addEventListener('click', showAllFamilies);
+    filtersEl.appendChild(allChip);
     FAMILIES.forEach((f) => {
       const b = document.createElement('button');
       b.className = 'chip fam-' + f.key; b.type = 'button'; b.dataset.fam = f.key;
-      b.setAttribute('aria-pressed', 'true');
       b.title = f.label;
       b.innerHTML = '<span class="swatch"></span>' + f.short;
-      b.addEventListener('click', () => toggleCat(f.key, b));
+      b.addEventListener('click', () => toggleFamily(f.key));
       filtersEl.appendChild(b);
     });
+    function syncChips() {
+      filtersEl.classList.toggle('is-filtered', picked.size > 0);
+      filtersEl.querySelectorAll('.chip').forEach((b) => {
+        const on = b.dataset.fam === 'all' ? !picked.size : picked.has(b.dataset.fam);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+    syncChips();
     function applyVisibility() {
-      nodes.forEach((n) => { n.hidden = !active.has(n.family); n.el.classList.toggle('is-hidden', n.hidden); });
+      if (tourActive && picked.size) exitTour(); // the tour needs every family on the map
+      nodes.forEach((n) => { n.hidden = picked.size > 0 && !picked.has(n.family); n.el.classList.toggle('is-hidden', n.hidden); });
       edges.forEach((e) => e.el.classList.toggle('is-hidden', e.s.hidden || e.t.hidden));
       if (selectedId && byId.get(selectedId).hidden) { select(null); renderAbout(); }
       refreshHot();
+      syncChips();
       reheat(0.3);
+      if (searchInput.value) { doSearch(searchInput.value); return; } // an active search frames its own matches
+      fitPending = !reduceMotion; // fit again once the remaining terms have settled
+      fitView();
     }
-    function toggleCat(key, btn) {
-      if (active.has(key)) { if (active.size > 1) active.delete(key); else return; } else active.add(key);
-      btn.setAttribute('aria-pressed', active.has(key) ? 'true' : 'false');
+    function toggleFamily(key) {
+      if (picked.has(key)) picked.delete(key); else picked.add(key);
+      if (picked.size === FAMILIES.length) picked.clear();
       applyVisibility();
-      if (searchInput.value) doSearch(searchInput.value);
+    }
+    function isolateFamily(key) {
+      const only = picked.size === 1 && picked.has(key);
+      picked.clear();
+      if (!only) picked.add(key);
+      applyVisibility();
+    }
+    function showAllFamilies() {
+      if (!picked.size) return;
+      picked.clear();
+      applyVisibility();
     }
 
     /* --------------------------- legend ------------------------------ */
-    const legendCats = document.getElementById('legend-cats');
-    FAMILIES.forEach((f) => {
-      const row = document.createElement('div');
-      row.className = 'legend-row';
-      row.innerHTML = '<span class="swatch" style="background:var(' + f.cssvar + ')"></span>' + f.label;
-      legendCats.appendChild(row);
-    });
+    // the family chips and the names on the canvas are the family legend; this strip is the relationship key
     const legendEdges = document.getElementById('legend-edges');
     ORDER.forEach((type) => {
       const m = EDGE_META[type];
@@ -5433,19 +5754,27 @@
       row.innerHTML = relMiniLine(type) + '<span>' + m.key + '</span>';
       legendEdges.appendChild(row);
     });
-    const legend = document.getElementById('legend');
+    const sizeNote = document.createElement('div');
+    sizeNote.className = 'legend-note';
+    sizeNote.innerHTML = '<svg viewBox="0 0 26 12" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="19" cy="6" r="5.5"/></svg><span>Larger dot = more connections</span>';
+    legendEdges.appendChild(sizeNote);
     const legendToggle = document.getElementById('legend-toggle');
-    legendToggle.addEventListener('click', () => {
-      const on = legend.classList.toggle('show-edges');
+    function setLegend(on) {
+      legend.classList.toggle('show-edges', on);
       legendToggle.setAttribute('aria-expanded', on ? 'true' : 'false');
       legendToggle.textContent = on ? 'Hide relationship key' : 'Show relationship key';
-    });
+    }
+    legendToggle.addEventListener('click', () => setLegend(!legend.classList.contains('show-edges')));
+    setLegend(!window.matchMedia('(max-width: 560px)').matches); // open by default, except on phones
 
     /* ---------------------------- tooltip ---------------------------- */
     const tooltip = document.getElementById('tooltip');
     function showTip(n, clientX, clientY) {
       const rect = svg.getBoundingClientRect();
-      tooltip.innerHTML = '<strong>' + esc(n.name) + ' <span class="tt-cat">· ' + esc(famMeta(n.family).label) + '</span></strong>' + esc(n.tldr);
+      // with a term selected, say how the hovered neighbour relates to it
+      const sel = selectedId && selectedId !== n.id ? byId.get(selectedId) : null;
+      const rel = sel ? adj.get(sel.id).filter((a) => a.other === n).map((a) => '<span class="tt-rel">' + esc(sel.name + ' ' + PHRASE[a.edge.type][a.dir] + ' ' + n.name) + '</span>').join('') : '';
+      tooltip.innerHTML = '<strong>' + esc(n.name) + ' <span class="tt-cat">· ' + esc(famMeta(n.family).label) + '</span></strong>' + rel + esc(n.tldr);
       tooltip.style.left = (clientX - rect.left) + 'px';
       tooltip.style.top = (clientY - rect.top) + 'px';
       tooltip.classList.add('show');
@@ -5453,12 +5782,13 @@
     function hideTip() { tooltip.classList.remove('show'); }
 
     /* ------------------- pointer: pan / zoom / drag ------------------ */
-    let dragNode = null, panning = false, last = null, downAt = null, moved = false;
+    let dragNode = null, panning = false, last = null, downAt = null, downTarget = null, moved = false;
     function clientToWorld(cx, cy) { const rect = svg.getBoundingClientRect(); return { x: (cx - rect.left - view.x) / view.k, y: (cy - rect.top - view.y) / view.k }; }
 
     svg.addEventListener('pointerdown', (e) => {
       const g = e.target.closest('.node');
-      downAt = { x: e.clientX, y: e.clientY }; moved = false;
+      downAt = { x: e.clientX, y: e.clientY }; downTarget = e.target; moved = false;
+      cancelAnimationFrame(viewAnim);
       if (g) {
         dragNode = byId.get(g.dataset.id);
         const w = clientToWorld(e.clientX, e.clientY);
@@ -5484,7 +5814,12 @@
     });
     function endPointer(e) {
       if (dragNode) { dragNode.fx = null; dragNode.fy = null; if (!moved) select(dragNode.id); dragNode = null; }
-      else if (panning && !moved && e && e.target === svg) { /* click empty space */ }
+      else if (panning && !moved && e.type === 'pointerup') {
+        // a click on a family name isolates that family; a click on empty canvas clears the selection
+        const name = downTarget.closest('.hull-label');
+        if (name) isolateFamily(name.dataset.fam);
+        else if (selectedId && !tourActive) { select(null); renderAbout(); }
+      }
       panning = false; svg.classList.remove('panning'); downAt = null;
       try { svg.releasePointerCapture(e.pointerId); } catch (_) {}
     }
@@ -5494,6 +5829,7 @@
 
     svg.addEventListener('wheel', (e) => {
       e.preventDefault();
+      cancelAnimationFrame(viewAnim);
       const rect = svg.getBoundingClientRect();
       const px = e.clientX - rect.left, py = e.clientY - rect.top;
       const factor = Math.exp(-e.deltaY * 0.0014);
@@ -5510,8 +5846,21 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(n.id); }
       else if (e.key.startsWith('Arrow')) {
         e.preventDefault();
-        const neigh = adj.get(n.id).map((a) => a.other).filter((o) => !o.hidden);
-        if (neigh.length) { neigh.sort((a, b) => a.name.localeCompare(b.name)); const nx = neigh[0]; nx.el.focus(); }
+        // move to the nearest visible term lying in the direction pressed
+        const ux = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        const uy = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+        let best = null, bestScore = Infinity;
+        visibleNodes().forEach((o) => {
+          const dx = o.x - n.x, dy = o.y - n.y;
+          const along = dx * ux + dy * uy, across = Math.abs(dx * uy - dy * ux);
+          if (along <= 0 || across > along) return;
+          const score = along + across * 2;
+          if (score < bestScore) { bestScore = score; best = o; }
+        });
+        if (!best) return;
+        const sx = best.x * view.k + view.x, sy = best.y * view.k + view.y;
+        if (sx < 0 || sx > W || sy < 0 || sy > H) centerOn(best, view.k);
+        best.el.focus();
       }
     });
     nodesLayer.addEventListener('focusin', (e) => {
@@ -5525,11 +5874,10 @@
     let tourActive = false, tourIdx = 0;
     const tourBar = document.getElementById('tour-bar');
     function startTour() {
-      // ensure all families on so every step is visible
-      let changed = false;
-      FAMILIES.forEach((f) => { if (!active.has(f.key)) { active.add(f.key); changed = true; } });
-      if (changed) { filtersEl.querySelectorAll('.chip').forEach((b) => b.setAttribute('aria-pressed', 'true')); applyVisibility(); }
+      // every step must be visible, so the search and any family filter are cleared first
       searchInput.value = ''; doSearch('');
+      showAllFamilies();
+      tourBar.style.bottom = (legend.offsetHeight + 24) + 'px'; // sit above the relationship key
       tourActive = true; tourIdx = 0; tourBar.hidden = false; showTourStep();
     }
     function showTourStep() {
@@ -5556,32 +5904,49 @@
     document.getElementById('zoom-in').addEventListener('click', () => zoomBy(1.25));
     document.getElementById('zoom-out').addEventListener('click', () => zoomBy(0.8));
     document.getElementById('zoom-reset').addEventListener('click', () => fitView());
-    document.getElementById('fit-btn').addEventListener('click', () => fitView());
-    function zoomBy(f) { const nk = Math.max(0.25, Math.min(3.2, view.k * f)); view.x = W / 2 - (W / 2 - view.x) * (nk / view.k); view.y = H / 2 - (H / 2 - view.y) * (nk / view.k); view.k = nk; applyTransform(); }
+    function zoomBy(f) { const nk = Math.max(0.25, Math.min(3.2, view.k * f)); moveView(W / 2 - (W / 2 - view.x) * (nk / view.k), H / 2 - (H / 2 - view.y) * (nk / view.k), nk); }
     document.getElementById('panel-close').addEventListener('click', closePanelMobile);
     document.getElementById('scrim').addEventListener('click', closePanelMobile);
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { if (tourActive) exitTour(); if (document.body.classList.contains('panel-open')) closePanelMobile(); }
+      if (e.key === 'Escape') {
+        if (tourActive) exitTour();
+        if (document.body.classList.contains('panel-open')) closePanelMobile();
+        else if (selectedId && e.target !== searchInput) { select(null); renderAbout(); }
+      }
       if (e.key === '/' && document.activeElement !== searchInput) { e.preventDefault(); searchInput.focus(); }
       if (tourActive && e.key === 'ArrowRight') tourNext();
       if (tourActive && e.key === 'ArrowLeft') tourPrev();
     });
 
     /* --------------------------- resize ------------------------------ */
+    // observed on the canvas itself: it also changes size without a window resize, as when
+    // the chip row wraps once the webfont arrives
     let resizeT = null;
-    window.addEventListener('resize', () => {
+    new ResizeObserver(() => {
       clearTimeout(resizeT);
-      resizeT = setTimeout(() => { W = svg.clientWidth || W; H = svg.clientHeight || H; reheat(0.18); fitView(); }, 160);
-    });
+      resizeT = setTimeout(() => {
+        if (svg.clientWidth === W && svg.clientHeight === H) return;
+        W = svg.clientWidth || W; H = svg.clientHeight || H; placeAnchors(); reheat(0.18); fitView(true);
+      }, 160);
+    }).observe(svg);
 
     /* ---------------------------- boot ------------------------------- */
     buildSVG();
     W = svg.clientWidth || W; H = svg.clientHeight || H;
+    placeAnchors();
     warmup();
-    fitView();
+    fitView(true);
     renderAbout();
+    openFromHash();
     if (!reduceMotion) reheat(0.16);
+    // Label widths and the key's height were measured in the fallback font: settle again once
+    // Noto Sans is in, and refit unless the reader has already moved the view.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {
+      const untouched = view.x === lastFit.x && view.y === lastFit.y && view.k === lastFit.k;
+      if (measureNodes()) reheat(0.1);
+      if (untouched) { placeAnchors(); fitPending = !reduceMotion; fitView(true); }
+    });
 
     // public api for screenshots / debugging / agent control
     window.zta = {
