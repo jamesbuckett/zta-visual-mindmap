@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Visual Tech Mindmap — IT, AI, Networking &amp; Security Terms, Mapped</title>
-  <meta name="description" content="An interactive mindmap of 96 IT, AI, networking, and security terms — colour-coded into eleven functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the Visual Tech Glossary by James Buckett.">
+  <meta name="description" content="An interactive mindmap of 104 IT, AI, networking, and security terms — colour-coded into eleven functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the Visual Tech Glossary by James Buckett.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AD1FFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'/%3E%3Ccircle cx='6' cy='12' r='3'/%3E%3Ccircle cx='18' cy='19' r='3'/%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'/%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -464,7 +464,7 @@
       <div class="search" id="search">
         <!-- Lucide: search -->
         <svg class="search-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="search-input" type="search" placeholder="Search 96 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint" role="combobox" aria-expanded="false" aria-controls="search-results" aria-autocomplete="list">
+        <input id="search-input" type="search" placeholder="Search 104 terms…" autocomplete="off" aria-label="Search terms" aria-describedby="search-hint" role="combobox" aria-expanded="false" aria-controls="search-results" aria-autocomplete="list">
         <span id="search-hint" class="visually-hidden">Type to filter and locate terms in the map. Use the up and down arrows to pick a result, Enter to open it.</span>
         <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
           <!-- Lucide: x -->
@@ -568,7 +568,7 @@
 
   <footer class="appfoot">
     <span>
-      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">Visual Tech Glossary</a> by James Buckett — 96 terms, 298 typed relationships.
+      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">Visual Tech Glossary</a> by James Buckett — 104 terms, 329 typed relationships.
     </span>
     <span>Interactive mindmap built with <code>skill-style-guide</code> + <code>skill-build-educational-site</code>.</span>
   </footer>
@@ -617,6 +617,38 @@
       }
     },
     {
+      "id": "amps",
+      "name": "AMPS",
+      "fullName": "Advanced Message Processing System (60East Technologies)",
+      "aliases": [
+        "Advanced Message Processing System",
+        "60East Technologies",
+        "State of the World",
+        "SOW",
+        "sow_and_subscribe",
+        "content filtering",
+        "pub/sub",
+        "message bus"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "A low-latency publish/subscribe engine for trading systems that also keeps the latest state of every record.",
+      "explainer": "AMPS is a commercial publish/subscribe engine from 60East Technologies, built for the low-latency, high-volume messaging of trading systems. Subscribers filter on a message's content as well as its topic, and payloads can be JSON, FIX, XML, or binary. Its State of the World keeps the latest version of every record, so one query-and-subscribe returns current state and then streams updates from that exact moment, with nothing missed or doubled; a transaction log adds replay and queues. The limitation is the defaults: out of the box any username and password is accepted, the default entitlement module grants every permission, and TLS, even mutual TLS, passes no identity to either check. Real access control means plugging in an entitlement module.",
+      "related": [
+        "fix",
+        "mqtt",
+        "rbac",
+        "mtls"
+      ],
+      "source": {
+        "label": "60East Technologies — AMPS User Guide",
+        "url": "https://crankuptheamps.com/docs/amps-user-guide"
+      }
+    },
+    {
       "id": "apigateway",
       "name": "API Gateway",
       "fullName": "API Gateway",
@@ -640,7 +672,8 @@
         "oauth",
         "grpc",
         "loadbalancer",
-        "http"
+        "http",
+        "bola"
       ],
       "source": {
         "label": "NIST SP 800-204 — Microservices Security",
@@ -692,7 +725,7 @@
         "Security Technology"
       ],
       "provenance": "Vendor",
-      "tldr": "NVIDIA's DPU: a ConnectX NIC fused with Arm cores and accelerators that runs the data center's networking, storage, and zero-trust security on the card.",
+      "tldr": "NVIDIA's DPU: a ConnectX NIC fused with Arm cores and accelerators that runs the data centre's networking, storage, and zero-trust security on the card.",
       "explainer": "NVIDIA's DPU product line: each card pairs a ConnectX network ASIC with Arm cores running their own Linux, isolated from the host across PCIe, so infrastructure and security services run on the card itself. A hardware root of trust proves the card and its software are unmodified, IPsec/TLS run at line rate, and DOCA Argus reads host memory from the card to catch malware that host agents would miss. BlueField-3 (400 Gb/s) is the current production generation, with BlueField-4 announced for the AI-factory era.",
       "related": [
         "dpu",
@@ -700,7 +733,8 @@
         "supernic",
         "tpm",
         "microseg",
-        "ipsec"
+        "ipsec",
+        "coreweave"
       ],
       "source": {
         "label": "NVIDIA — BlueField Networking Platform",
@@ -724,7 +758,7 @@
       ],
       "provenance": "Open standard",
       "tldr": "Swap the ID in an API request and read another user's object — because the server never checked it was yours.",
-      "explainer": "The most common API flaw: an endpoint authenticates the caller but never checks that the requested object belongs to them, so changing /orders/1001 to /orders/1002 returns someone else's record. The API-era name for IDOR, it tops the OWASP API Security Top 10 (API1:2023); the fix is a server-side ownership or policy check on every client-supplied identifier — unpredictable UUIDs raise the bar but are obscurity, not authorization.",
+      "explainer": "The most common API flaw: an endpoint authenticates the caller but never checks that the requested object belongs to them, so changing /orders/1001 to /orders/1002 returns someone else's record. The API-era name for IDOR, it tops the OWASP API Security Top 10 (API1:2023); the fix is a server-side ownership or policy check on every client-supplied identifier — unpredictable UUIDs raise the bar but are obscurity, not authorisation.",
       "related": [
         "owasp",
         "apigateway",
@@ -733,7 +767,7 @@
       ],
       "source": {
         "label": "OWASP API Security Top 10 — API1:2023 BOLA",
-        "url": "https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/"
+        "url": "https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/"
       }
     },
     {
@@ -767,7 +801,7 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "The Kubernetes CNI that routes pod traffic with BGP instead of tunnelling it, and layers an ordered, tiered policy engine over what Kubernetes NetworkPolicy can express.",
+      "tldr": "The Kubernetes network plugin (CNI) that routes pod traffic with BGP instead of tunnelling it, and layers an ordered, tiered policy engine over what Kubernetes NetworkPolicy can express.",
       "explainer": "One of the two CNIs you are most likely to meet, and often present purely for its policy engine. Its distinguishing choice is to route rather than tunnel: each node owns a block of pod address space, a BGP daemon advertises it, and a pod's packet crosses the wire with its own source and destination and nothing wrapped around it — so existing routers and flow collectors see real endpoints. An agent on every node programs routes and rules into iptables, nftables, or eBPF. The policy engine is why it appears in zero-trust designs: explicit deny, a deterministic order field, and tiers that let a platform team's rules sit above developers' policies. Its identity is an address, so a policy is only as trustworthy as the labels behind it.",
       "related": [
         "cilium",
@@ -836,7 +870,7 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "The Kubernetes CNI that compiles identity-aware policy into eBPF programs in the kernel, so enforcement, load balancing, and flow visibility happen without a sidecar.",
+      "tldr": "The Kubernetes network plugin (CNI) that compiles identity-aware policy into eBPF programs in the kernel, so enforcement, load balancing, and flow visibility happen without a sidecar.",
       "explainer": "Builds on eBPF — sandboxed programs running safely inside the Linux kernel — to provide networking, observability, and security for Kubernetes at kernel speed rather than through userspace proxies. Because it enforces identity-aware network policy in the kernel, it implements microsegmentation efficiently and offers service-mesh-like connectivity without sidecars.",
       "related": [
         "ebpf",
@@ -855,7 +889,6 @@
       "name": "Cntlm",
       "fullName": "NTLM Authentication Proxy",
       "aliases": [
-        "CNTLM",
         "cntlm.conf",
         "NTLM proxy",
         "NTLMv2",
@@ -893,6 +926,40 @@
       }
     },
     {
+      "id": "coreweave",
+      "name": "CoreWeave",
+      "fullName": "GPU Cloud Platform for AI",
+      "aliases": [
+        "neocloud",
+        "GPU cloud",
+        "AI cloud",
+        "CKS",
+        "CoreWeave Kubernetes Service",
+        "bare-metal Kubernetes",
+        "Atlantic Crypto",
+        "CRWV",
+        "InfiniBand",
+        "SHARP"
+      ],
+      "category": "Cloud Platform",
+      "types": [
+        "Cloud Platform"
+      ],
+      "provenance": "Vendor",
+      "tldr": "A GPU-first cloud that runs Kubernetes straight on bare-metal NVIDIA servers, trading the hypervisor for a DPU in every node and an InfiniBand fabric built for AI training.",
+      "explainer": "CoreWeave is a GPU-first cloud — a neocloud — built for training and serving AI models rather than general workloads. Its managed Kubernetes runs directly on bare-metal nodes with no hypervisor, so a job gets the whole machine. The isolation a hypervisor would provide moves elsewhere: single-tenant hardware, a VPC per cluster, and an NVIDIA BlueField DPU in every server that runs networking and host security on its own Arm cores, out of the workload's reach. That is the zero-trust idea worth keeping: enforcement sits on hardware the tenant's code cannot touch. It is a specialist — the identity and compliance services around a hyperscaler are far thinner, so most organisations run it beside another cloud and must join identity and logging across both.",
+      "related": [
+        "kubernetes",
+        "bluefield",
+        "dpu",
+        "lora"
+      ],
+      "source": {
+        "label": "CoreWeave Docs — CoreWeave Kubernetes Service (CKS)",
+        "url": "https://docs.coreweave.com/products/cks"
+      }
+    },
+    {
       "id": "cors",
       "name": "CORS",
       "fullName": "Cross-Origin Resource Sharing",
@@ -908,11 +975,12 @@
       ],
       "provenance": "Open standard",
       "tldr": "A browser rule that lets a server declare which other origins may read its responses.",
-      "explainer": "A browser-enforced mechanism that lets a server opt specific foreign origins into reading its responses via matching Access-Control-Allow-Origin headers, with a preflight check for non-simple requests. It only governs in-browser JavaScript and is no substitute for real authorization.",
+      "explainer": "A browser-enforced mechanism that lets a server opt specific foreign origins into reading its responses via matching Access-Control-Allow-Origin headers, with a preflight check for non-simple requests. It only governs in-browser JavaScript and is no substitute for real authorisation.",
       "related": [
         "http",
         "oauth",
-        "zerotrust"
+        "zerotrust",
+        "websec"
       ],
       "source": {
         "label": "WHATWG Fetch standard — CORS",
@@ -1107,7 +1175,7 @@
       ],
       "provenance": "Vendor",
       "tldr": "The SDK for BlueField — 'what CUDA is to the GPU, DOCA is to the DPU' — with libraries and services to offload networking, storage, and zero-trust security.",
-      "explainer": "NVIDIA's software framework for programming BlueField DPUs and SuperNICs: hardware drivers at the base, C/C++ libraries in the middle, and containerized microservices on top, exposed through standard interfaces such as DPDK and SPDK. Its zero-trust components run on the DPU's isolated cores — DOCA Argus inspects the host's live memory and processes agentlessly, App Shield monitors process integrity, and IPsec/TLS gateways encrypt at wire speed — and the common interface keeps that software portable across BlueField generations.",
+      "explainer": "NVIDIA's software framework for programming BlueField DPUs and SuperNICs: hardware drivers at the base, C/C++ libraries in the middle, and containerised microservices on top, exposed through standard interfaces such as DPDK and SPDK. Its zero-trust components run on the DPU's isolated cores — DOCA Argus inspects the host's live memory and processes agentlessly, App Shield monitors process integrity, and IPsec/TLS gateways encrypt at wire speed — and the common interface keeps that software portable across BlueField generations.",
       "related": [
         "bluefield",
         "dpu",
@@ -1149,7 +1217,6 @@
       "name": "DORA",
       "fullName": "Digital Operational Resilience Act",
       "aliases": [
-        "Digital Operational Resilience Act",
         "Regulation (EU) 2022/2554",
         "2022/2554",
         "operational resilience",
@@ -1186,7 +1253,6 @@
       "name": "DPO",
       "fullName": "Direct Preference Optimization",
       "aliases": [
-        "direct preference optimization",
         "preference pairs",
         "reference model",
         "offline alignment",
@@ -1206,7 +1272,9 @@
         "peppdp",
         "sbom",
         "sigstore",
-        "rag"
+        "rag",
+        "lora",
+        "qlora"
       ],
       "source": {
         "label": "Rafailov et al. — Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
@@ -1218,7 +1286,6 @@
       "name": "DPU",
       "fullName": "Data Processing Unit",
       "aliases": [
-        "data processing unit",
         "SmartNIC",
         "infrastructure processor",
         "IPU",
@@ -1238,7 +1305,8 @@
         "supernic",
         "microseg",
         "ipsec",
-        "tpm"
+        "tpm",
+        "ovs"
       ],
       "source": {
         "label": "NVIDIA — What Is a DPU?",
@@ -1348,7 +1416,7 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "The C++ L7 proxy underneath most modern meshes and gateways — a filter chain whose entire configuration arrives over a live gRPC stream rather than a file, which is what makes a control plane above it possible.",
+      "tldr": "The programmable proxy underneath most service meshes and API gateways — configured live over an API rather than from a file, which lets a control plane drive it.",
       "explainer": "The L7 proxy underneath most modern meshes and gateways; you rarely choose it directly, you choose something built on it. It runs out of process beside every workload, so one deployment serves services written in any language. The model is small: a listener takes a connection, it passes through a filter chain, and a router picks a cluster of upstream hosts. Nearly everything it does is a filter, which is why the feature list runs so long. The distinguishing part is xDS — configuration streams in over gRPC rather than sitting in a file, so routes, upstreams, and certificates change under live traffic. That also means adopting a control plane, which becomes the most security-critical thing you run.",
       "related": [
         "istio",
@@ -1390,12 +1458,13 @@
       ],
       "provenance": "Open standard",
       "tldr": "The OpenID Foundation's hardening profile for OAuth and OpenID Connect — it pushes the request off the browser and binds every access token to a key, so a stolen token is useless.",
-      "explainer": "The OpenID Foundation's hardening profile for OAuth 2.0 and OpenID Connect — a profile rather than a new protocol, closing the options OAuth deliberately leaves open. Four mandates carry it: pushed authorization requests, so the browser carries only an opaque handle and nothing tamperable sits in the URL; PKCE with S256; the iss parameter from RFC 9207, which closes the mix-up attack; and, most consequentially, sender-constrained access tokens bound to an mTLS certificate or a DPoP key, retiring the bearer token outright. Unusually, it ships an attacker model with a machine-checked proof that the profile meets its goals. The cost is real key management in the client, so adoption clusters where it was mandated.",
+      "explainer": "The OpenID Foundation's hardening profile for OAuth 2.0 and OpenID Connect — a profile rather than a new protocol, closing the options OAuth deliberately leaves open. Four mandates carry it: Pushed Authorization Requests, so the browser carries only an opaque handle and nothing tamperable sits in the URL; PKCE with S256; the iss parameter from RFC 9207, which closes the mix-up attack; and, most consequentially, sender-constrained access tokens bound to an mTLS certificate or a DPoP key, retiring the bearer token outright. Unusually, it ships an attacker model with a machine-checked proof that the profile meets its goals. The cost is real key management in the client, so adoption clusters where it was mandated.",
       "related": [
         "oauth",
         "oidc",
         "pkce",
-        "mtls"
+        "mtls",
+        "fix"
       ],
       "source": {
         "label": "FAPI 2.0 Security Profile — OpenID Foundation",
@@ -1429,7 +1498,7 @@
         "Security Technology"
       ],
       "provenance": "Open standard",
-      "tldr": "WebAuthn plus CTAP — registration mints a key pair scoped to one site's origin, so there is no shared secret to steal and a look-alike domain has no credential to ask for.",
+      "tldr": "Sign-in with a per-site key pair instead of a shared secret: the server holds nothing worth stealing, and a look-alike domain has no credential to ask for.",
       "explainer": "WebAuthn and CTAP together replace the shared secret with a key pair: registration mints a key scoped to the site's relying party ID, the private half never leaves the authenticator, and every later sign-in is a signature over a challenge. The scoping is the property that matters — the authenticator will only sign for a credential whose RP ID matches the origin asking, so on a look-alike domain there is simply nothing to offer, and a proxy that happily relays a password and a TOTP code gets nothing, because the signature would have to be over the wrong origin. The honest complication is passkeys: syncing a credential through a cloud account makes the guarantee only as strong as that account.",
       "related": [
         "mfa",
@@ -1438,8 +1507,8 @@
         "idp"
       ],
       "source": {
-        "label": "FIDO Alliance — FIDO2",
-        "url": "https://fidoalliance.org/fido2/"
+        "label": "FIDO Alliance — User Authentication Specifications (FIDO2)",
+        "url": "https://fidoalliance.org/specifications/"
       }
     },
     {
@@ -1472,6 +1541,38 @@
       }
     },
     {
+      "id": "fix",
+      "name": "FIX",
+      "fullName": "Financial Information eXchange",
+      "aliases": [
+        "FIX Protocol",
+        "FIX 4.4",
+        "FIXS",
+        "FIX-over-TLS",
+        "tag=value",
+        "SenderCompID",
+        "trading protocol"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "The messaging standard trading firms use to send orders and trade confirmations to each other in real time.",
+      "explainer": "FIX is the messaging protocol trading firms use to send orders, cancellations, and trade confirmations to one another in real time; it dates from 1992 and is now an open standard kept by the FIX Trading Community. A message is a run of numbered tag=value fields: 35=D is a new order, 35=8 an execution report, and tags 49 and 56 name the sending and receiving firms. A session opens with a Logon, stays alive on heartbeats, and numbers every message, so a gap triggers a resend request rather than a silently lost order. The limitation is trust. FIX leaves security to the network beneath it: a SenderCompID matched to a known IP address is the basic identity check, and a session is only cryptographically authenticated when run as FIXS, FIX over TLS.",
+      "related": [
+        "tcpip",
+        "tls",
+        "mtls",
+        "fapi",
+        "amps"
+      ],
+      "source": {
+        "label": "FIX Trading Community — Standards",
+        "url": "https://www.fixtrading.org/standards/"
+      }
+    },
+    {
       "id": "grpc",
       "name": "gRPC",
       "fullName": "gRPC Remote Procedure Call",
@@ -1491,11 +1592,43 @@
       "related": [
         "http",
         "kubernetes",
-        "mtls"
+        "mtls",
+        "http2"
       ],
       "source": {
         "label": "gRPC documentation",
         "url": "https://grpc.io/docs/"
+      }
+    },
+    {
+      "id": "har",
+      "name": "HAR",
+      "fullName": "HTTP Archive (file format)",
+      "aliases": [
+        "HAR file",
+        ".har",
+        "HTTP Archive",
+        "HAR 1.2",
+        "network log",
+        "DevTools export",
+        "session token"
+      ],
+      "category": "Network Technology",
+      "types": [
+        "Network Technology"
+      ],
+      "provenance": "Open standard",
+      "tldr": "A JSON file of every HTTP request and response behind a page load, exported for debugging, credentials included.",
+      "explainer": "A HAR file is a JSON log of the HTTP traffic behind a page load, exported from browser developer tools so a slow or failing page can be examined later or handed to someone else. Each entry records one request — URL, method, headers, cookies, posted body — then the response and a timing breakdown. Version 1.2 is frozen and its W3C draft was abandoned, so HAR is a shared convention rather than a standard. The danger is how much it captures: cookies and Authorization headers sit in the clear, so a file sent to a support desk can hand over a live session. In 2023 an intruder in Okta's support system used tokens from customers' HAR files to hijack five of them. Chrome now strips those headers by default; URLs and bodies remain.",
+      "related": [
+        "http",
+        "http2",
+        "jwt",
+        "idp"
+      ],
+      "source": {
+        "label": "W3C Web Performance WG — HTTP Archive (HAR) format (abandoned draft)",
+        "url": "https://w3c.github.io/web-performance/specs/HAR/Overview.html"
       }
     },
     {
@@ -1505,7 +1638,6 @@
       "aliases": [
         "HTTP",
         "HTTPS",
-        "HTTP/2",
         "web"
       ],
       "category": "Protocol",
@@ -1518,11 +1650,44 @@
       "related": [
         "tls",
         "tcpip",
-        "grpc"
+        "grpc",
+        "http2",
+        "har"
       ],
       "source": {
         "label": "RFC 9110 — HTTP Semantics",
         "url": "https://www.rfc-editor.org/info/rfc9110"
+      }
+    },
+    {
+      "id": "http2",
+      "name": "HTTP/2",
+      "fullName": "HyperText Transfer Protocol version 2 (RFC 9113)",
+      "aliases": [
+        "h2",
+        "h2c",
+        "RFC 9113",
+        "RFC 7540",
+        "HPACK",
+        "SPDY",
+        "multiplexing"
+      ],
+      "category": "Protocol",
+      "types": [
+        "Protocol"
+      ],
+      "provenance": "Open standard",
+      "tldr": "HTTP's binary, multiplexed version: many requests share one connection at once, with compressed headers.",
+      "explainer": "HTTP/2 keeps the methods, status codes, and headers of HTTP/1.1 and changes only how they travel. Each request and response is cut into binary frames tagged with a stream ID, so many exchanges interleave over one TCP connection where HTTP/1.1 clients had to open several in parallel. HPACK compresses headers, shrinking fields repeated from earlier requests, such as cookies, to a short index. Browsers speak it only over TLS, and gRPC is built on it. The limitation is TCP itself: every stream shares one ordered byte stream, so a single lost packet stalls them all — the head-of-line blocking that HTTP/3 over QUIC was built to remove.",
+      "related": [
+        "http",
+        "quic",
+        "grpc",
+        "tls"
+      ],
+      "source": {
+        "label": "RFC 9113 — HTTP/2",
+        "url": "https://www.rfc-editor.org/info/rfc9113"
       }
     },
     {
@@ -1546,7 +1711,8 @@
         "oauth",
         "saml",
         "zerotrust",
-        "radius"
+        "radius",
+        "scim"
       ],
       "source": {
         "label": "NIST glossary — Identity Provider",
@@ -1575,7 +1741,8 @@
         "firewall",
         "siem",
         "edr",
-        "soar"
+        "soar",
+        "sentrywire"
       ],
       "source": {
         "label": "NIST SP 800-94 — Guide to IDPS",
@@ -1597,8 +1764,6 @@
         "subscription policy",
         "data policy",
         "policy pushdown",
-        "k-anonymity",
-        "differential privacy",
         "Snowflake",
         "Databricks",
         "Unity Catalog"
@@ -1608,7 +1773,7 @@
         "Security Technology"
       ],
       "provenance": "Vendor",
-      "tldr": "Author data access policy once against user attributes, and it is compiled down into Snowflake's or Databricks' own row and column controls — one decision point in front of many query engines.",
+      "tldr": "Author data access policy once against user attributes, and it is compiled down into Snowflake's or Databricks' own row and column controls — one decision point governing many query engines.",
       "explainer": "A control plane for who may read what inside a data platform. The problem is role explosion — expressing \"EU analysts may query this table, but salary is masked and out-of-region rows hidden\" through native grants means a role per combination, per table, decaying whenever someone changes team. Immuta separates decision from enforcement: policy is written once against user attributes, then compiled down into Snowflake's or Databricks' own row-access and column-masking primitives, so queries run natively at full speed whether they arrive from a BI tool, a notebook, or a service account. It is a policy decision point for data, and the warehouse is the enforcement point. Fidelity is bounded by what the target platform can express.",
       "related": [
         "rbac",
@@ -1677,8 +1842,8 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "The most widely deployed service mesh — istiod issues every workload a SPIFFE identity and drives Envoy so that mTLS and per-request authorisation are the default, with an ambient mode that drops the sidecar entirely.",
-      "explainer": "The reference service mesh. Its control plane collapsed long ago into a single binary, istiod, which does discovery, translates intent into Envoy configuration, and acts as the mesh certificate authority — issuing every workload an X.509 certificate carrying a SPIFFE ID derived from its Kubernetes service account, and rotating it, so policy is written against cryptographic identity rather than an IP any pod might inherit. Its authorization evaluation order is worth memorising: custom policies first, then deny, then allow — and with no allow policy at all the request is permitted, so default-deny is configured, not inherited. Ambient mode drops the sidecar for a per-node proxy, moving the blast radius rather than removing it.",
+      "tldr": "The most widely deployed service mesh — its control plane gives every workload a SPIFFE identity and configures Envoy to enforce mTLS and per-request authorisation, with an ambient mode that drops the sidecar entirely.",
+      "explainer": "The reference service mesh. Its control plane collapsed long ago into a single binary, istiod, which does discovery, translates intent into Envoy configuration, and acts as the mesh certificate authority — issuing every workload an X.509 certificate carrying a SPIFFE ID derived from its Kubernetes service account, and rotating it, so policy is written against cryptographic identity rather than an IP any pod might inherit. Its authorisation evaluation order is worth memorising: custom policies first, then deny, then allow — and with no allow policy at all the request is permitted, so default-deny is configured, not inherited. Ambient mode drops the sidecar for a per-node proxy, moving the blast radius rather than removing it.",
       "related": [
         "envoy",
         "servicemesh",
@@ -1712,7 +1877,8 @@
         "oauth",
         "saml",
         "spiffe",
-        "paseto"
+        "paseto",
+        "oidc"
       ],
       "source": {
         "label": "RFC 7519 — JSON Web Token",
@@ -1724,7 +1890,6 @@
       "name": "KEDA",
       "fullName": "Kubernetes Event-driven Autoscaling",
       "aliases": [
-        "Kubernetes Event-driven Autoscaling",
         "ScaledObject",
         "ScaledJob",
         "TriggerAuthentication",
@@ -1798,7 +1963,7 @@
         "Network Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "Automates deploying, scaling, and healing containerized apps across machines.",
+      "tldr": "Automates deploying, scaling, and healing containerised apps across machines.",
       "explainer": "A container orchestrator that runs workloads across a cluster: you declare desired state and its control plane continuously reconciles reality, rescheduling failures and scaling on demand. It turns a fleet of machines into one programmable platform, with the pod as its smallest unit.",
       "related": [
         "docker",
@@ -1869,6 +2034,37 @@
       }
     },
     {
+      "id": "lora",
+      "name": "LoRA",
+      "fullName": "Low-Rank Adaptation",
+      "aliases": [
+        "adapter",
+        "PEFT",
+        "parameter-efficient fine-tuning",
+        "fine-tuning",
+        "rank",
+        "BA matrices",
+        "merged weights"
+      ],
+      "category": "Method",
+      "types": [
+        "Method"
+      ],
+      "provenance": "Research method",
+      "tldr": "Fine-tune a large model by freezing it and training two small matrices beside each layer, so the task-specific change fits in megabytes rather than a full copy of the weights.",
+      "explainer": "Full fine-tuning rewrites every weight, so each task costs a full copy of the model. LoRA rests on the observation that the change fine-tuning makes has low rank: it freezes the pretrained weights and learns the update as the product of two thin matrices beside each layer, cutting trainable parameters by orders of magnitude. Merged back in, the adapter adds no inference latency; kept separate, it is a file of megabytes that can be swapped per task or per tenant. That portability is the security point. An adapter is model behaviour in a small, easily shared file, and a cheap LoRA run has been shown to strip the safety training from an aligned model — so adapters deserve the same provenance and signing controls as the weights they modify.",
+      "related": [
+        "qlora",
+        "dpo",
+        "rlhf",
+        "sbom"
+      ],
+      "source": {
+        "label": "Hu et al. — LoRA: Low-Rank Adaptation of Large Language Models",
+        "url": "https://arxiv.org/abs/2106.09685"
+      }
+    },
+    {
       "id": "mfa",
       "name": "MFA / Passkeys",
       "fullName": "Multi-Factor Authentication (FIDO2 · WebAuthn)",
@@ -1898,8 +2094,8 @@
         "pkce"
       ],
       "source": {
-        "label": "W3C WebAuthn Level 2",
-        "url": "https://www.w3.org/TR/webauthn-2/"
+        "label": "W3C WebAuthn Level 3",
+        "url": "https://www.w3.org/TR/webauthn-3/"
       }
     },
     {
@@ -1942,12 +2138,13 @@
       "types": [
         "Protocol"
       ],
-      "provenance": "Open Source",
+      "provenance": "Open standard",
       "tldr": "A lightweight publish/subscribe protocol for IoT and constrained devices.",
       "explainer": "A lightweight publish/subscribe protocol for low-bandwidth or unreliable networks, where clients publish to named topics on a central broker and others subscribe, decoupling senders from receivers. Its tiny footprint and tiered quality-of-service make it the default for IoT sensors and telemetry.",
       "related": [
         "tcpip",
-        "grpc"
+        "grpc",
+        "amps"
       ],
       "source": {
         "label": "OASIS MQTT 5.0 specification",
@@ -1959,7 +2156,6 @@
       "name": "mTLS",
       "fullName": "Mutual TLS",
       "aliases": [
-        "mutual TLS",
         "client certificate"
       ],
       "category": "Protocol",
@@ -1976,8 +2172,8 @@
         "spiffe"
       ],
       "source": {
-        "label": "RFC 8446 — TLS 1.3 (mutual authentication)",
-        "url": "https://www.rfc-editor.org/info/rfc8446"
+        "label": "RFC 9846 — TLS 1.3 (mutual authentication)",
+        "url": "https://www.rfc-editor.org/info/rfc9846"
       }
     },
     {
@@ -2082,7 +2278,7 @@
       ],
       "provenance": "Open standard",
       "tldr": "Lets an app access your data on another service without your password.",
-      "explainer": "An authorization framework that issues an app a scoped, revocable access token instead of your credentials: you log in, consent, and the app calls the API on your behalf. It powers 'Sign in with…' delegation and is about authorization, not authentication.",
+      "explainer": "An authorisation framework that issues an app a scoped, revocable access token instead of your credentials: you log in, consent, and the app calls the API on your behalf. It powers 'Sign in with…' delegation and is about authorisation, not authentication.",
       "related": [
         "jwt",
         "saml",
@@ -2114,7 +2310,7 @@
       ],
       "provenance": "Open standard",
       "tldr": "Lets a middle-tier service swap the user's token for a downstream-scoped one, so identity and least privilege survive the whole call chain.",
-      "explainer": "Keeps identity intact across service chains: instead of calling downstream APIs with its own all-powerful service account, a middle tier hands the caller's token back to the identity provider and exchanges it for a new one — audience-scoped to the next hop, naming the original user as subject and the service as actor. Standardised as OAuth 2.0 Token Exchange (RFC 8693) and shipped as Microsoft Entra's On-Behalf-Of flow, it distinguishes delegation from impersonation and defeats the confused deputy: a privileged intermediary tricked into misusing its authority. Each hop can then authorize the person actually asking — least privilege past the front door.",
+      "explainer": "Keeps identity intact across service chains: instead of calling downstream APIs with its own all-powerful service account, a middle tier hands the caller's token back to the identity provider and exchanges it for a new one — audience-scoped to the next hop, naming the original user as subject and the service as actor. Standardised as OAuth 2.0 Token Exchange (RFC 8693) and shipped as Microsoft Entra's On-Behalf-Of flow, it distinguishes delegation from impersonation and defeats the confused deputy: a privileged intermediary tricked into misusing its authority. Each hop can then authorise the person actually asking — least privilege past the front door.",
       "related": [
         "oauth",
         "jwt",
@@ -2131,7 +2327,6 @@
       "name": "OIDC",
       "fullName": "OpenID Connect",
       "aliases": [
-        "OpenID Connect",
         "ID Token",
         "OpenID Provider",
         "SSO"
@@ -2170,8 +2365,8 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "A general-purpose policy engine that answers allow / deny from code, not config.",
-      "explainer": "A CNCF-graduated engine that decouples authorization from application code: a service sends JSON context asking whether subject X may do action Y on resource Z, and OPA evaluates rules written in its declarative Rego language to return a structured decision. Because one engine serves microservices, Kubernetes admission, CI, and API gateways, authorization becomes version-controlled policy-as-code — the canonical software implementation of a zero-trust Policy Decision Point.",
+      "tldr": "A general-purpose policy engine that answers allow / deny questions from policies written in Rego.",
+      "explainer": "A CNCF-graduated engine that decouples authorisation from application code: a service sends JSON context asking whether subject X may do action Y on resource Z, and OPA evaluates rules written in its declarative Rego language to return a structured decision. Because one engine serves microservices, Kubernetes admission, CI, and API gateways, authorisation becomes version-controlled policy-as-code — the canonical software implementation of a zero-trust Policy Decision Point.",
       "related": [
         "peppdp",
         "rbac",
@@ -2206,11 +2401,13 @@
         "zerotrust",
         "mtls",
         "spiffe",
-        "vpn"
+        "vpn",
+        "tailscale",
+        "ztna"
       ],
       "source": {
-        "label": "openziti.io",
-        "url": "https://openziti.io/"
+        "label": "OpenZiti documentation (NetFoundry)",
+        "url": "https://netfoundry.io/docs/openziti/"
       }
     },
     {
@@ -2232,7 +2429,7 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "An SDN control plane on top of Open vSwitch that compiles logical switches, routers, and ACLs into the flows each host runs — the virtual network behind OpenStack and Kubernetes.",
+      "tldr": "A software-defined networking (SDN) control plane on top of Open vSwitch that compiles logical switches, routers, and ACLs into the flows each host runs — the virtual network behind OpenStack and Kubernetes.",
       "explainer": "The SDN control plane on top of Open vSwitch: you declare logical switches, routers, and ACLs in its northbound database, and OVN compiles that intent into the OpenFlow rules every OVS instance runs, spanning hosts as one overlay network. Per-port ACLs and a stateful distributed firewall enforce east-west isolation in the data plane itself — the microsegmentation engine behind OpenStack Neutron and the ovn-kubernetes CNI.",
       "related": [
         "ovs",
@@ -2299,11 +2496,12 @@
       "related": [
         "websec",
         "waf",
-        "cve"
+        "cve",
+        "bola"
       ],
       "source": {
         "label": "OWASP Top 10:2025",
-        "url": "https://owasp.org/Top10/2025/"
+        "url": "https://top10.owasp.org/2025/"
       }
     },
     {
@@ -2332,7 +2530,8 @@
         "casb",
         "dns",
         "http",
-        "alpaca"
+        "alpaca",
+        "cntlm"
       ],
       "source": {
         "label": "MDN — Proxy Auto-Configuration (PAC) file",
@@ -2445,8 +2644,8 @@
         "Protocol"
       ],
       "provenance": "Open standard",
-      "tldr": "Stops a stolen OAuth authorization code from being redeemed by anyone but the app that began the flow.",
-      "explainer": "Hardens OAuth's authorization-code flow against interception: the client sends only the hash of a random secret (code_verifier) when starting login and must present the original to redeem tokens, making a stolen code useless. Born for mobile and single-page apps, it is now recommended for all clients and mandatory in the OAuth 2.1 draft.",
+      "tldr": "Stops a stolen OAuth authorisation code from being redeemed by anyone but the app that began the flow.",
+      "explainer": "Hardens OAuth's authorisation-code flow against interception: the client sends only the hash of a random secret (code_verifier) when starting login and must present the original to redeem tokens, making a stolen code useless. Born for mobile and single-page apps, it is now recommended for all clients and mandatory in the OAuth 2.1 draft.",
       "related": [
         "oauth",
         "oidc",
@@ -2480,7 +2679,8 @@
         "tls",
         "mtls",
         "spiffe",
-        "ssh"
+        "ssh",
+        "pqc"
       ],
       "source": {
         "label": "RFC 5280 — X.509 PKI Certificates",
@@ -2518,6 +2718,38 @@
       }
     },
     {
+      "id": "qlora",
+      "name": "QLoRA",
+      "fullName": "Quantized LoRA",
+      "aliases": [
+        "4-bit fine-tuning",
+        "NF4",
+        "NormalFloat",
+        "double quantization",
+        "paged optimizers",
+        "bitsandbytes",
+        "Guanaco",
+        "quantisation"
+      ],
+      "category": "Method",
+      "types": [
+        "Method"
+      ],
+      "provenance": "Research method",
+      "tldr": "LoRA on a base model squeezed to 4 bits — the frozen weights shrink fourfold, so a 65-billion-parameter model can be fine-tuned on a single GPU.",
+      "explainer": "QLoRA attacks the cost LoRA leaves in place: the frozen base model still has to sit in GPU memory. It stores that base in 4 bits and trains ordinary LoRA adapters on top in 16-bit precision. Three techniques hold quality: NF4, a 4-bit data type whose levels match how pretrained weights are actually distributed; double quantisation of the scaling constants; and paged optimisers that spill to CPU RAM instead of crashing. Fine-tuning a 65-billion-parameter model drops from more than 780 GB of GPU memory to under 48 GB — one card. That cuts both ways: customising, or de-aligning, a large open-weight model is now within an individual's budget, which strengthens the case for treating adapters and their training data as supply-chain artefacts.",
+      "related": [
+        "lora",
+        "dpo",
+        "rlhf",
+        "sbom"
+      ],
+      "source": {
+        "label": "Dettmers et al. — QLoRA: Efficient Finetuning of Quantized LLMs",
+        "url": "https://arxiv.org/abs/2305.14314"
+      }
+    },
+    {
       "id": "quic",
       "name": "QUIC",
       "fullName": "QUIC (a name, not an acronym — RFC 9000)",
@@ -2538,7 +2770,9 @@
       "related": [
         "tls",
         "tcpip",
-        "http"
+        "http",
+        "http2",
+        "webtransport"
       ],
       "source": {
         "label": "RFC 9000 — QUIC",
@@ -2560,7 +2794,7 @@
         "Security Technology"
       ],
       "provenance": "Open standard",
-      "tldr": "A protocol for centralized authentication, authorization, and accounting.",
+      "tldr": "A protocol for centralised authentication, authorisation, and accounting.",
       "explainer": "Centralises network access control: when you join Wi-Fi, a VPN, or a switch port, the access device asks a RADIUS server to authenticate you, decide what you may do, and log the session. It is the long-standing AAA backbone separating the access device from the identity store.",
       "related": [
         "saml",
@@ -2576,7 +2810,6 @@
       "name": "RAG",
       "fullName": "Retrieval-Augmented Generation",
       "aliases": [
-        "retrieval-augmented generation",
         "vector database",
         "embeddings",
         "chunking",
@@ -2622,7 +2855,7 @@
       ],
       "provenance": "Open standard",
       "tldr": "Two models for deciding who may do what — by role, or by attributes and context.",
-      "explainer": "The two dominant models for deciding what an authenticated user may do. Role-Based Access Control groups permissions into roles and assigns people to them — simple but coarse and prone to role explosion — while Attribute-Based Access Control evaluates rules over subject, resource, action, and environment for fine-grained, context-aware decisions; zero trust leans toward ABAC because trust should follow live context, not a static role.",
+      "explainer": "The two dominant models for deciding what an authenticated user may do. Role-Based Access Control groups permissions into roles and assigns people to them — simple but coarse and prone to role explosion — while Attribute-Based Access Control evaluates rules over subject, resource, action, and environment for fine-grained, context-aware decisions; zero trust leans towards ABAC because trust should follow live context, not a static role.",
       "related": [
         "peppdp",
         "opa",
@@ -2686,7 +2919,8 @@
         "peppdp",
         "opa",
         "sbom",
-        "rag"
+        "rag",
+        "lora"
       ],
       "source": {
         "label": "Ouyang et al. — Training language models to follow instructions with human feedback",
@@ -2713,7 +2947,8 @@
       "related": [
         "oauth",
         "idp",
-        "jwt"
+        "jwt",
+        "scim"
       ],
       "source": {
         "label": "OASIS SAML 2.0 Core",
@@ -2766,7 +3001,7 @@
         "Security Technology"
       ],
       "provenance": "Open standard",
-      "tldr": "The border guard for VoIP — calls terminate on it, are policed and normalised, then re-originated toward the far side.",
+      "tldr": "The border guard for VoIP — calls terminate on it, are policed and normalised, then re-originated towards the far side.",
       "explainer": "The border element for real-time voice and video: a back-to-back user agent that terminates each SIP session and re-originates it, hiding internal topology, policing signalling against toll fraud and DoS, encrypting calls with TLS and SRTP, fixing SIP's notorious NAT-traversal problems, and translating between vendor dialects and codecs. It does for telephony what an API gateway does for APIs — one controlled front door — sitting wherever an enterprise phone system meets a SIP trunk or Microsoft Teams Direct Routing. As a deliberate man-in-the-middle for every call it is a prime target itself, and modern deployments harden and monitor it like any other policy enforcement point.",
       "related": [
         "firewall",
@@ -2868,6 +3103,44 @@
       }
     },
     {
+      "id": "sentrywire",
+      "name": "SentryWire",
+      "fullName": "Full Packet Capture & Network Security Monitoring Platform",
+      "aliases": [
+        "full packet capture",
+        "FPC",
+        "PCAP",
+        "packet capture",
+        "network forensics",
+        "network security monitoring",
+        "NSM",
+        "IDS Search Back",
+        "retrospective detection",
+        "Suricata",
+        "JA3",
+        "network tap",
+        "packet broker",
+        "Alliance Technology Group"
+      ],
+      "category": "Security Technology",
+      "types": [
+        "Security Technology"
+      ],
+      "provenance": "Vendor",
+      "tldr": "Commercial full packet capture — every packet kept for months, so a signature written today can be searched back across traffic recorded long before anyone knew to look.",
+      "explainer": "Most network monitoring keeps a summary of traffic and throws the traffic away. SentryWire, a commercial full packet capture platform, keeps the packets — every header and payload byte, written to disk as PCAP from a passive tap — so an investigation can replay a conversation rather than infer it from logs. Its addition is retrospective detection: the Suricata signatures that alert on live traffic can be run backwards over months of stored packets, so an indicator published today is tested against traffic recorded long before. It is the most literal reading of NIST SP 800-207's tenet to collect as much as possible. Encryption hollows out the word \"full\": with TLS nearly everywhere the stored payloads are ciphertext, and the archive is itself a liability.",
+      "related": [
+        "idsips",
+        "siem",
+        "tls",
+        "nist207"
+      ],
+      "source": {
+        "label": "SentryWire — Full packet capture appliance",
+        "url": "https://www.sentrywire.com/full-packet-capture"
+      }
+    },
+    {
       "id": "servicemesh",
       "name": "Service Mesh",
       "fullName": "Service Mesh (Istio · Linkerd · Envoy)",
@@ -2885,7 +3158,7 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "A networking layer that gives every service identity, mTLS, and traffic control for free.",
+      "tldr": "A networking layer that gives every service identity, mTLS, and traffic control without changing application code.",
       "explainer": "Moves the cross-cutting concerns of service-to-service traffic — mutual TLS, retries, timeouts, load balancing, observability — out of application code and into a dedicated layer: a sidecar proxy (commonly Envoy) beside each workload forms the data plane, configured by a control plane like Istio or Linkerd. Every call becomes a mutually authenticated, policy-checked hop, delivering encrypted east-west traffic and workload identity with no app changes — at the cost of operational complexity and an extra hop.",
       "related": [
         "istio",
@@ -2942,8 +3215,8 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "Easy, keyless signing of software artifacts backed by a public transparency log.",
-      "explainer": "Removes the long-lived signing key that, once leaked, forges trust: its Cosign tool signs an artifact with a short-lived certificate that Fulcio issues against an OIDC identity, so you sign as who you are rather than as a key you must hoard. Every signature is recorded in Rekor, a public append-only transparency log, making verifiable provenance practical at ecosystem scale and pairing naturally with SBOMs and SLSA.",
+      "tldr": "Easy, keyless signing of software artefacts backed by a public transparency log.",
+      "explainer": "Removes the long-lived signing key that, once leaked, forges trust: its Cosign tool signs an artefact with a short-lived certificate that Fulcio issues against an OIDC identity, so you sign as who you are rather than as a key you must hoard. Every signature is recorded in Rekor, a public append-only transparency log, making verifiable provenance practical at ecosystem scale and pairing naturally with SBOMs and SLSA.",
       "related": [
         "sbom",
         "pki",
@@ -3032,8 +3305,8 @@
         "Development Framework"
       ],
       "provenance": "Open Source",
-      "tldr": "The deployment half of the pipeline — takes a built artifact and rolls it out across clouds, with blue/green and canary as configurable strategies rather than hand-written scripts.",
-      "explainer": "Owns the half of the pipeline that begins once CI has produced an artifact. Its model is opinionated — an application holds clusters, a cluster holds server groups, and a server group is the deployable thing plus its configuration — with a pipeline of stages around it. What made it notable is that deployment strategies are configuration rather than scripts each team maintains: blue/green, rolling, and canary, with Spinnaker running the health checks, the cutover, and the rollback, and Kayenta judging a canary on statistics instead of someone watching a dashboard. To deploy anywhere it holds credentials for every cloud account it manages, so whoever controls its pipelines controls production.",
+      "tldr": "The deployment half of the pipeline — takes a built artefact and rolls it out across clouds, with blue/green and canary as configurable strategies rather than hand-written scripts.",
+      "explainer": "Owns the half of the pipeline that begins once CI has produced an artefact. Its model is opinionated — an application holds clusters, a cluster holds server groups, and a server group is the deployable thing plus its configuration — with a pipeline of stages around it. What made it notable is that deployment strategies are configuration rather than scripts each team maintains: blue/green, rolling, and canary, with Spinnaker running the health checks, the cutover, and the rollback, and Kayenta judging a canary on statistics instead of someone watching a dashboard. To deploy anywhere it holds credentials for every cloud account it manages, so whoever controls its pipelines controls production.",
       "related": [
         "sigstore",
         "sbom",
@@ -3059,7 +3332,7 @@
         "Protocol",
         "Security Technology"
       ],
-      "provenance": "Open Source",
+      "provenance": "Open standard",
       "tldr": "An encrypted channel for remote login and command execution.",
       "explainer": "Provides an authenticated, encrypted connection to a remote machine — a safe replacement for cleartext remote access — using passwords or, preferably, public-key pairs. It secures interactive shells, file transfer, and port forwarding, and is the everyday tool for administering servers.",
       "related": [
@@ -3097,8 +3370,8 @@
         "ipsec"
       ],
       "source": {
-        "label": "NVIDIA — What Is a SuperNIC?",
-        "url": "https://blogs.nvidia.com/blog/what-is-a-supernic/"
+        "label": "NVIDIA — Ethernet SuperNICs",
+        "url": "https://www.nvidia.com/en-us/networking/products/ethernet/supernic/"
       }
     },
     {
@@ -3177,11 +3450,12 @@
         "mtls",
         "ssh",
         "ipsec",
-        "http"
+        "http",
+        "pqc"
       ],
       "source": {
-        "label": "RFC 8446 — TLS 1.3",
-        "url": "https://www.rfc-editor.org/info/rfc8446"
+        "label": "RFC 9846 — TLS 1.3",
+        "url": "https://www.rfc-editor.org/info/rfc9846"
       }
     },
     {
@@ -3286,7 +3560,8 @@
         "wireguard",
         "ipsec",
         "tls",
-        "sase"
+        "sase",
+        "tailscale"
       ],
       "source": {
         "label": "NIST glossary — VPN",
@@ -3318,7 +3593,7 @@
       ],
       "source": {
         "label": "OWASP — Web Application Firewall",
-        "url": "https://owasp.org/www-community/Web_Application_Firewall"
+        "url": "https://community.owasp.org/Web_Application_Firewall"
       }
     },
     {
@@ -3403,7 +3678,7 @@
         "websockets"
       ],
       "source": {
-        "label": "W3C WebTransport (Working Draft)",
+        "label": "W3C WebTransport (Candidate Recommendation)",
         "url": "https://www.w3.org/TR/webtransport/"
       }
     },
@@ -3420,12 +3695,13 @@
         "Security Technology"
       ],
       "provenance": "Open Source",
-      "tldr": "A fast, modern, minimal VPN protocol built on current cryptography.",
+      "tldr": "A fast, minimal VPN protocol built on current cryptography.",
       "explainer": "A deliberately minimal, fast VPN protocol whose codebase is small enough to audit by hand, identifying peers by public keys and establishing low-overhead encrypted tunnels with quick handshakes. Shipping in the Linux kernel, it has become the modern default over heavier IPsec and OpenVPN.",
       "related": [
         "vpn",
         "ipsec",
-        "tls"
+        "tls",
+        "tailscale"
       ],
       "source": {
         "label": "WireGuard whitepaper",
@@ -3447,7 +3723,7 @@
       ],
       "provenance": "Open standard",
       "tldr": "Trust nothing by default; verify every request regardless of network location.",
-      "explainer": "A security model that abandons the trusted internal network: every request is authenticated, authorized, and encrypted based on identity and context, whether it comes from inside or outside the old perimeter. It rests on strong identity, least-privilege access, and continuous verification.",
+      "explainer": "A security model that abandons the trusted internal network: every request is authenticated, authorised, and encrypted based on identity and context, whether it comes from inside or outside the old perimeter. It rests on strong identity, least-privilege access, and continuous verification.",
       "related": [
         "mtls",
         "microseg",
@@ -3465,7 +3741,6 @@
       "name": "ZTNA",
       "fullName": "Zero Trust Network Access",
       "aliases": [
-        "zero trust network access",
         "software-defined perimeter",
         "SDP",
         "identity-aware proxy",
@@ -4981,6 +5256,161 @@
       "source": "ebpf",
       "target": "edr",
       "type": "enables"
+    },
+    {
+      "source": "lora",
+      "target": "rlhf",
+      "type": "same-category"
+    },
+    {
+      "source": "lora",
+      "target": "dpo",
+      "type": "same-category"
+    },
+    {
+      "source": "lora",
+      "target": "sbom",
+      "type": "same-category"
+    },
+    {
+      "source": "qlora",
+      "target": "lora",
+      "type": "requires"
+    },
+    {
+      "source": "qlora",
+      "target": "dpo",
+      "type": "same-category"
+    },
+    {
+      "source": "qlora",
+      "target": "rlhf",
+      "type": "same-category"
+    },
+    {
+      "source": "qlora",
+      "target": "sbom",
+      "type": "same-category"
+    },
+    {
+      "source": "sentrywire",
+      "target": "idsips",
+      "type": "enables"
+    },
+    {
+      "source": "sentrywire",
+      "target": "siem",
+      "type": "enables"
+    },
+    {
+      "source": "sentrywire",
+      "target": "tls",
+      "type": "alternative"
+    },
+    {
+      "source": "sentrywire",
+      "target": "nist207",
+      "type": "enables"
+    },
+    {
+      "source": "coreweave",
+      "target": "kubernetes",
+      "type": "requires"
+    },
+    {
+      "source": "bluefield",
+      "target": "coreweave",
+      "type": "enables"
+    },
+    {
+      "source": "dpu",
+      "target": "coreweave",
+      "type": "enables"
+    },
+    {
+      "source": "coreweave",
+      "target": "lora",
+      "type": "enables"
+    },
+    {
+      "source": "http2",
+      "target": "http",
+      "type": "part-of"
+    },
+    {
+      "source": "http2",
+      "target": "quic",
+      "type": "alternative"
+    },
+    {
+      "source": "grpc",
+      "target": "http2",
+      "type": "requires"
+    },
+    {
+      "source": "http2",
+      "target": "tls",
+      "type": "requires"
+    },
+    {
+      "source": "fix",
+      "target": "tcpip",
+      "type": "requires"
+    },
+    {
+      "source": "tls",
+      "target": "fix",
+      "type": "enables"
+    },
+    {
+      "source": "mtls",
+      "target": "fix",
+      "type": "enables"
+    },
+    {
+      "source": "fix",
+      "target": "fapi",
+      "type": "same-category"
+    },
+    {
+      "source": "amps",
+      "target": "fix",
+      "type": "same-category"
+    },
+    {
+      "source": "amps",
+      "target": "mqtt",
+      "type": "alternative"
+    },
+    {
+      "source": "amps",
+      "target": "rbac",
+      "type": "requires"
+    },
+    {
+      "source": "mtls",
+      "target": "amps",
+      "type": "enables"
+    },
+    {
+      "source": "har",
+      "target": "http",
+      "type": "requires"
+    },
+    {
+      "source": "har",
+      "target": "http2",
+      "type": "same-category"
+    },
+    {
+      "source": "har",
+      "target": "jwt",
+      "type": "same-category"
+    },
+    {
+      "source": "har",
+      "target": "idp",
+      "type": "same-category"
     }
   ]
 }</script>
@@ -5026,14 +5456,14 @@
       zerotrust: 'ztcore', peppdp: 'ztcore', spiffe: 'ztcore', openziti: 'ztcore', mtls: 'ztcore', nist207: 'ztcore', ztna: 'ztcore', opa: 'ztcore',
       idp: 'iam', oauth: 'iam', oidc: 'iam', saml: 'iam', jwt: 'iam', pkce: 'iam', scim: 'iam', radius: 'iam', kerberos: 'iam', ldap: 'iam', mfa: 'iam', pam: 'iam', rbac: 'iam', bola: 'iam', obo: 'iam', paseto: 'iam', cyberark: 'iam', fapi: 'iam', fido2: 'iam', immuta: 'iam',
       tls: 'securechannel', ipsec: 'securechannel', ssh: 'securechannel', wireguard: 'securechannel', vpn: 'securechannel', tailscale: 'securechannel', pki: 'securechannel', pqc: 'securechannel', tpm: 'securechannel', vault: 'securechannel',
-      tcpip: 'transport', http: 'transport', quic: 'transport', websockets: 'transport', webtransport: 'transport', grpc: 'transport', mqtt: 'transport', cors: 'transport', websec: 'transport', pac: 'transport', alpaca: 'transport', cntlm: 'transport',
+      tcpip: 'transport', http: 'transport', quic: 'transport', websockets: 'transport', webtransport: 'transport', grpc: 'transport', mqtt: 'transport', cors: 'transport', websec: 'transport', pac: 'transport', alpaca: 'transport', cntlm: 'transport', http2: 'transport', fix: 'transport', har: 'transport',
       dns: 'routing', dhcp: 'routing', nat: 'routing', bgp: 'routing', vlan: 'routing',
       firewall: 'edge', microseg: 'edge', loadbalancer: 'edge', sdwan: 'edge', sase: 'edge', apigateway: 'edge', waf: 'edge', dpu: 'edge', bluefield: 'edge', supernic: 'edge', ovs: 'edge', sbc: 'edge', envoy: 'edge',
-      docker: 'platform', django: 'platform', react: 'platform', doca: 'platform', ebpf: 'platform',
+      docker: 'platform', django: 'platform', react: 'platform', doca: 'platform', ebpf: 'platform', amps: 'platform',
       kubernetes: 'k8s', istio: 'k8s', servicemesh: 'k8s', cilium: 'k8s', calico: 'k8s', ovn: 'k8s', keda: 'k8s',
-      siem: 'detection', soar: 'detection', edr: 'detection', idsips: 'detection', dlp: 'detection', casb: 'detection', ndlp: 'detection',
+      siem: 'detection', soar: 'detection', edr: 'detection', idsips: 'detection', dlp: 'detection', casb: 'detection', ndlp: 'detection', sentrywire: 'detection',
       cve: 'governance', owasp: 'governance', sbom: 'governance', sigstore: 'governance', spinnaker: 'governance', dora: 'governance',
-      rlhf: 'aimodels', dpo: 'aimodels', rag: 'aimodels',
+      rlhf: 'aimodels', dpo: 'aimodels', rag: 'aimodels', lora: 'aimodels', qlora: 'aimodels', coreweave: 'aimodels',
     };
     const famOf = (id) => FAMILY[id] || 'transport';
     const famMeta = (key) => FAMILIES.find((f) => f.key === key) || FAMILIES[0];
@@ -5075,16 +5505,16 @@
     const ORDER = ['part-of', 'requires', 'enables', 'alternative', 'same-category'];
 
     const TOUR = [
-      { id: 'zerotrust', note: 'Start here. Zero Trust abandons the safe-internal-network idea: every request is authenticated, authorized, and encrypted based on identity and context. Everything else on this map is a piece of how that gets done.' },
+      { id: 'zerotrust', note: 'Start here. Zero Trust abandons the safe-internal-network idea: every request is authenticated, authorised, and encrypted based on identity and context. Everything else on this map is a piece of how that gets done.' },
       { id: 'idp', note: 'Identity becomes the new perimeter. The Identity Provider authenticates users and issues the tokens applications trust — the hub of single sign-on.' },
-      { id: 'oidc', note: 'How an app actually learns who you are: OpenID Connect adds a signed ID Token on top of OAuth 2.0 authorization.' },
+      { id: 'oidc', note: 'How an app actually learns who you are: OpenID Connect adds a signed ID Token on top of OAuth 2.0 authorisation.' },
       { id: 'mtls', note: 'Past the front door, services prove themselves to each other with certificates instead of passwords — mutual TLS, both sides authenticated.' },
       { id: 'spiffe', note: 'Where those workload certificates come from: SPIFFE/SPIRE issues a short-lived cryptographic identity to every workload automatically.' },
       { id: 'peppdp', note: 'The control core of zero trust: a Policy Decision Point decides allow/deny; a Policy Enforcement Point enforces it in every request path.' },
       { id: 'microseg', note: 'On the network, microsegmentation confines each workload to only the flows it needs, so a breach is contained instead of spreading laterally.' },
       { id: 'dpu', note: 'Enforcement is even sinking into hardware: a DPU on the server\'s network card runs firewalling, encryption, and host inspection in its own trust domain — controls an attacker on the host cannot switch off.' },
       { id: 'sase', note: 'A delivery model: SASE converges networking and security in the cloud edge near the user — the way many organisations now deliver zero trust.' },
-      { id: 'openziti', note: 'A concrete open-source realization: OpenZiti gives every app an identity and a default-deny, mTLS-secured overlay — being "on the network" grants nothing.' },
+      { id: 'openziti', note: 'A concrete open-source realisation: OpenZiti gives every app an identity and a default-deny, mTLS-secured overlay — being "on the network" grants nothing.' },
       { id: 'tls', note: 'Finally, the bedrock: TLS provides the encryption and server authentication that mTLS, HTTPS, and much of the map are built on.' },
     ];
 
@@ -5113,8 +5543,9 @@
     // Each family owns a region: the Zero-Trust core at the centre, the others on
     // an ellipse around it in FAMILIES order, with arc share weighted by family size.
     // The ellipse is stretched past the canvas aspect ratio because labels run
-    // horizontally, and turned slightly so no large family sits straight above or below the core.
-    const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.1;
+    // horizontally, and turned slightly: the turn is set by measurement, so that each
+    // family's name lands on its own rim rather than inside a neighbour's region.
+    const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.02;
     const ring = FAMILIES.filter((f) => f.key !== 'ztcore');
     const famSize = {};
     nodes.forEach((n) => { famSize[n.family] = (famSize[n.family] || 0) + 1; });
@@ -5554,12 +5985,12 @@
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
           '<h2>IT, AI, networking &amp; security terms&nbsp;— mapped</h2>' +
-          '<p><strong>96 terms</strong> from the Visual Tech Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p><strong>104 terms</strong> from the Visual Tech Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
           '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> sits at the centre, with the other ten families ringed around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
-            '<div class="stat"><b>96</b><span>terms</span></div>' +
+            '<div class="stat"><b>104</b><span>terms</span></div>' +
             '<div class="stat"><b>11</b><span>families</span></div>' +
-            '<div class="stat"><b>298</b><span>links</span></div>' +
+            '<div class="stat"><b>329</b><span>links</span></div>' +
           '</div>' +
           '<div class="section-label">How to use it</div>' +
           '<ul class="about-how">' +
