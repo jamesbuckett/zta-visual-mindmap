@@ -5474,7 +5474,7 @@
       return n;
     });
     const edges = DATA.edges.map((e) => ({ type: e.type, s: byId.get(e.source), t: byId.get(e.target) }));
-    edges.forEach((e) => { e.s.deg++; e.t.deg++; e.cross = e.s.family !== e.t.family; });
+    edges.forEach((e) => { e.s.deg++; e.t.deg++; });
 
     // adjacency for highlight / connections / keyboard nav
     const adj = new Map(nodes.map((n) => [n.id, []]));
@@ -5543,7 +5543,7 @@
     // an ellipse around it in FAMILIES order, with arc share weighted by family size.
     // The ellipse is stretched past the canvas aspect ratio because labels run
     // horizontally, and turned slightly, by an amount set by measuring the fit.
-    const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.1;
+    const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.12;
     const ring = FAMILIES.filter((f) => f.key !== 'ztcore');
     const famSize = {};
     nodes.forEach((n) => { famSize[n.family] = (famSize[n.family] || 0) + 1; });
@@ -5570,46 +5570,58 @@
     });
 
     /* ------------------------ force simulation ----------------------- */
-    const LINK_LEN = { 'part-of': 80, 'requires': 86, 'enables': 92, 'alternative': 110, 'same-category': 120 };
-    const LINK_K = { 'part-of': 0.085, 'requires': 0.055, 'enables': 0.05, 'alternative': 0.02, 'same-category': 0.012 };
-    const CHARGE = 1400, ANCHOR = 0.05, CROSS = 0.25, DAMP = 0.85, MAXV = 24;
+    // Inside its circle a family's terms spread out evenly. Each family has room in proportion to
+    // its terms, their boxes covering the share FILL of it (see measureNodes); terms nearer than
+    // SPREAD push each other apart, and never come closer than TERM_GAP.
+    const FILL = 0.5, SPREAD = 40, PUSH = 0.2, TERM_GAP = 6;
+    const ANCHOR = 0.05, DAMP = 0.85, MAXV = 24;
 
     function visibleNodes() { return nodes.filter((n) => !n.hidden); }
     function visibleEdges() { return edges.filter((e) => !e.s.hidden && !e.t.hidden); }
 
     function tick(alpha) {
       const vn = visibleNodes();
+      // the push runs centre from centre and grows as the gap closes, so a crowded row
+      // buckles into the emptier space above and below it
       for (let i = 0; i < vn.length; i++) {
         const a = vn[i];
         for (let j = i + 1; j < vn.length; j++) {
           const b = vn[j];
-          let dx = a.x - b.x, dy = a.y - b.y;
-          let d2 = dx * dx + dy * dy;
-          if (d2 < 0.01) { d2 = 0.01; dx = (rand() - 0.5) * 0.1; dy = (rand() - 0.5) * 0.1; }
-          const f = (CHARGE / d2) * alpha;
-          const invd = 1 / Math.sqrt(d2);
-          const fx = dx * invd * f, fy = dy * invd * f;
-          a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+          if (a.family !== b.family) continue;
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const gap = Math.hypot(Math.max(Math.abs(dx) - a.hw - b.hw, 0), Math.max(Math.abs(dy) - a.hh - b.hh, 0));
+          if (gap >= SPREAD) continue;
+          const f = ((SPREAD - gap) ** 2 / SPREAD) * PUSH * alpha / (Math.hypot(dx, dy) || 1);
+          a.vx -= dx * f; a.vy -= dy * f; b.vx += dx * f; b.vy += dy * f;
         }
       }
-      visibleEdges().forEach((e) => {
-        let dx = e.t.x - e.s.x, dy = e.t.y - e.s.y;
-        let d = Math.sqrt(dx * dx + dy * dy) || 0.01;
-        // same-family links are springs; a cross-family link only leans each end toward
-        // the side of its region that faces its partner, so the regions stay apart
-        const pull = (e.cross ? CROSS / d : ((d - LINK_LEN[e.type]) / d) * LINK_K[e.type]) * alpha;
-        const mx = dx * pull, my = dy * pull;
-        e.s.vx += mx; e.s.vy += my; e.t.vx -= mx; e.t.vy -= my;
-      });
+      // each family is pulled to its anchor as a whole, from the middle of its terms: pulling
+      // every term to the anchor would bunch them
+      const mid = {};
+      vn.forEach((n) => { const m = mid[n.family] || (mid[n.family] = { x: 0, y: 0, n: 0 }); m.x += n.x; m.y += n.y; m.n++; });
       vn.forEach((n) => {
-        const a = anchors[n.family];
-        n.vx += (a.x - n.x) * ANCHOR * alpha;
-        n.vy += (a.y - n.y) * ANCHOR * alpha;
         if (n.fx != null) { n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; return; }
+        const a = anchors[n.family], m = mid[n.family];
+        n.vx += (a.x - m.x / m.n) * ANCHOR * alpha;
+        n.vy += (a.y - m.y / m.n) * ANCHOR * alpha;
         n.vx *= DAMP; n.vy *= DAMP;
         n.vx = Math.max(-MAXV, Math.min(MAXV, n.vx));
         n.vy = Math.max(-MAXV, Math.min(MAXV, n.vy));
         n.x += n.vx; n.y += n.vy;
+      });
+      // A term stays inside its family's room, and near the rim it is pushed back in, harder
+      // the nearer it is, so terms do not pile up along the edge.
+      FAMILIES.forEach((f) => {
+        const c = famCircle(f, vn);
+        if (!c) return;
+        vn.forEach((n) => {
+          if (n.family !== f.key || n.fx != null) return;
+          let far = 0, ux = 0, uy = 0;
+          corners(n).forEach((p) => { const d = Math.hypot(p.x - c.x, p.y - c.y); if (d > far) { far = d; ux = (p.x - c.x) / d; uy = (p.y - c.y) / d; } });
+          const out = far - f.room, lack = SPREAD / 2 + Math.min(out, 0);
+          if (out > 0) { n.x -= ux * out; n.y -= uy * out; }
+          if (lack > 0) { const push = ((2 * lack * lack) / SPREAD) * PUSH * alpha; n.vx -= ux * push; n.vy -= uy * push; }
+        });
       });
       for (let pass = 0; pass < 3; pass++) collide(vn);
     }
@@ -5621,8 +5633,9 @@
     }
 
     // Each node is a shape of two boxes, its dot and its label (see measureNodes), so no
-    // label is left sitting on another label or under a neighbour's dot. Families keep apart
-    // as whole circles, FAMILY_GAP from rim to rim (see separateFamilies).
+    // label is left sitting on another label or under a neighbour's dot: terms of one family
+    // keep TERM_GAP between them. Families keep apart as whole circles, FAMILY_GAP from rim to
+    // rim (see separateFamilies).
     const FAMILY_GAP = 10, NAME_GAP = 10, EPS = 0.001;
     function collide(vn) {
       let moved = false;
@@ -5630,8 +5643,8 @@
         const a = vn[i];
         for (let j = i + 1; j < vn.length; j++) {
           const b = vn[j];
-          if (a.family !== b.family || Math.abs(a.x - b.x) >= a.hw + b.hw || Math.abs(a.y - b.y) >= a.vh + b.vh) continue;
-          const c = clearance(a.boxes, a.x, a.y, b.boxes, b.x, b.y, 0);
+          if (a.family !== b.family || Math.abs(a.x - b.x) >= a.hw + b.hw + TERM_GAP || Math.abs(a.y - b.y) >= a.vh + b.vh + TERM_GAP) continue;
+          const c = clearance(a.boxes, a.x, a.y, b.boxes, b.x, b.y, TERM_GAP);
           if (!c) continue;
           a.x -= c.x / 2; a.y -= c.y / 2; b.x += c.x / 2; b.y += c.y / 2;
           moved = true;
@@ -5810,7 +5823,13 @@
         const r = rOf(n), lw = n.labelEl.getComputedTextLength() / 2 + BOX_PAD;
         if (!n.boxes || Math.abs(n.boxes[1].hw - lw) > 0.5) changed = true;
         n.boxes = [{ hw: r + BOX_PAD, t: -r - BOX_PAD, b: r + BOX_PAD }, { hw: lw, t: r + 3, b: r + 17 + BOX_PAD }];
-        n.hw = Math.max(r + BOX_PAD, lw); n.vh = r + 17 + BOX_PAD;
+        n.hw = Math.max(r + BOX_PAD, lw); n.vh = r + 17 + BOX_PAD; n.hh = (n.vh - n.boxes[0].t) / 2;
+      });
+      // a family's room: the radius at which its terms' boxes cover the share FILL of the circle
+      FAMILIES.forEach((f) => {
+        let area = 0;
+        nodes.forEach((n) => { if (n.family === f.key) n.boxes.forEach((q) => { area += 2 * q.hw * (q.b - q.t); }); });
+        f.room = Math.sqrt(area / (Math.PI * FILL));
       });
       // family names are measured at their full text and base size, then put back as they were
       FAMILIES.forEach((f) => {
@@ -5831,14 +5850,16 @@
       lower.pop(); upper.pop();
       return lower.concat(upper);
     }
-    // the corners a family's circle is drawn around: each term's dot and the label beneath it
+    // the corners of a term's shape: the top of its dot and the foot of the label beneath it
+    function corners(n) {
+      const d = n.boxes[0], l = n.boxes[1];
+      return [{ x: n.x - d.hw, y: n.y + d.t }, { x: n.x + d.hw, y: n.y + d.t }, { x: n.x - l.hw, y: n.y + l.b }, { x: n.x + l.hw, y: n.y + l.b }];
+    }
+    // the corners a family's circle is drawn around; a term being dragged is left out, so
+    // dragging does not stretch the circle
     function hullPoints(f, vn) {
       const pts = [];
-      vn.forEach((n) => {
-        if (n.family !== f.key) return;
-        const d = n.boxes[0], l = n.boxes[1];
-        pts.push({ x: n.x - d.hw, y: n.y + d.t }, { x: n.x + d.hw, y: n.y + d.t }, { x: n.x - l.hw, y: n.y + l.b }, { x: n.x + l.hw, y: n.y + l.b });
-      });
+      vn.forEach((n) => { if (n.family === f.key && n.fx == null) pts.push(...corners(n)); });
       return pts;
     }
     function renderHulls() {
@@ -6344,7 +6365,8 @@
       }
     });
     function endPointer(e) {
-      if (dragNode) { dragNode.fx = null; dragNode.fy = null; if (!moved) select(dragNode.id); dragNode = null; }
+      // a dropped term rejoins its family: if it was let go outside the circle, it is brought back in
+      if (dragNode) { dragNode.fx = null; dragNode.fy = null; if (!moved) select(dragNode.id); else reheat(0.15); dragNode = null; }
       else if (panning && !moved && e.type === 'pointerup') {
         // a click on a family name isolates that family; a click on empty canvas clears the selection
         const name = downTarget.closest('.hull-label');
