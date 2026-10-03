@@ -267,8 +267,8 @@
     .graph-dim-unmatched .node.is-match .dot { stroke: var(--accent); }
     .node.is-hidden, .edge.is-hidden { display: none; }
 
-    /* family regions: a padded hull behind each family, named on its outer rim */
-    .hull { fill: var(--node); stroke: var(--node); stroke-width: 30; stroke-linejoin: round; opacity: 0.08; pointer-events: none; }
+    /* family regions: a circle behind each family, named on its outer rim */
+    .hull { fill: var(--node); opacity: 0.08; pointer-events: none; }
     .hull-label {
       font-family: var(--font-sans); font-size: 13px; font-weight: 700; letter-spacing: var(--tracking-tight);
       fill: color-mix(in srgb, var(--node) 62%, var(--text));
@@ -5542,7 +5542,7 @@
     // an ellipse around it in FAMILIES order, with arc share weighted by family size.
     // The ellipse is stretched past the canvas aspect ratio because labels run
     // horizontally, and turned slightly, by an amount set by measuring the fit.
-    const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.02;
+    const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.1;
     const ring = FAMILIES.filter((f) => f.key !== 'ztcore');
     const famSize = {};
     nodes.forEach((n) => { famSize[n.family] = (famSize[n.family] || 0) + 1; });
@@ -5613,78 +5613,65 @@
       for (let pass = 0; pass < 3; pass++) collide(vn);
     }
     // once the forces have cooled, finish separating anything they were still pressing together;
-    // the names pick their spots first, and once more when the regions have settled around them
+    // the names pick their sides first, and once more when the circles have settled around them
     function settle() {
       const vn = visibleNodes();
-      for (let round = 0; round < 2; round++) { chooseNameSlots(vn); for (let pass = 0; pass < 300 && collide(vn, true); pass++); }
+      for (let round = 0; round < 2; round++) { chooseNameSlots(vn); for (let pass = 0; pass < 300 && collide(vn); pass++); }
     }
 
     // Each node is a shape of two boxes, its dot and its label (see measureNodes), so no
-    // label is left sitting on another label or under a neighbour's dot. Terms of different
-    // families keep FAMILY_GAP between them, and stay clear of other families' names.
-    const FAMILY_GAP = 24, NAME_GAP = 10, EPS = 0.001;
-    function collide(vn, drawBack) {
+    // label is left sitting on another label or under a neighbour's dot. Families keep apart
+    // as whole circles, FAMILY_GAP from rim to rim (see separateFamilies).
+    const FAMILY_GAP = 10, NAME_GAP = 10, EPS = 0.001;
+    function collide(vn) {
       let moved = false;
       for (let i = 0; i < vn.length; i++) {
         const a = vn[i];
         for (let j = i + 1; j < vn.length; j++) {
           const b = vn[j];
-          const gap = a.family === b.family ? 0 : FAMILY_GAP;
-          if (Math.abs(a.x - b.x) >= a.hw + b.hw + gap || Math.abs(a.y - b.y) >= a.vh + b.vh + gap) continue;
-          const c = clearance(a.boxes, a.x, a.y, b.boxes, b.x, b.y, gap);
+          if (a.family !== b.family || Math.abs(a.x - b.x) >= a.hw + b.hw || Math.abs(a.y - b.y) >= a.vh + b.vh) continue;
+          const c = clearance(a.boxes, a.x, a.y, b.boxes, b.x, b.y, 0);
           if (!c) continue;
           a.x -= c.x / 2; a.y -= c.y / 2; b.x += c.x / 2; b.y += c.y / 2;
           moved = true;
         }
       }
-      FAMILIES.forEach((f) => {
-        const m = nameBox(f, vn);
-        if (!m) return;
-        vn.forEach((n) => {
-          if (n.family === f.key) return;
-          const c = clearance(m.boxes, m.x, 0, n.boxes, n.x, n.y, 0);
-          if (!c) return;
-          n.x += c.x; n.y += c.y;
-          moved = true;
-        });
-      });
-      if (drawBack && clearNames(vn)) moved = true;
+      if (separateFamilies(vn)) moved = true;
       return moved;
     }
-    // A neighbouring region must not reach over a family's name. Where one does, the edge of
-    // it that is least far in draws back: the two terms that make that edge move inwards.
-    function clearNames(vn) {
+    // Each family is one rigid shape, its circle with its name on the rim. Where two are too
+    // close both give way, every term moving with its family, so a circle keeps its size and
+    // the arrangement inside it.
+    function separateFamilies(vn) {
+      const fams = FAMILIES.filter((f) => famCircle(f, vn));
+      fams.forEach((f) => { f.terms = vn.filter((n) => n.family === f.key); });
+      const shift = (f, dx, dy) => { f.terms.forEach((n) => { n.x += dx; n.y += dy; }); f.circle.x += dx; f.circle.y += dy; f.name = nameBox(f); };
       let moved = false;
-      const regions = FAMILIES.map((f) => ({ f, pts: convexHull(hullPoints(f, vn)) }));
-      FAMILIES.forEach((f) => {
-        const m = f.name;
-        if (!m) return;
-        const q = m.boxes[0], left = m.x - q.hw, right = m.x + q.hw;
-        const corners = [[left, q.t], [right, q.t], [right, q.b], [left, q.b]];
-        regions.forEach((r) => {
-          const pts = r.pts;
-          if (r.f === f || pts.length < 3) return;
-          let l = Infinity, rt = -Infinity, t = Infinity, b = -Infinity, cx = 0, cy = 0;
-          pts.forEach((p) => { l = Math.min(l, p.x); rt = Math.max(rt, p.x); t = Math.min(t, p.y); b = Math.max(b, p.y); cx += p.x / pts.length; cy += p.y / pts.length; });
-          if (rt <= left || l >= right || b <= q.t || t >= q.b) return;
-          let best = null;
-          for (let i = 0; i < pts.length; i++) {
-            const a = pts[i], c = pts[(i + 1) % pts.length], len = Math.hypot(c.x - a.x, c.y - a.y);
-            if (len < EPS) continue;
-            let nx = (c.y - a.y) / len, ny = (a.x - c.x) / len;                // the edge's normal...
-            if ((cx - a.x) * nx + (cy - a.y) * ny > 0) { nx = -nx; ny = -ny; }  // ...pointing out of the region
-            let depth = -Infinity;
-            corners.forEach((p) => { depth = Math.max(depth, -((p[0] - a.x) * nx + (p[1] - a.y) * ny)); });
-            if (depth <= 0) return; // the whole name lies outside this edge
-            if (!best || depth < best.depth) best = { depth, nx, ny, a, c };
-          }
-          if (!best) return;
-          const step = Math.min(best.depth + 1, 6);
-          new Set([best.a.n, best.c.n]).forEach((n) => { n.x -= best.nx * step; n.y -= best.ny * step; });
-          moved = true;
-        });
-      });
+      for (let pass = 0; pass < 8; pass++) {
+        let hit = false;
+        fams.forEach((a, i) => fams.slice(i + 1).forEach((b) => {
+          const v = apart(a, b);
+          if (!v) return;
+          shift(a, -v.x / 2, -v.y / 2); shift(b, v.x / 2, v.y / 2);
+          hit = moved = true;
+        }));
+        if (!hit) break;
+      }
       return moved;
+    }
+    // how far family b has to move off family a, or null when the two are clear of each other
+    function apart(a, b) {
+      const dx = b.circle.x - a.circle.x, dy = b.circle.y - a.circle.y, d = Math.hypot(dx, dy) || 1;
+      const over = a.circle.r + b.circle.r + FAMILY_GAP - d;
+      if (over > EPS) return { x: (dx / d) * over, y: (dy / d) * over };
+      // one family's name against the other's rim
+      for (const [f, o, sign] of [[a, b, 1], [b, a, -1]]) {
+        const q = f.name.boxes[0], c = o.circle;
+        const nx = c.x - Math.max(f.name.x - q.hw, Math.min(c.x, f.name.x + q.hw)), ny = c.y - Math.max(q.t, Math.min(c.y, q.b));
+        const nd = Math.hypot(nx, ny) || 1, deep = c.r + NAME_GAP / 2 - nd;
+        if (deep > EPS) return { x: (sign * nx * deep) / nd, y: (sign * ny * deep) / nd };
+      }
+      return clearance(a.name.boxes, a.name.x, 0, b.name.boxes, b.name.x, 0, NAME_GAP);
     }
     // The smallest shift of shape B, along one axis, that clears shape A. Clearing whole
     // shapes rather than box pairs keeps a dot from being trapped between another term's
@@ -5707,57 +5694,66 @@
       if (across <= down && across <= up) return { x: dx < 0 ? -across : across, y: 0 };
       return { x: 0, y: down <= up ? down : -up };
     }
-    // where a family's name sits: on the rim of its own region, above or below it and lined up
-    // with its middle or one edge (see chooseNameSlots), resting on the terms directly beneath
-    function nameBox(f, vn, trial) {
-      const own = vn.filter((n) => n.family === f.key);
-      if (!own.length) return trial ? null : (f.name = null);
-      const slot = trial || f.slot || { above: f.nameAbove, align: 0 };
-      let sx = 0, minX = Infinity, maxX = -Infinity, top = Infinity, bot = -Infinity;
-      own.forEach((n) => {
-        sx += n.x; minX = Math.min(minX, n.x - n.hw); maxX = Math.max(maxX, n.x + n.hw);
-        top = Math.min(top, n.y + n.boxes[0].t); bot = Math.max(bot, n.y + n.vh);
-      });
-      const cx = sx / own.length, hw = f.nameW / 2 + 4, wide = hw > (maxX - minX) / 2;
-      // lined up with an edge, a name wider than its family overhangs on that side
-      const x = !slot.align ? cx : (slot.align < 0) !== wide ? minX + hw : maxX - hw;
-      let t = Infinity, b = -Infinity;
-      own.forEach((n) => { if (Math.abs(n.x - x) < hw + n.hw) { t = Math.min(t, n.y + n.boxes[0].t); b = Math.max(b, n.y + n.vh); } });
-      const rim = slot.above ? (t < Infinity ? t : top) - HULL_PAD : (b > -Infinity ? b : bot) + HULL_PAD;
-      const m = { x, cx, above: slot.above, rim, mid: (top + bot) / 2, boxes: [{ hw, t: slot.above ? rim - NAME_PX * 1.5 : rim - 3, b: slot.above ? rim + 3 : rim + NAME_PX * 1.5 }] };
-      return trial ? m : (f.name = m);
+    // a family's region: the smallest circle around its terms, dots and labels, and a margin
+    function famCircle(f, vn) {
+      const pts = convexHull(hullPoints(f, vn));
+      f.circle = pts.length ? enclosingCircle(pts) : null;
+      if (f.circle) f.circle.r += HULL_PAD;
+      f.name = nameBox(f);
+      return f.circle;
     }
-    // Each name takes the spot on its own rim that lies least inside a neighbouring region or
-    // across another name. The ring decides the first choice (see placeAnchors), which wins ties.
-    function chooseNameSlots(vn) {
-      const regions = FAMILIES.map((f) => ({ key: f.key, pts: convexHull(hullPoints(f, vn)) })), taken = [];
-      const inRegion = (pts, x, y) => {
-        if (pts.length < 3) return false;
-        let sign = 0;
-        for (let i = 0; i < pts.length; i++) {
-          const a = pts[i], b = pts[(i + 1) % pts.length], c = (b.x - a.x) * (y - a.y) - (b.y - a.y) * (x - a.x);
-          if (c !== 0) { if (sign && (c > 0) !== (sign > 0)) return false; sign = c; }
-        }
-        return true;
+    // The smallest circle holding every point, built up a point at a time (Welzl's algorithm).
+    // It is given the corners of a convex hull, so no three of them lie in one line.
+    function enclosingCircle(pts) {
+      const holds = (c, p) => Math.hypot(p.x - c.x, p.y - c.y) <= c.r + EPS;
+      const across = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, r: Math.hypot(a.x - b.x, a.y - b.y) / 2 });
+      const through = (a, b, c) => {
+        const bx = b.x - a.x, by = b.y - a.y, cx = c.x - a.x, cy = c.y - a.y, d = 2 * (bx * cy - by * cx);
+        const ux = (cy * (bx * bx + by * by) - by * (cx * cx + cy * cy)) / d, uy = (bx * (cx * cx + cy * cy) - cx * (bx * bx + by * by)) / d;
+        return { x: a.x + ux, y: a.y + uy, r: Math.hypot(ux, uy) };
       };
+      let c = { x: pts[0].x, y: pts[0].y, r: 0 };
+      for (let i = 1; i < pts.length; i++) {
+        if (holds(c, pts[i])) continue;
+        c = { x: pts[i].x, y: pts[i].y, r: 0 };
+        for (let j = 0; j < i; j++) {
+          if (holds(c, pts[j])) continue;
+          c = across(pts[i], pts[j]);
+          for (let k = 0; k < j; k++) if (!holds(c, pts[k])) c = through(pts[i], pts[j], pts[k]);
+        }
+      }
+      return c;
+    }
+    // where a family's name sits: centred on its circle, just outside the rim, above or below
+    function nameBox(f, trial) {
+      const c = f.circle;
+      if (!c) return null;
+      const above = (trial || f.slot || { above: f.nameAbove }).above, rim = above ? c.y - c.r : c.y + c.r;
+      return { x: c.x, above, rim, mid: c.y, boxes: [{ hw: f.nameW / 2 + 4, t: above ? rim - NAME_PX * 1.5 : rim - 3, b: above ? rim + 3 : rim + NAME_PX * 1.5 }] };
+    }
+    // Each name takes the side of its circle, above or below, that lies least inside a neighbouring
+    // circle or across another name. The ring decides the first choice (see placeAnchors), which wins ties.
+    function chooseNameSlots(vn) {
+      const taken = [];
+      FAMILIES.forEach((f) => famCircle(f, vn));
       FAMILIES.forEach((f) => {
         let best = null;
-        [f.nameAbove, !f.nameAbove].forEach((above, flipped) => [0, -1, 1].forEach((align) => {
-          const m = nameBox(f, vn, { above, align });
+        [f.nameAbove, !f.nameAbove].forEach((above, flipped) => {
+          const m = nameBox(f, { above });
           if (!m) return;
-          // how much of the name, sampled on a 9 x 3 grid, another region or name already covers
+          // how much of the name, sampled on a 9 x 3 grid, another circle or name already covers
           const q = m.boxes[0];
           let covered = 0;
           for (let i = 0; i < 9; i++) for (let j = 0; j < 3; j++) {
             const x = m.x - q.hw + (2 * q.hw * (i + 0.5)) / 9, y = q.t + ((q.b - q.t) * (j + 0.5)) / 3;
-            if (regions.some((r) => r.key !== f.key && inRegion(r.pts, x, y)) || taken.some((r) => x > r.l - NAME_GAP && x < r.r + NAME_GAP && y > r.t && y < r.b)) covered++;
+            if (FAMILIES.some((o) => o !== f && o.circle && Math.hypot(x - o.circle.x, y - o.circle.y) < o.circle.r) || taken.some((r) => x > r.l - NAME_GAP && x < r.r + NAME_GAP && y > r.t && y < r.b)) covered++;
           }
           // moving off the first choice has to be worth it
-          const cost = covered / 27 + flipped * 0.1 + (align ? 0.05 : 0);
-          if (!best || cost < best.cost) best = { above, align, cost, l: m.x - q.hw, r: m.x + q.hw, t: q.t, b: q.b };
-        }));
+          const cost = covered / 27 + flipped * 0.1;
+          if (!best || cost < best.cost) best = { above, cost, l: m.x - q.hw, r: m.x + q.hw, t: q.t, b: q.b };
+        });
         if (!best) return;
-        f.slot = { above: best.above, align: best.align };
+        f.slot = { above: best.above };
         taken.push(best);
       });
     }
@@ -5791,7 +5787,7 @@
         n.el = g; n.labelEl = label; nodeEls.set(n.id, g); nodesLayer.appendChild(g);
       });
       FAMILIES.forEach((f) => {
-        f.hullEl = document.createElementNS(SVGNS, 'path');
+        f.hullEl = document.createElementNS(SVGNS, 'circle');
         f.hullEl.setAttribute('class', 'hull fam-' + f.key);
         hullsLayer.appendChild(f.hullEl);
         // the family chips carry the same action for keyboard and screen-reader users
@@ -5806,7 +5802,7 @@
     }
 
     // collision boxes relative to the node centre: the dot, and the label beneath it
-    const BOX_PAD = 3, HULL_PAD = 15, NAME_PX = 13;
+    const BOX_PAD = 3, HULL_PAD = 10, NAME_PX = 13;
     function measureNodes() {
       let changed = false;
       nodes.forEach((n) => {
@@ -5834,24 +5830,23 @@
       lower.pop(); upper.pop();
       return lower.concat(upper);
     }
-    // the corners a family's region is drawn around: each term's dot and the label beneath it
+    // the corners a family's circle is drawn around: each term's dot and the label beneath it
     function hullPoints(f, vn) {
       const pts = [];
       vn.forEach((n) => {
         if (n.family !== f.key) return;
         const d = n.boxes[0], l = n.boxes[1];
-        pts.push({ x: n.x - d.hw, y: n.y + d.t, n }, { x: n.x + d.hw, y: n.y + d.t, n }, { x: n.x - l.hw, y: n.y + l.b, n }, { x: n.x + l.hw, y: n.y + l.b, n });
+        pts.push({ x: n.x - d.hw, y: n.y + d.t }, { x: n.x + d.hw, y: n.y + d.t }, { x: n.x - l.hw, y: n.y + l.b }, { x: n.x + l.hw, y: n.y + l.b });
       });
       return pts;
     }
     function renderHulls() {
       const vn = visibleNodes();
       FAMILIES.forEach((f) => {
-        const pts = hullPoints(f, vn);
-        f.hullEl.classList.toggle('is-hidden', !pts.length);
-        f.nameEl.classList.toggle('is-hidden', !pts.length);
-        nameBox(f, vn);
-        if (pts.length) f.hullEl.setAttribute('d', 'M' + convexHull(pts).map((p) => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join('L') + 'Z');
+        const c = famCircle(f, vn);
+        f.hullEl.classList.toggle('is-hidden', !c);
+        f.nameEl.classList.toggle('is-hidden', !c);
+        if (c) { f.hullEl.setAttribute('cx', c.x.toFixed(1)); f.hullEl.setAttribute('cy', c.y.toFixed(1)); f.hullEl.setAttribute('r', c.r.toFixed(1)); }
       });
       placeNames();
     }
@@ -5865,7 +5860,7 @@
         // on-region names can meet where two small families sit side by side: ease them apart
         const hw = (f) => (f.shortW * fs) / NAME_PX / 2;
         for (let pass = 0; pass < 4; pass++) shown.forEach((a, i) => shown.slice(i + 1).forEach((b) => {
-          if (Math.abs(a.name.cx - b.name.cx) >= hw(a) + hw(b) + NAME_GAP / view.k) return;
+          if (Math.abs(a.name.x - b.name.x) >= hw(a) + hw(b) + NAME_GAP / view.k) return;
           const over = fs * 1.2 - Math.abs(a.nameY - b.nameY);
           if (over <= 0) return;
           const s = (a.nameY <= b.nameY ? -over : over) / 2;
@@ -5877,7 +5872,7 @@
         if (f.nameEl.textContent !== text) f.nameEl.textContent = text;
         if (!f.name) return;
         f.nameEl.style.fontSize = fs + 'px';
-        f.nameEl.setAttribute('x', far ? f.name.cx : f.name.x);
+        f.nameEl.setAttribute('x', f.name.x);
         f.nameEl.setAttribute('y', f.nameY + fs * 0.35);
       });
     }
@@ -5943,14 +5938,13 @@
       const vn = visibleNodes(); if (!vn.length) return;
       const Hu = usableH();
       let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      // bounds cover each term's label, its family hull and the family name on the rim
-      const pad = HULL_PAD + 4;
-      vn.forEach((n) => { minX = Math.min(minX, n.x - n.hw - pad); minY = Math.min(minY, n.y + n.boxes[0].t - pad); maxX = Math.max(maxX, n.x + n.hw + pad); maxY = Math.max(maxY, n.y + n.vh + pad); });
+      // bounds cover each family's circle and its name on the rim
       FAMILIES.forEach((f) => {
-        const m = nameBox(f, vn);
-        if (!m) return;
-        minX = Math.min(minX, m.x - m.boxes[0].hw); maxX = Math.max(maxX, m.x + m.boxes[0].hw);
-        minY = Math.min(minY, m.boxes[0].t); maxY = Math.max(maxY, m.boxes[0].b);
+        const c = famCircle(f, vn);
+        if (!c) return;
+        const q = f.name.boxes[0];
+        minX = Math.min(minX, c.x - c.r, f.name.x - q.hw); maxX = Math.max(maxX, c.x + c.r, f.name.x + q.hw);
+        minY = Math.min(minY, c.y - c.r, q.t); maxY = Math.max(maxY, c.y + c.r, q.b);
       });
       const k = Math.max(0.25, Math.min((W - 16) / (maxX - minX), (Hu - 16) / (maxY - minY), 2.2));
       lastFit = { x: W / 2 - ((minX + maxX) / 2) * k, y: Hu / 2 - ((minY + maxY) / 2) * k, k };
@@ -6069,7 +6063,7 @@
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
           '<h2>IT, AI, networking &amp; security terms&nbsp;— mapped</h2>' +
-          '<p><strong>104 terms</strong> from the Visual Tech Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong>, drawn when its term is selected, is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p><strong>104 terms</strong> from the Visual Tech Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured circle; each <strong>link</strong>, drawn when its term is selected, is a typed relationship inferred from the glossary\'s own explainers.</p>' +
           '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> sits at the centre, with the other ten families ringed around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
             '<div class="stat"><b>104</b><span>terms</span></div>' +

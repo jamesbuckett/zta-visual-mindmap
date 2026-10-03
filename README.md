@@ -11,7 +11,7 @@
 
 [![Visual Tech Mindmap — 104 terms across eleven functional families, drawn as a force-directed graph](docs/screenshot.png)](https://zta-visual-mindmap.vercel.app)
 
-Maps 104 IT, AI, networking, and security terms from the [Visual Tech Glossary](https://zta-visual-glossary.vercel.app/) as an interactive, force-directed graph. Groups nodes into eleven functional families, each in its own named, colour-coded region around a Zero-Trust core, and links them with five typed relationships — requires, enables, part-of, alternative, and same-category — inferred from each term's own explainer. Lets you click any node for its definition, primary source, and connections, search and filter live, toggle light or dark, or follow an 11-step guided tour anchored on Zero Trust. Ships as a single self-contained `index.html` with no build step, no server, and no runtime dependencies.
+Maps 104 IT, AI, networking, and security terms from the [Visual Tech Glossary](https://zta-visual-glossary.vercel.app/) as an interactive, force-directed graph. Groups nodes into eleven functional families, each in its own named, colour-coded circle around a Zero-Trust core, and links them with five typed relationships — requires, enables, part-of, alternative, and same-category — inferred from each term's own explainer. Lets you click any node for its definition, primary source, and connections, search and filter live, toggle light or dark, or follow an 11-step guided tour anchored on Zero Trust. Ships as a single self-contained `index.html` with no build step, no server, and no runtime dependencies.
 
 ## Usage
 
