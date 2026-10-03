@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-An interactive force-directed mindmap of the terms in the ZTA Visual Glossary. Everything
+An interactive force-directed mindmap of the terms in the Visual Tech Glossary. Everything
 ships in one self-contained `index.html` — markup, styles, the force simulation and the
 dataset. No build step and no framework; the only external request is Google Fonts, and
 `verify.mjs` at the root is tooling, not part of the page.

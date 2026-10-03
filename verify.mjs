@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Dataset and page-consistency checks for the ZTA Visual Mindmap.
+ * Dataset and page-consistency checks for the Visual Tech Mindmap.
  *
  * Asserts the invariants this repo relies on but cannot see:
  *   1. the dataset embedded in index.html is byte-identical to zta-glossary-data.json
@@ -152,20 +152,20 @@ const readme = readFileSync(repo('README.md'), 'utf8');
 const files = { 'index.html': html, 'README.md': readme };
 
 const sites = [
-  ['index.html', 'meta description — terms', /mindmap of (\d+) zero-trust/g, nTerms],
+  ['index.html', 'meta description — terms', /mindmap of (\d+) IT, AI/g, nTerms],
   ['index.html', 'meta description — families', /into (\w+) functional families/g, wFams],
   ['index.html', 'search placeholder — terms', /placeholder="Search (\d+) terms/g, nTerms],
   ['index.html', 'footer — terms', /— (\d+) terms, \d+ typed relationships/g, nTerms],
   ['index.html', 'footer — edges', /— \d+ terms, (\d+) typed relationships/g, nEdges],
-  ['index.html', 'About copy — terms', /<strong>(\d+) terms<\/strong> from the ZTA/g, nTerms],
+  ['index.html', 'About copy — terms', /<strong>(\d+) terms<\/strong> from the Visual Tech/g, nTerms],
   ['index.html', 'About copy — families', /<strong>(\w+) functional families<\/strong>/g, wFams],
   ['index.html', 'stat tile — terms', /<b>(\d+)<\/b><span>terms<\/span>/g, nTerms],
   ['index.html', 'stat tile — families', /<b>(\d+)<\/b><span>families<\/span>/g, nFams],
   ['index.html', 'stat tile — links', /<b>(\d+)<\/b><span>links<\/span>/g, nEdges],
-  ['README.md', 'tagline — terms', /mindmap of (\d+) zero-trust/g, nTerms],
+  ['README.md', 'tagline — terms', /mindmap of (\d+) IT, AI/g, nTerms],
   ['README.md', 'hero alt text — terms', /Mindmap — (\d+) terms across/g, nTerms],
   ['README.md', 'hero alt text — families', /terms across (\w+) functional families/g, wFams],
-  ['README.md', 'intro — terms', /Maps (\d+) IT, networking/g, nTerms],
+  ['README.md', 'intro — terms', /Maps (\d+) IT, AI, networking/g, nTerms],
   ['README.md', 'intro — families', /into (\w+) functional families/g, wFams],
   ['README.md', 'intro — edge types', /links them with (\w+) typed relationships/g, wTypes],
   ['README.md', 'dataset note — terms', /— (\d+) terms and \d+ typed edges/g, nTerms],

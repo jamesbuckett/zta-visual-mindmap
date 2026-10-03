@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ZTA Visual Mindmap — Zero-Trust, Networking &amp; IT Terms, Mapped</title>
-  <meta name="description" content="An interactive mindmap of 96 zero-trust, networking, and IT terms — colour-coded into eleven functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
+  <title>Visual Tech Mindmap — IT, AI, Networking &amp; Security Terms, Mapped</title>
+  <meta name="description" content="An interactive mindmap of 96 IT, AI, networking, and security terms — colour-coded into eleven functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the Visual Tech Glossary by James Buckett.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AD1FFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'/%3E%3Ccircle cx='6' cy='12' r='3'/%3E%3Ccircle cx='18' cy='19' r='3'/%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'/%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -408,6 +408,10 @@
 
     /* ============================ responsive =========================== */
     .scrim { display: none; }
+    /* the brand's sub-line would crowd the search box on narrower laptops */
+    @media (max-width: 1200px) {
+      .brand-name .sub { display: none; }
+    }
     @media (max-width: 900px) {
       .app { grid-template-columns: 1fr; }
       .panel {
@@ -423,7 +427,6 @@
       .panel-inner { padding: var(--space-5) var(--space-4) var(--space-6); }
       body.panel-open .scrim { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 45; }
       .filters { flex-wrap: nowrap; }
-      .brand-name .sub { display: none; }
       .branding { display: none; }
       .search { max-width: none; }
     }
@@ -450,12 +453,12 @@
 <body>
   <header class="appbar">
     <div class="appbar-row">
-      <a class="brand" href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="ZTA Visual Glossary — the source project">
+      <a class="brand" href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Visual Tech Glossary — the source project">
         <span class="brand-mark" aria-hidden="true">
           <!-- Lucide: share-2 (network) -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </span>
-        <h1 class="brand-name">ZTA Visual Mindmap<span class="sub"> · zero-trust mapped</span></h1>
+        <h1 class="brand-name">Visual Tech Mindmap<span class="sub"> · IT, AI, networking &amp; security terms</span></h1>
       </a>
 
       <div class="search" id="search">
@@ -511,7 +514,7 @@
 
   <main class="app">
     <div class="graph-wrap">
-      <svg id="graph" role="application" aria-label="Force-directed mindmap of zero-trust and networking terms. Use Tab or the arrow keys to move between terms, Enter to open details, Escape to clear the selection.">
+      <svg id="graph" role="application" aria-label="Force-directed mindmap of IT, AI, networking and security terms. Use Tab or the arrow keys to move between terms, Enter to open details, Escape to clear the selection.">
         <defs>
           <marker id="ah-muted" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
           <marker id="ah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
@@ -565,7 +568,7 @@
 
   <footer class="appfoot">
     <span>
-      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">ZTA Visual Glossary</a> by James Buckett — 96 terms, 298 typed relationships.
+      Source: <a href="https://zta-visual-glossary.vercel.app/" target="_blank" rel="noopener noreferrer">Visual Tech Glossary</a> by James Buckett — 96 terms, 298 typed relationships.
     </span>
     <span>Interactive mindmap built with <code>skill-style-guide</code> + <code>skill-build-educational-site</code>.</span>
   </footer>
@@ -5550,8 +5553,8 @@
       panelInner.innerHTML =
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
-          '<h2>Zero trust and the modern network — mapped</h2>' +
-          '<p><strong>96 terms</strong> from the ZTA Visual Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<h2>IT, AI, networking &amp; security terms&nbsp;— mapped</h2>' +
+          '<p><strong>96 terms</strong> from the Visual Tech Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
           '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> sits at the centre, with the other ten families ringed around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
             '<div class="stat"><b>96</b><span>terms</span></div>' +
