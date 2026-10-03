@@ -434,8 +434,10 @@
       .about-text-extra { display: none; }
     }
 
-    /* Neon, dark theme only: the accent strokes on the map glow in their own colour. */
+    /* Neon, dark theme only: a soft halo behind the page heading, and the accent
+       strokes on the map glow in their own colour. */
     @media screen {
+      [data-theme="dark"] h1 { text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 55%, transparent); }
       [data-theme="dark"] .edge.t-partof,
       [data-theme="dark"] .node.is-selected .halo { filter: drop-shadow(0 0 4px var(--accent)); }
     }
@@ -453,7 +455,7 @@
           <!-- Lucide: share-2 (network) -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </span>
-        <span class="brand-name">ZTA Visual Mindmap<span class="sub"> · zero-trust mapped</span></span>
+        <h1 class="brand-name">ZTA Visual Mindmap<span class="sub"> · zero-trust mapped</span></h1>
       </a>
 
       <div class="search" id="search">
