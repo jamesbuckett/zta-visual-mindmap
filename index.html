@@ -284,7 +284,7 @@
     .zoom-far .node.is-hot .label, .zoom-far .node.is-selected .label, .zoom-far .node.is-match .label { opacity: 1; }
 
     /* legend */
-    /* relationship key: a strip along the bottom edge, clear of the zoom controls */
+    /* relationship key: a strip along the bottom edge, clear of the zoom controls, shown while a term is selected */
     .legend {
       position: absolute; left: var(--space-3); bottom: var(--space-3);
       max-width: calc(100% - var(--space-3) - var(--space-8));
@@ -295,6 +295,7 @@
       box-shadow: var(--shadow); padding: var(--space-2) var(--space-3);
       font-size: var(--fs-tiny); z-index: 10;
     }
+    .legend[hidden] { display: none; }
     .legend-edges { display: none; }
     .legend.show-edges .legend-edges { display: contents; } /* its rows wrap together with the toggle */
     .legend-edge, .legend-note { display: flex; align-items: center; gap: var(--space-2); white-space: nowrap; }
@@ -526,7 +527,7 @@
         </g>
       </svg>
 
-      <div class="legend" id="legend">
+      <div class="legend" id="legend" hidden>
         <div class="legend-edges" id="legend-edges"></div>
         <button class="legend-toggle" id="legend-toggle" type="button" aria-expanded="false" aria-controls="legend-edges">Show relationship key</button>
       </div>
@@ -5527,7 +5528,7 @@
 
     let W = svg.clientWidth || 900;
     let H = svg.clientHeight || 600;
-    // the relationship key lies along the bottom edge, so the map is laid out and fitted above it
+    // while a term is selected the relationship key lies along the bottom edge, and the map is laid out and fitted above it
     const legend = document.getElementById('legend');
     const usableH = () => Math.max(H / 2, H - legend.offsetHeight - 16);
 
@@ -6116,6 +6117,7 @@
         nodes.forEach((n) => n.el.classList.remove('is-selected'));
         clearHot();
       }
+      legend.hidden = !id; // the key explains the links, which are only drawn for a selected term
       if (!opts.fromHistory) syncHash(id, opts.fromTour);
     }
 
@@ -6406,8 +6408,8 @@
       // every step must be visible, so the search and any family filter are cleared first
       searchInput.value = ''; doSearch('');
       showAllFamilies();
-      tourBar.style.bottom = (legend.offsetHeight + 24) + 'px'; // sit above the relationship key
       tourActive = true; tourIdx = 0; tourBar.hidden = false; showTourStep();
+      tourBar.style.bottom = (legend.offsetHeight + 24) + 'px'; // sit above the relationship key, which the first step brings up
     }
     function showTourStep() {
       const step = TOUR[tourIdx]; const n = byId.get(step.id);
