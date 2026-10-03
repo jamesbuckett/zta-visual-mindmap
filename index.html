@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ZTA Visual Mindmap — Zero-Trust, Networking &amp; IT Terms, Mapped</title>
   <meta name="description" content="An interactive mindmap of 96 zero-trust, networking, and IT terms — colour-coded into eleven functional families and linked by typed relationships, with per-term primary sources, search, filters, and a guided tour. Built from the ZTA Visual Glossary by James Buckett.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'/%3E%3Ccircle cx='6' cy='12' r='3'/%3E%3Ccircle cx='18' cy='19' r='3'/%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'/%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AD1FFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'/%3E%3Ccircle cx='6' cy='12' r='3'/%3E%3Ccircle cx='18' cy='19' r='3'/%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'/%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,26 +23,31 @@
       --border: #E5E7EB;
       --border-strong: #D1D5DB;
 
-      /* Exactly ONE brand accent. Alternatives commented. */
+      /* Exactly ONE brand accent. Alternatives commented. The violet is the
+         brightest that still clears 4.5:1 on --bg; do not brighten it. */
+      --accent: #AD1FFF;        /* electric violet */
       /* --accent: #2563EB; */
-      --accent: #4F46E5;        /* indigo */
+      /* --accent: #4F46E5; */
       /* --accent: #059669; */
       /* --accent: #EA580C; */
       --accent-hover: color-mix(in srgb, var(--accent) 88%, black);
       --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--bg));
+      /* accent as small text: plain violet falls under 4.5:1 on --accent-soft */
+      --accent-text: color-mix(in srgb, var(--accent) 85%, black);
 
-      /* Categorical (data-viz) palette — used ONLY for node categories + legend. */
+      /* Categorical (data-viz) palette — used ONLY for node categories + legend.
+         --cat-8 onwards are this page's own extensions to the shared scale. */
       --cat-1: #DC2626;  /* red */
-      --cat-2: #EA580C;  /* orange  -> Development Framework */
+      --cat-2: #EA580C;  /* orange */
       --cat-3: #CA8A04;  /* yellow */
-      --cat-4: #16A34A;  /* green   -> Network Technology */
-      --cat-5: #2563EB;  /* blue    -> Protocol */
+      --cat-4: #16A34A;  /* green */
+      --cat-5: #2563EB;  /* blue */
       --cat-6: #4F46E5;  /* indigo */
-      --cat-7: #7C3AED;  /* violet  -> Security Technology */
+      --cat-7: #7C3AED;  /* violet — too close to --accent for a family */
       --cat-8: #0891B2;  /* teal */
       --cat-9: #DB2777;  /* pink */
       --cat-10: #65A30D; /* lime */
-      --cat-11: #C026D3; /* fuchsia */
+      --cat-11: #C218A7; /* magenta */
 
       /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 */
       --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
@@ -63,6 +68,8 @@
       --shadow-sm: 0 1px 2px rgba(10, 10, 10, 0.04);
       --shadow: 0 1px 3px rgba(10, 10, 10, 0.08), 0 1px 2px rgba(10, 10, 10, 0.04);
       --shadow-lg: 0 10px 30px rgba(10, 10, 10, 0.12), 0 2px 8px rgba(10,10,10,0.06);
+      /* Neon halo. Empty here; the dark theme switches it on. */
+      --glow: 0 0 0 0 transparent;
       --transition: 170ms ease;
 
       /* category -> node colour resolver (set per .node via category class) */
@@ -70,27 +77,30 @@
     }
 
     [data-theme="dark"] {
-      --bg: #0B0B0C;
-      --surface: #161618;
+      /* Neon on near-black: cool-tinted darks, fully saturated signal colours. */
+      --bg: #050508;
+      --surface: #0D0D14;
       --text: #F5F5F5;
       --text-muted: #9CA3AF;
-      --border: #27272A;
-      --border-strong: #3F3F46;
-      --accent-soft: color-mix(in srgb, var(--accent) 22%, var(--bg));
-      --cat-1: #F87171;
-      --cat-2: #FB923C;
-      --cat-3: #FACC15;
-      --cat-4: #4ADE80;
-      --cat-5: #60A5FA;
-      --cat-6: #818CF8;
-      --cat-7: #A78BFA;
-      --cat-8: #22D3EE;
-      --cat-9: #F472B6;
-      --cat-10: #A3E635;
-      --cat-11: #E879F9;
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.35);
+      --border: #22222E;
+      --border-strong: #3A3A4D;
+      --accent-soft: color-mix(in srgb, var(--accent) 18%, var(--bg));
+      --accent-text: color-mix(in srgb, var(--accent) 70%, white);
+      --cat-1: #FF3355;
+      --cat-2: #FF8A1F;
+      --cat-3: #FFE600;
+      --cat-4: #39FF14;
+      --cat-5: #00E5FF;
+      --cat-6: #5C7CFF;
+      --cat-7: #D24DFF;
+      --cat-8: #00FFA6;
+      --cat-9: #FF8AC4;
+      --cat-10: #B8FF00;
+      --cat-11: #FF4DF9;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
       --shadow-lg: 0 12px 34px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.4);
+      --glow: 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent);
     }
 
     /* family colour map (the one place families bind to --cat-* / ink) */
@@ -100,7 +110,7 @@
     .fam-transport     { --node: var(--cat-5); }
     .fam-routing       { --node: var(--cat-4); }
     .fam-edge          { --node: var(--cat-3); }
-    .fam-platform      { --node: var(--cat-7); }
+    .fam-platform      { --node: var(--cat-6); }
     .fam-detection     { --node: var(--cat-8); }
     .fam-governance    { --node: var(--cat-9); }
     .fam-aimodels      { --node: var(--cat-10); }
@@ -125,7 +135,7 @@
     }
     h1, h2, h3, h4 { font-weight: 700; letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); margin: 0; }
     p { margin: 0; }
-    a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
+    a { color: var(--accent-text); text-decoration: none; transition: color var(--transition); }
     a:hover { color: var(--accent-hover); }
     code, kbd { font-family: var(--font-mono); font-size: var(--fs-mono); }
     button { font-family: inherit; }
@@ -145,7 +155,7 @@
       padding: var(--space-3) var(--space-4);
     }
     .brand { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 700; letter-spacing: var(--tracking-tight); color: var(--text); white-space: nowrap; }
-    .brand-mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: var(--accent); color: #fff; flex: 0 0 auto; }
+    .brand-mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: var(--accent); color: #fff; flex: 0 0 auto; box-shadow: var(--glow); }
     .brand-mark svg { width: 17px; height: 17px; }
     .brand-name { font-size: 15px; }
     .brand-name .sub { color: var(--text-muted); font-weight: 500; }
@@ -161,7 +171,7 @@
     }
     .search input::placeholder { color: var(--text-muted); }
     .search input::-webkit-search-cancel-button { display: none; }
-    .search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft), var(--glow); }
     .search-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: none; place-items: center; width: 24px; height: 24px; border: 0; background: transparent; color: var(--text-muted); border-radius: 50%; cursor: pointer; }
     .search-clear svg { width: 15px; height: 15px; }
     .search.has-value .search-clear { display: grid; }
@@ -187,7 +197,7 @@
     }
     .btn:hover { border-color: var(--border-strong); background: color-mix(in srgb, var(--surface) 80%, var(--bg)); }
     .btn svg { width: 16px; height: 16px; }
-    .btn-accent { background: var(--accent); color: #fff; border-color: transparent; }
+    .btn-accent { background: var(--accent); color: #fff; border-color: transparent; box-shadow: var(--glow); }
     .btn-accent:hover { background: var(--accent-hover); color: #fff; }
     .icon-button { display: inline-grid; place-items: center; width: 38px; height: 38px; padding: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; transition: background-color var(--transition), border-color var(--transition); }
     .icon-button:hover { border-color: var(--border-strong); }
@@ -292,7 +302,7 @@
     .legend-edge, .legend-note { display: flex; align-items: center; gap: var(--space-2); white-space: nowrap; }
     .legend-edge svg { width: 34px; height: 10px; flex: 0 0 auto; }
     .legend-note svg { width: 26px; height: 12px; flex: 0 0 auto; fill: var(--text-muted); }
-    .legend-toggle { background: none; border: 0; color: var(--accent); font-size: var(--fs-tiny); font-weight: 700; cursor: pointer; padding: 0; white-space: nowrap; }
+    .legend-toggle { background: none; border: 0; color: var(--accent-text); font-size: var(--fs-tiny); font-weight: 700; cursor: pointer; padding: 0; white-space: nowrap; }
 
     /* zoom controls */
     .zoom-controls { position: absolute; right: var(--space-3); bottom: var(--space-3); display: flex; flex-direction: column; z-index: 10; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
@@ -324,7 +334,7 @@
     }
     .tour-bar[hidden] { display: none; }
     .tour-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-1); }
-    .tour-step { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); font-weight: 700; }
+    .tour-step { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-text); font-weight: 700; }
     .tour-title { font-size: 15px; font-weight: 700; }
     .tour-note { font-size: var(--fs-small); color: var(--text-muted); margin-bottom: var(--space-3); }
     .tour-actions { display: flex; align-items: center; gap: var(--space-2); }
@@ -338,7 +348,7 @@
 
     .panel-close { display: none; }
 
-    .about-eyebrow { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; margin-bottom: var(--space-2); }
+    .about-eyebrow { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-text); font-weight: 700; margin-bottom: var(--space-2); }
     .about h2 { font-size: 20px; margin-bottom: var(--space-3); }
     .about p { color: var(--text-muted); font-size: var(--fs-small); margin-bottom: var(--space-3); }
     .about p strong { color: var(--text); font-weight: 700; }
@@ -362,7 +372,7 @@
     .detail-full { font-size: var(--fs-small); color: var(--text-muted); margin-bottom: var(--space-4); }
     .detail-full .alias { color: var(--text-muted); }
     .tldr { background: var(--accent-soft); border-radius: var(--radius); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4); }
-    .tldr .lbl { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; display: block; margin-bottom: var(--space-1); }
+    .tldr .lbl { font-size: var(--fs-tiny); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-text); font-weight: 700; display: block; margin-bottom: var(--space-1); }
     .tldr p { font-size: var(--fs-small); color: var(--text); font-weight: 500; }
     .detail-explainer { font-size: var(--fs-body); color: var(--text); line-height: 1.6; margin-bottom: var(--space-5); }
     .meta-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-5); }
@@ -387,7 +397,7 @@
       color: var(--text); font-size: var(--fs-small); font-weight: 500; cursor: pointer;
       transition: border-color var(--transition), background-color var(--transition);
     }
-    .rel-item:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .rel-item:hover { border-color: var(--accent); background: var(--accent-soft); box-shadow: var(--glow); }
     .rel-item .swatch { width: 9px; height: 9px; border-radius: 50%; background: var(--node); flex: 0 0 auto; }
     .rel-item .rel-name { flex: 1 1 auto; }
     .rel-item .rel-arrow { color: var(--text-muted); width: 15px; height: 15px; flex: 0 0 auto; }
@@ -423,6 +433,12 @@
       .search { order: 3; flex-basis: 100%; max-width: none; }
       .brand-name { font-size: 14px; }
       .about-text-extra { display: none; }
+    }
+
+    /* Neon, dark theme only: the accent strokes on the map glow in their own colour. */
+    @media screen {
+      [data-theme="dark"] .edge.t-partof,
+      [data-theme="dark"] .node.is-selected .halo { filter: drop-shadow(0 0 4px var(--accent)); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -4986,9 +5002,9 @@
     // Functional families — the colour/grouping layer (each term's original
     // glossary type + provenance are preserved as tags in the detail panel).
     // Zero-Trust core uses ink (var(--text)) so the anchor stands apart from the
-    // nine categorical hues. Indigo (--cat-6) stays reserved for the brand accent,
-    // so the four newest families take fresh teal (--cat-8), pink (--cat-9),
-    // lime (--cat-10), and fuchsia (--cat-11) hues.
+    // ten categorical hues. Violet (--cat-7) sits too close to the brand accent to
+    // be worn by a family, so the four newest families take fresh teal (--cat-8),
+    // pink (--cat-9), lime (--cat-10), and magenta (--cat-11) hues.
     const FAMILIES = [
       { key: 'ztcore',        label: 'Zero-Trust core',          short: 'Zero-Trust',      cssvar: '--text' },
       { key: 'iam',           label: 'Identity & access',        short: 'Identity',        cssvar: '--cat-1' },
@@ -4996,7 +5012,7 @@
       { key: 'transport',     label: 'Transport & web',          short: 'Transport',       cssvar: '--cat-5' },
       { key: 'routing',       label: 'Addressing & routing',     short: 'Routing',         cssvar: '--cat-4' },
       { key: 'edge',          label: 'Network edge & ops',       short: 'Network edge',    cssvar: '--cat-3' },
-      { key: 'platform',      label: 'Platforms & apps',         short: 'Platforms',       cssvar: '--cat-7' },
+      { key: 'platform',      label: 'Platforms & apps',         short: 'Platforms',       cssvar: '--cat-6' },
       { key: 'k8s',           label: 'Kubernetes',               short: 'Kubernetes',     cssvar: '--cat-11' },
       { key: 'detection',     label: 'Detection & response',     short: 'Detection',       cssvar: '--cat-8' },
       { key: 'governance',    label: 'Governance & supply chain', short: 'Governance',     cssvar: '--cat-9' },

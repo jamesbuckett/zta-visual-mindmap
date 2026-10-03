@@ -44,9 +44,12 @@ labels matching domain names exactly.
 
 ## Invariants
 
-- **`--cat-6` is permanently unavailable to families.** It *is* `--accent`, which already
-  paints part-of edges, hover halos and selection strokes, so a family wearing it would be
-  unreadable. The tenth family took a new `--cat-10`; an eleventh needs a `--cat-11`.
+- **`--cat-7` is permanently unavailable to families.** It sits within a few degrees of hue
+  of `--accent` (electric violet), which already paints part-of edges, hover halos and
+  selection strokes, so a family wearing it would be unreadable. Platforms wears `--cat-6`
+  instead. `--cat-8` to `--cat-11` are this page's own extensions to the shared scale, so
+  each carries a light value and a neon dark value chosen to stay clear of the accent and
+  of its neighbours; a twelfth family needs a `--cat-12`.
 - **`FAMILIES` order is the ring order.** The Zero-Trust core is listed first and sits at the
   centre; the others are placed clockwise around it in array order, so a new family lands
   between its array neighbours and should be listed next to the families it links to most.
