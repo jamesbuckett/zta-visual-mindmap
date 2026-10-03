@@ -232,17 +232,15 @@
         radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 0) 0 0 / 26px 26px; }
     #graph.panning { cursor: grabbing; }
 
-    /* edges */
-    .edge { fill: none; stroke: var(--text-muted); stroke-width: 1.4; opacity: 0.5; transition: opacity 120ms ease, stroke 120ms ease; }
-    .edge.t-partof   { stroke: var(--accent); stroke-width: 2.1; opacity: 0.72; }
-    .edge.t-requires { stroke: var(--text-muted); stroke-width: 1.7; opacity: 0.6; }
-    .edge.t-enables  { stroke: var(--text-muted); stroke-width: 1.6; opacity: 0.6; stroke-dasharray: 5 4; }
-    .edge.t-alternative { stroke: var(--border-strong); stroke-width: 1.5; opacity: 0.7; stroke-dasharray: 8 5; }
-    .edge.t-samecategory { stroke: var(--border-strong); stroke-width: 1.3; opacity: 0.5; stroke-dasharray: 1 5; stroke-linecap: round; }
-    .edge.x-fam { opacity: 0.3; } /* links between families stay quiet until a term is in focus */
-    .graph-focus .edge { opacity: 0.06; }
-    .graph-focus .edge.is-hot { opacity: 0.95; }
-    /* in focus each link keeps its type's line style, so the relationship key still applies */
+    /* edges: off the map until a term is selected, then only that term's links are drawn */
+    .edge { fill: none; stroke: var(--text-muted); stroke-width: 1.4; opacity: 0; transition: opacity 120ms ease, stroke 120ms ease; }
+    .edge.t-partof   { stroke: var(--accent); stroke-width: 2.1; }
+    .edge.t-requires { stroke: var(--text-muted); stroke-width: 1.7; }
+    .edge.t-enables  { stroke: var(--text-muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+    .edge.t-alternative { stroke: var(--border-strong); stroke-width: 1.5; stroke-dasharray: 8 5; }
+    .edge.t-samecategory { stroke: var(--border-strong); stroke-width: 1.3; stroke-dasharray: 1 5; stroke-linecap: round; }
+    .edge.is-hot { opacity: 0.95; }
+    /* drawn, each link keeps its type's line style, so the relationship key still applies */
     .edge.t-requires.is-hot, .edge.t-enables.is-hot { stroke: var(--text); marker-end: url(#ah-ink); }
     .edge.t-alternative.is-hot, .edge.t-samecategory.is-hot { stroke: var(--text-muted); }
     #ah-muted path { fill: var(--text-muted); }
@@ -5770,7 +5768,7 @@
       edges.forEach((e, i) => {
         const m = EDGE_META[e.type];
         const line = document.createElementNS(SVGNS, 'line');
-        line.setAttribute('class', 'edge ' + m.cls + (e.cross ? ' x-fam' : ''));
+        line.setAttribute('class', 'edge ' + m.cls);
         if (m.dir) line.setAttribute('marker-end', 'url(#' + m.marker + ')');
         e.el = line; edgeEls.set(i, line); edgesLayer.appendChild(line);
       });
@@ -5979,7 +5977,7 @@
       adj.get(id).forEach(({ other, edge }) => {
         if (other.hidden) return;
         other.el.classList.add('is-hot');
-        edge.el.classList.add('is-hot');
+        if (id === selectedId) edge.el.classList.add('is-hot'); // hover lights the neighbours; only a selection draws the links
       });
     }
     function refreshHot() {
@@ -6071,7 +6069,7 @@
         '<div class="about">' +
           '<div class="about-eyebrow">Interactive mindmap</div>' +
           '<h2>IT, AI, networking &amp; security terms&nbsp;— mapped</h2>' +
-          '<p><strong>104 terms</strong> from the Visual Tech Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong> is a typed relationship inferred from the glossary\'s own explainers.</p>' +
+          '<p><strong>104 terms</strong> from the Visual Tech Glossary, drawn as a map. Each <strong>node</strong> is a term, grouped into <strong>eleven functional families</strong> that each hold their own named, coloured region; each <strong>link</strong>, drawn when its term is selected, is a typed relationship inferred from the glossary\'s own explainers.</p>' +
           '<p class="about-text-extra">The dark <strong>Zero-Trust core</strong> sits at the centre, with the other ten families ringed around it. Every term\'s original glossary type, origin, and primary source stay in its detail panel.</p>' +
           '<div class="stat-row">' +
             '<div class="stat"><b>104</b><span>terms</span></div>' +
@@ -6080,7 +6078,7 @@
           '</div>' +
           '<div class="section-label">How to use it</div>' +
           '<ul class="about-how">' +
-            '<li>' + ICON('mouse-pointer') + '<span><strong>Click</strong> any node for its definition and connections; <kbd>Esc</kbd> or empty space clears.</span></li>' +
+            '<li>' + ICON('mouse-pointer') + '<span><strong>Click</strong> any node for its definition and to draw its links; <kbd>Esc</kbd> or empty space clears.</span></li>' +
             '<li>' + ICON('spotlight') + '<span><strong>Hover</strong> to spotlight a term\'s neighbours and, with a term selected, read how the two relate.</span></li>' +
             '<li>' + ICON('search') + '<span><strong>Search</strong> (press <kbd>/</kbd>) and pick from the list of matches.</span></li>' +
             '<li>' + ICON('filter') + '<span><strong>Pick a family</strong> chip, or its name on the map, to see it alone; <strong>All</strong> brings the rest back.</span></li>' +

@@ -17,7 +17,7 @@ Maps 104 IT, AI, networking, and security terms from the [Visual Tech Glossary](
 
 Open `index.html` in any modern browser — double-click it, or serve the folder. Nothing to install; the page is fully self-contained, with the dataset embedded inline.
 
-- **Click** a node for its definition, tags, origin, primary source, and typed connections; click empty space or press `Esc` to clear.
+- **Click** a node for its definition, tags, origin, primary source, and typed connections, and to draw its links on the map — they stay hidden until a term is selected; click empty space or press `Esc` to clear.
 - **Hover** to spotlight a term and its direct neighbours, dimming the rest; with a term selected, the tooltip states how the two relate.
 - **Search** (or press `/`) to list matching terms, best match first, and open one with `Enter`.
 - **Pick a family** chip, or a family name on the map, to see that family alone; add others, or press **All** to restore the map.
