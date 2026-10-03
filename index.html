@@ -5543,8 +5543,7 @@
     // Each family owns a region: the Zero-Trust core at the centre, the others on
     // an ellipse around it in FAMILIES order, with arc share weighted by family size.
     // The ellipse is stretched past the canvas aspect ratio because labels run
-    // horizontally, and turned slightly: the turn is set by measurement, so that each
-    // family's name lands on its own rim rather than inside a neighbour's region.
+    // horizontally, and turned slightly, by an amount set by measuring the fit.
     const RING_R = 250, RING_STRETCH = 0.9, RING_TURN = 0.02;
     const ring = FAMILIES.filter((f) => f.key !== 'ztcore');
     const famSize = {};
@@ -5615,14 +5614,18 @@
       });
       for (let pass = 0; pass < 3; pass++) collide(vn);
     }
-    // once the forces have cooled, finish separating anything they were still pressing together
-    function settle() { const vn = visibleNodes(); for (let pass = 0; pass < 300 && collide(vn); pass++); }
+    // once the forces have cooled, finish separating anything they were still pressing together;
+    // the names pick their spots first, and once more when the regions have settled around them
+    function settle() {
+      const vn = visibleNodes();
+      for (let round = 0; round < 2; round++) { chooseNameSlots(vn); for (let pass = 0; pass < 300 && collide(vn, true); pass++); }
+    }
 
     // Each node is a shape of two boxes, its dot and its label (see measureNodes), so no
     // label is left sitting on another label or under a neighbour's dot. Terms of different
     // families keep FAMILY_GAP between them, and stay clear of other families' names.
-    const FAMILY_GAP = 24, EPS = 0.001;
-    function collide(vn) {
+    const FAMILY_GAP = 24, NAME_GAP = 10, EPS = 0.001;
+    function collide(vn, drawBack) {
       let moved = false;
       for (let i = 0; i < vn.length; i++) {
         const a = vn[i];
@@ -5644,6 +5647,42 @@
           const c = clearance(m.boxes, m.x, 0, n.boxes, n.x, n.y, 0);
           if (!c) return;
           n.x += c.x; n.y += c.y;
+          moved = true;
+        });
+      });
+      if (drawBack && clearNames(vn)) moved = true;
+      return moved;
+    }
+    // A neighbouring region must not reach over a family's name. Where one does, the edge of
+    // it that is least far in draws back: the two terms that make that edge move inwards.
+    function clearNames(vn) {
+      let moved = false;
+      const regions = FAMILIES.map((f) => ({ f, pts: convexHull(hullPoints(f, vn)) }));
+      FAMILIES.forEach((f) => {
+        const m = f.name;
+        if (!m) return;
+        const q = m.boxes[0], left = m.x - q.hw, right = m.x + q.hw;
+        const corners = [[left, q.t], [right, q.t], [right, q.b], [left, q.b]];
+        regions.forEach((r) => {
+          const pts = r.pts;
+          if (r.f === f || pts.length < 3) return;
+          let l = Infinity, rt = -Infinity, t = Infinity, b = -Infinity, cx = 0, cy = 0;
+          pts.forEach((p) => { l = Math.min(l, p.x); rt = Math.max(rt, p.x); t = Math.min(t, p.y); b = Math.max(b, p.y); cx += p.x / pts.length; cy += p.y / pts.length; });
+          if (rt <= left || l >= right || b <= q.t || t >= q.b) return;
+          let best = null;
+          for (let i = 0; i < pts.length; i++) {
+            const a = pts[i], c = pts[(i + 1) % pts.length], len = Math.hypot(c.x - a.x, c.y - a.y);
+            if (len < EPS) continue;
+            let nx = (c.y - a.y) / len, ny = (a.x - c.x) / len;                // the edge's normal...
+            if ((cx - a.x) * nx + (cy - a.y) * ny > 0) { nx = -nx; ny = -ny; }  // ...pointing out of the region
+            let depth = -Infinity;
+            corners.forEach((p) => { depth = Math.max(depth, -((p[0] - a.x) * nx + (p[1] - a.y) * ny)); });
+            if (depth <= 0) return; // the whole name lies outside this edge
+            if (!best || depth < best.depth) best = { depth, nx, ny, a, c };
+          }
+          if (!best) return;
+          const step = Math.min(best.depth + 1, 6);
+          new Set([best.a.n, best.c.n]).forEach((n) => { n.x -= best.nx * step; n.y -= best.ny * step; });
           moved = true;
         });
       });
@@ -5670,17 +5709,59 @@
       if (across <= down && across <= up) return { x: dx < 0 ? -across : across, y: 0 };
       return { x: 0, y: down <= up ? down : -up };
     }
-    // where a family's name sits: centred on the family, on the rim of its hull
-    function nameBox(f, vn) {
-      let sx = 0, c = 0, top = Infinity, bot = -Infinity;
-      vn.forEach((n) => {
-        if (n.family !== f.key) return;
-        sx += n.x; c++; top = Math.min(top, n.y + n.boxes[0].t); bot = Math.max(bot, n.y + n.vh);
+    // where a family's name sits: on the rim of its own region, above or below it and lined up
+    // with its middle or one edge (see chooseNameSlots), resting on the terms directly beneath
+    function nameBox(f, vn, trial) {
+      const own = vn.filter((n) => n.family === f.key);
+      if (!own.length) return trial ? null : (f.name = null);
+      const slot = trial || f.slot || { above: f.nameAbove, align: 0 };
+      let sx = 0, minX = Infinity, maxX = -Infinity, top = Infinity, bot = -Infinity;
+      own.forEach((n) => {
+        sx += n.x; minX = Math.min(minX, n.x - n.hw); maxX = Math.max(maxX, n.x + n.hw);
+        top = Math.min(top, n.y + n.boxes[0].t); bot = Math.max(bot, n.y + n.vh);
       });
-      if (!c) return (f.name = null);
-      const above = f.nameAbove;
-      const rim = above ? top - HULL_PAD : bot + HULL_PAD;
-      return (f.name = { x: sx / c, above, rim, mid: (top + bot) / 2, boxes: [{ hw: f.nameW / 2 + 4, t: above ? rim - NAME_PX * 1.5 : rim - 3, b: above ? rim + 3 : rim + NAME_PX * 1.5 }] });
+      const cx = sx / own.length, hw = f.nameW / 2 + 4, wide = hw > (maxX - minX) / 2;
+      // lined up with an edge, a name wider than its family overhangs on that side
+      const x = !slot.align ? cx : (slot.align < 0) !== wide ? minX + hw : maxX - hw;
+      let t = Infinity, b = -Infinity;
+      own.forEach((n) => { if (Math.abs(n.x - x) < hw + n.hw) { t = Math.min(t, n.y + n.boxes[0].t); b = Math.max(b, n.y + n.vh); } });
+      const rim = slot.above ? (t < Infinity ? t : top) - HULL_PAD : (b > -Infinity ? b : bot) + HULL_PAD;
+      const m = { x, cx, above: slot.above, rim, mid: (top + bot) / 2, boxes: [{ hw, t: slot.above ? rim - NAME_PX * 1.5 : rim - 3, b: slot.above ? rim + 3 : rim + NAME_PX * 1.5 }] };
+      return trial ? m : (f.name = m);
+    }
+    // Each name takes the spot on its own rim that lies least inside a neighbouring region or
+    // across another name. The ring decides the first choice (see placeAnchors), which wins ties.
+    function chooseNameSlots(vn) {
+      const regions = FAMILIES.map((f) => ({ key: f.key, pts: convexHull(hullPoints(f, vn)) })), taken = [];
+      const inRegion = (pts, x, y) => {
+        if (pts.length < 3) return false;
+        let sign = 0;
+        for (let i = 0; i < pts.length; i++) {
+          const a = pts[i], b = pts[(i + 1) % pts.length], c = (b.x - a.x) * (y - a.y) - (b.y - a.y) * (x - a.x);
+          if (c !== 0) { if (sign && (c > 0) !== (sign > 0)) return false; sign = c; }
+        }
+        return true;
+      };
+      FAMILIES.forEach((f) => {
+        let best = null;
+        [f.nameAbove, !f.nameAbove].forEach((above, flipped) => [0, -1, 1].forEach((align) => {
+          const m = nameBox(f, vn, { above, align });
+          if (!m) return;
+          // how much of the name, sampled on a 9 x 3 grid, another region or name already covers
+          const q = m.boxes[0];
+          let covered = 0;
+          for (let i = 0; i < 9; i++) for (let j = 0; j < 3; j++) {
+            const x = m.x - q.hw + (2 * q.hw * (i + 0.5)) / 9, y = q.t + ((q.b - q.t) * (j + 0.5)) / 3;
+            if (regions.some((r) => r.key !== f.key && inRegion(r.pts, x, y)) || taken.some((r) => x > r.l - NAME_GAP && x < r.r + NAME_GAP && y > r.t && y < r.b)) covered++;
+          }
+          // moving off the first choice has to be worth it
+          const cost = covered / 27 + flipped * 0.1 + (align ? 0.05 : 0);
+          if (!best || cost < best.cost) best = { above, align, cost, l: m.x - q.hw, r: m.x + q.hw, t: q.t, b: q.b };
+        }));
+        if (!best) return;
+        f.slot = { above: best.above, align: best.align };
+        taken.push(best);
+      });
     }
 
     /* ---------------------------- render ----------------------------- */
@@ -5755,15 +5836,20 @@
       lower.pop(); upper.pop();
       return lower.concat(upper);
     }
+    // the corners a family's region is drawn around: each term's dot and the label beneath it
+    function hullPoints(f, vn) {
+      const pts = [];
+      vn.forEach((n) => {
+        if (n.family !== f.key) return;
+        const d = n.boxes[0], l = n.boxes[1];
+        pts.push({ x: n.x - d.hw, y: n.y + d.t, n }, { x: n.x + d.hw, y: n.y + d.t, n }, { x: n.x - l.hw, y: n.y + l.b, n }, { x: n.x + l.hw, y: n.y + l.b, n });
+      });
+      return pts;
+    }
     function renderHulls() {
       const vn = visibleNodes();
       FAMILIES.forEach((f) => {
-        const pts = [];
-        vn.forEach((n) => {
-          if (n.family !== f.key) return;
-          const d = n.boxes[0], l = n.boxes[1];
-          pts.push({ x: n.x - d.hw, y: n.y + d.t }, { x: n.x + d.hw, y: n.y + d.t }, { x: n.x - l.hw, y: n.y + l.b }, { x: n.x + l.hw, y: n.y + l.b });
-        });
+        const pts = hullPoints(f, vn);
         f.hullEl.classList.toggle('is-hidden', !pts.length);
         f.nameEl.classList.toggle('is-hidden', !pts.length);
         nameBox(f, vn);
@@ -5781,7 +5867,7 @@
         // on-region names can meet where two small families sit side by side: ease them apart
         const hw = (f) => (f.shortW * fs) / NAME_PX / 2;
         for (let pass = 0; pass < 4; pass++) shown.forEach((a, i) => shown.slice(i + 1).forEach((b) => {
-          if (Math.abs(a.name.x - b.name.x) >= hw(a) + hw(b)) return;
+          if (Math.abs(a.name.cx - b.name.cx) >= hw(a) + hw(b) + NAME_GAP / view.k) return;
           const over = fs * 1.2 - Math.abs(a.nameY - b.nameY);
           if (over <= 0) return;
           const s = (a.nameY <= b.nameY ? -over : over) / 2;
@@ -5793,7 +5879,7 @@
         if (f.nameEl.textContent !== text) f.nameEl.textContent = text;
         if (!f.name) return;
         f.nameEl.style.fontSize = fs + 'px';
-        f.nameEl.setAttribute('x', f.name.x);
+        f.nameEl.setAttribute('x', far ? f.name.cx : f.name.x);
         f.nameEl.setAttribute('y', f.nameY + fs * 0.35);
       });
     }
